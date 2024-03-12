@@ -1,15 +1,75 @@
-body,html{
-    margin: 0;
-    padding: 0;
-}
-body{
-    height: 100%;
+body,
+html {
+  margin: 0;
+  padding: 0;
 }
 
-#whole-page{
-    display: flex;
-    align-items: center;
+body {
+  height: 100%;
 }
-#advertise-div{
-    margin: auto;
+
+#whole-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#advertise-div {
+  margin: auto;
+}
+
+#whole-page {
+  height: 100vh;
+}
+
+#left-div,
+#advertise-div {
+  height: 100vh;
+}
+
+#main-div {
+  padding-left: 40px;
+}
+
+#left-div {
+  width: 100%;
+  display: flex;
+  justify-content: start;
+  align-items: center;
+
+  background: linear-gradient(to left bottom, whitesmoke, #293f5050);
+}
+
+#advertise-div {
+  width: 100%;
+  /* background: greenyellow; */
+  background: linear-gradient(
+    to right bottom,
+    rgba(172, 255, 47, 0.404),
+    #293f50
+  );
+}
+
+#advertise-div {
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  padding-left: 30px;
+}
+
+.input-field {
+  border-radius: 25px;
+}
+
+#next-button {
+  border-radius: 10px;
+  background: linear-gradient(
+    to right bottom,
+    rgba(172, 255, 47, 0.404),
+    #293f504b
+  );
+}
+
+#login-link {
+  text-decoration: none;
 }

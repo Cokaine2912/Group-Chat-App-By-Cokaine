@@ -15,36 +15,76 @@
       integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
       crossorigin="anonymous"
     ></script>
-    <link rel="stylesheet" href="../css/signup.css">
+    <link rel="stylesheet" href="../css/signup.css" />
   </head>
   <body>
-
     <div id="whole-page">
+      <div id="left-div">
         <div id="main-div">
-            <div id="logo-div">Logo</div>
-            <div id="heading-div">
-                <h3>SignUp</h3>
-            </div>
-            <div id="form-div">
-                <form onsubmit="SIGNUP(event)" id="signup-form">
-                    <input type="text" name="username" id="username" placeholder="Username" required><br><br>
-                    <input type="email" name="email" id="email" placeholder="Email ID" required><br><br>
-                    <input type="number" name="phone"   id="phone" placeholder="Phone No." required><br><br>
-                    <input type="password" name="password" id="password" placeholder="Password" required><br><br>
-                    <button type="submit">Next</button>
-                </form>
-            </div>
-            <div id="already-user-div">
-                <h5>Already have an account ? <a href="./login.html">Login</a></h5> 
-            </div>
+          <div id="logo-div">Logo</div>
+          <div id="heading-div">
+            <h3>SignUp</h3>
+          </div>
+          <div id="form-div">
+            <form onsubmit="SIGNUP(event)" id="signup-form">
+              <input
+                type="text"
+                name="username"
+                id="username"
+                placeholder="Username"
+                class="input-field"
+                required
+              /><br /><br />
+              <input
+                type="email"
+                name="email"
+                id="email"
+                placeholder="Email ID"
+                class="input-field"
+                required
+              /><br /><br />
+              <input
+                type="number"
+                name="phone"
+                id="phone"
+                placeholder="Phone No."
+                class="input-field"
+                required
+              /><br /><br />
+              <input
+                type="password"
+                name="password"
+                id="password"
+                placeholder="Password"
+                class="input-field"
+                required
+              /><br /><br />
+              <button type="submit" id="next-button">Next</button>
+            </form>
+          </div>
+          <br />
+          <div id="already-user-div">
+            <h5>
+              Already have an account ?
+              <a id="login-link" href="./login.html">Login</a>
+            </h5>
+          </div>
         </div>
-        <div id="advertise-div">
-            <h3>Some Exhibition</h3>
+      </div>
+      <div id="advertise-div">
+        <div id="features-div">
+          <ul>
+            <h3>Group Chat App Features</h3>
+            <li>feature</li>
+            <li>feature</li>
+            <li>feature</li>
+            <li>feature</li>
+            <li>feature</li>
+          </ul>
         </div>
+      </div>
     </div>
-    
   </body>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>
   <script src="../js/signup.js"></script>
-  
 </html>
