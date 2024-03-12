@@ -1,6 +1,6 @@
-const Sequilize = require("sequelize");
+import Sequilize from "sequelize";
 
-const sequelize = require("../util/database");
+import sequelize  from '../util/database';
 
 const User = sequelize.define("user", {
   id: {
@@ -16,7 +16,7 @@ const User = sequelize.define("user", {
     unique: true,
   },
   phone: {
-    type: Sequilize.NUMBER,
+    type: Sequilize.STRING,
     allowNull: false,
   },
   password: {
@@ -25,4 +25,4 @@ const User = sequelize.define("user", {
   },
 });
 
-module.exports = User;
+export {User}
