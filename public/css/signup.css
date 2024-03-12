@@ -1,0 +1,15 @@
+body,html{
+    margin: 0;
+    padding: 0;
+}
+body{
+    height: 100%;
+}
+
+#whole-page{
+    display: flex;
+    align-items: center;
+}
+#advertise-div{
+    margin: auto;
+}
