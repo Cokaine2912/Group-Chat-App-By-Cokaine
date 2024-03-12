@@ -7,8 +7,14 @@ interface ReqBody {
     phone: number,
     password: string
 }
+interface LoginUserObj {
+    id : number,
+    password : string
+}
 
-function HASHING(password :string , saltrounds : number) {
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+function HASHING(password : string , saltrounds : number) {
     return new Promise((resolve, reject) => {
       bcrypt
         .hash(password, saltrounds)
@@ -20,7 +26,21 @@ function HASHING(password :string , saltrounds : number) {
         });
     });
   }
+
+function DEHASHING(password : string, hash : string) {
+    return new Promise((resolve, reject) => {
+      bcrypt
+        .compare(password, hash)
+        .then((op) => {
+          resolve(op);
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    });
+  }
   
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 exports.postNewUser = async (req: any, res: any) => {
     try {
@@ -41,6 +61,23 @@ exports.postNewUser = async (req: any, res: any) => {
         console.log(err)
         res.status(500).json({ error: err })
     }
+}
+
+exports.getUser = async (req:any,res:any)=>{
+    const email = req.body.email as string
+    const password = req.body.password
+    const user = await User.findOne({where : {email : email},attributes :["id","password"]}) as LoginUserObj | null
+    if (!user) {
+        return res.status(400).json({success : false , msg : "This Email ID is not registered"})
+    }
+    const hash = user.password
+    const approve = await DEHASHING(password,hash)
+    if (!approve) {
+        return res.status(400).json({success : false , msg : "Incorrect Password !"})
+    }
+
+    return res.status(200).json({success : true , msg : "Further App work in Progress !!"})
+
 }
 
 // exports.postValidateUser = async (req: any, res: any) => {

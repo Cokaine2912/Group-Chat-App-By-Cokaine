@@ -8,6 +8,11 @@ interface OBJ {
   password: string
 }
 
+interface LoginOBJ {
+  email : string,
+  password : string
+}
+
 async function SIGNUP(event: any) {
   event.preventDefault();
   const obj = {
@@ -20,5 +25,25 @@ async function SIGNUP(event: any) {
   const op = await axios.post("http://localhost:6969/adduser", obj as OBJ)
 
   alert(op.data.msg);
+
+}
+
+async function LOGIN(event: any) {
+  event.preventDefault();
+  const obj = {
+    email: event.target.email.value,
+    password: event.target.password.value
+  }
+
+  try {
+    const op = await axios.post("http://localhost:6969/userlogin", obj as LoginOBJ)
+    const res = op.data 
+    return alert(res.msg)
+
+  }
+  catch (err :any) {
+    // console.log(err.response)
+    return alert(err.response.data.msg)
+  }
 
 }

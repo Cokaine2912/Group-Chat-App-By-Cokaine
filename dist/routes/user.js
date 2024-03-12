@@ -13,4 +13,5 @@ router.get("/", (req, res) => {
     res.sendFile(filePath);
 });
 router.post("/adduser", userController.postNewUser);
+router.post("/userlogin", userController.getUser);
 module.exports = router;

@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const user_1 = require("../models/user");
 const bcrypt_1 = __importDefault(require("bcrypt"));
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function HASHING(password, saltrounds) {
     return new Promise((resolve, reject) => {
         bcrypt_1.default
@@ -26,6 +27,19 @@ function HASHING(password, saltrounds) {
         });
     });
 }
+function DEHASHING(password, hash) {
+    return new Promise((resolve, reject) => {
+        bcrypt_1.default
+            .compare(password, hash)
+            .then((op) => {
+            resolve(op);
+        })
+            .catch((err) => {
+            reject(err);
+        });
+    });
+}
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 exports.postNewUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         console.log("this route handler");
@@ -43,6 +57,20 @@ exports.postNewUser = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         console.log(err);
         res.status(500).json({ error: err });
     }
+});
+exports.getUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const email = req.body.email;
+    const password = req.body.password;
+    const user = yield user_1.User.findOne({ where: { email: email }, attributes: ["id", "password"] });
+    if (!user) {
+        return res.status(400).json({ success: false, msg: "This Email ID is not registered" });
+    }
+    const hash = user.password;
+    const approve = yield DEHASHING(password, hash);
+    if (!approve) {
+        return res.status(400).json({ success: false, msg: "Incorrect Password !" });
+    }
+    return res.status(200).json({ success: true, msg: "Further App work in Progress !!" });
 });
 // exports.postValidateUser = async (req: any, res: any) => {
 //     try {

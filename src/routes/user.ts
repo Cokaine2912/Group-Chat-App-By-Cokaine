@@ -17,4 +17,8 @@ router.get("/", (req: any, res: any) => {
 
 router.post("/adduser", userController.postNewUser)
 
+router.post("/userlogin",userController.getUser)
+
+
+
 module.exports = router;

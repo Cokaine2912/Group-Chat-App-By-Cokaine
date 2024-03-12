@@ -22,3 +22,21 @@ function SIGNUP(event) {
         alert(op.data.msg);
     });
 }
+function LOGIN(event) {
+    return __awaiter(this, void 0, void 0, function* () {
+        event.preventDefault();
+        const obj = {
+            email: event.target.email.value,
+            password: event.target.password.value
+        };
+        try {
+            const op = yield axios.post("http://localhost:6969/userlogin", obj);
+            const res = op.data;
+            return alert(res.msg);
+        }
+        catch (err) {
+            // console.log(err.response)
+            return alert(err.response.data.msg);
+        }
+    });
+}
