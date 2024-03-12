@@ -5,11 +5,7 @@ const router = express.Router();
 
 const userController = require("../controllers/user")
 
-router.get("/js/:file",(req:any,res:any)=>{
-    const file = req.params.file
-    const fp = path.join(__dirname,`../public/js/${file}`)
-    res.sendFile(fp)
-})
+
 
 
 

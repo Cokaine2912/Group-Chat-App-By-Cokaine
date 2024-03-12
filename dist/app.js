@@ -12,9 +12,14 @@ const database_1 = __importDefault(require("./util/database"));
 const User = require("./models/user");
 const userRoutes = require("./routes/user");
 const app = (0, express_1.default)();
-app.use((0, cors_1.default)());
+app.use((0, cors_1.default)({ origin: "http://127.0.0.1:3000" }));
 app.use(body_parser_1.default.json());
 app.use(userRoutes);
+app.get("/js/:file", (req, res) => {
+    const file = req.params.file;
+    const fp = path_1.default.join(__dirname, `./public/js/${file}`);
+    res.sendFile(fp);
+});
 app.get("/css/:file", (req, res) => {
     const file = req.params.file;
     const fp = path_1.default.join(__dirname, `./public/css/${file}`);
