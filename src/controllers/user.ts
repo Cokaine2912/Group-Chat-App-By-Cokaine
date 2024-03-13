@@ -1,5 +1,6 @@
 import { User } from "../models/user"
 import bcrypt from "bcrypt"
+import jwt from "jsonwebtoken"
 
 interface ReqBody {
     username: string,
@@ -9,6 +10,7 @@ interface ReqBody {
 }
 interface LoginUserObj {
     id : number,
+    username : string,
     password : string
 }
 
@@ -39,6 +41,15 @@ function DEHASHING(password : string, hash : string) {
         });
     });
   }
+
+const SecretKey = "bfishfldsbubifbo" // JWT key 
+
+function generateAccessToken(id : number, name : string) {
+  return jwt.sign(
+    { userId: id, name: name },
+    SecretKey
+  );
+}
   
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -66,7 +77,7 @@ exports.postNewUser = async (req: any, res: any) => {
 exports.getUser = async (req:any,res:any)=>{
     const email = req.body.email as string
     const password = req.body.password
-    const user = await User.findOne({where : {email : email},attributes :["id","password"]}) as LoginUserObj | null
+    const user = await User.findOne({where : {email : email},attributes :["id","username","password"]}) as LoginUserObj | null
     if (!user) {
         return res.status(400).json({success : false , msg : "This Email ID is not registered"})
     }
@@ -76,7 +87,9 @@ exports.getUser = async (req:any,res:any)=>{
         return res.status(400).json({success : false , msg : "Incorrect Password !"})
     }
 
-    return res.status(200).json({success : true , msg : "Further App work in Progress !!"})
+    const token = generateAccessToken(user.id , user.username )
+
+    return res.status(200).json({success : true , msg : "Further App work in Progress !!" ,token : token})
 
 }
 

@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const user_1 = require("../models/user");
 const bcrypt_1 = __importDefault(require("bcrypt"));
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function HASHING(password, saltrounds) {
     return new Promise((resolve, reject) => {
@@ -39,6 +40,10 @@ function DEHASHING(password, hash) {
         });
     });
 }
+const SecretKey = "bfishfldsbubifbo"; // JWT key 
+function generateAccessToken(id, name) {
+    return jsonwebtoken_1.default.sign({ userId: id, name: name }, SecretKey);
+}
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 exports.postNewUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -61,7 +66,7 @@ exports.postNewUser = (req, res) => __awaiter(void 0, void 0, void 0, function* 
 exports.getUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const email = req.body.email;
     const password = req.body.password;
-    const user = yield user_1.User.findOne({ where: { email: email }, attributes: ["id", "password"] });
+    const user = yield user_1.User.findOne({ where: { email: email }, attributes: ["id", "username", "password"] });
     if (!user) {
         return res.status(400).json({ success: false, msg: "This Email ID is not registered" });
     }
@@ -70,7 +75,8 @@ exports.getUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (!approve) {
         return res.status(400).json({ success: false, msg: "Incorrect Password !" });
     }
-    return res.status(200).json({ success: true, msg: "Further App work in Progress !!" });
+    const token = generateAccessToken(user.id, user.username);
+    return res.status(200).json({ success: true, msg: "Further App work in Progress !!", token: token });
 });
 // exports.postValidateUser = async (req: any, res: any) => {
 //     try {

@@ -32,6 +32,8 @@ function LOGIN(event) {
         try {
             const op = yield axios.post("http://localhost:6969/userlogin", obj);
             const res = op.data;
+            const token = res.token;
+            localStorage.setItem("token", token);
             return alert(res.msg);
         }
         catch (err) {
