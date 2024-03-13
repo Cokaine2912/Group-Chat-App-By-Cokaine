@@ -68,12 +68,12 @@ exports.getUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const password = req.body.password;
     const user = yield user_1.User.findOne({ where: { email: email }, attributes: ["id", "username", "password"] });
     if (!user) {
-        return res.status(400).json({ success: false, msg: "This Email ID is not registered" });
+        return res.status(404).json({ success: false, msg: "This Email ID is not registered" });
     }
     const hash = user.password;
     const approve = yield DEHASHING(password, hash);
     if (!approve) {
-        return res.status(400).json({ success: false, msg: "Incorrect Password !" });
+        return res.status(401).json({ success: false, msg: "Incorrect Password !" });
     }
     const token = generateAccessToken(user.id, user.username);
     return res.status(200).json({ success: true, msg: "Further App work in Progress !!", token: token });

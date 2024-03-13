@@ -79,12 +79,12 @@ exports.getUser = async (req:any,res:any)=>{
     const password = req.body.password
     const user = await User.findOne({where : {email : email},attributes :["id","username","password"]}) as LoginUserObj | null
     if (!user) {
-        return res.status(400).json({success : false , msg : "This Email ID is not registered"})
+        return res.status(404).json({success : false , msg : "This Email ID is not registered"})
     }
     const hash = user.password
     const approve = await DEHASHING(password,hash)
     if (!approve) {
-        return res.status(400).json({success : false , msg : "Incorrect Password !"})
+        return res.status(401).json({success : false , msg : "Incorrect Password !"})
     }
 
     const token = generateAccessToken(user.id , user.username )

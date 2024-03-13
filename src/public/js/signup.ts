@@ -9,8 +9,8 @@ interface OBJ {
 }
 
 interface LoginOBJ {
-  email : string,
-  password : string
+  email: string,
+  password: string
 }
 
 async function SIGNUP(event: any) {
@@ -37,13 +37,13 @@ async function LOGIN(event: any) {
 
   try {
     const op = await axios.post("http://localhost:6969/userlogin", obj as LoginOBJ)
-    const res = op.data 
+    const res = op.data
     const token = res.token
-    localStorage.setItem("token" , token)
-    return alert(res.msg)
+    localStorage.setItem("token", token)
+    await axios.get("http://localhost:6969/chat.html")
 
   }
-  catch (err :any) {
+  catch (err: any) {
     return alert(err.response.data.msg)
   }
 

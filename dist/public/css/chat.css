@@ -1,0 +1,86 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    font-family: candara;
+    height: 100%;
+}
+#wholepage-div {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+#main-heading-div {
+    background: linear-gradient(to right bottom, rgba(157, 234, 43, 0.804), #293f50b7);
+    padding: 10px;
+}
+
+#chats-div {
+    flex: 1;
+    overflow-y: auto; /* Allow chats to scroll if overflow */
+    padding: 10px;
+    background-color:khaki ;
+}
+
+#msg-write-div {
+    background: linear-gradient(to right bottom, rgba(157, 234, 43, 0.804), #293f50b7);
+    padding: 10px;
+    position: sticky;
+    bottom: 0;
+    width: 100%;
+}
+#msg-write-form{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#send-button{
+    margin-left : 7px;
+    background: gold ;
+    border: 1px solid gray;
+    border-radius: 40px;
+}
+#chat-msg {
+    width: 50%; /* Adjust width as needed */
+    resize: none;
+    border-radius: 7px;
+}
+
+#send-button {
+    width: 60px;
+    height: 30px;
+}
+ul{
+    list-style: none;
+}
+.chat-item{
+    margin : 0.5rem 0;
+    background: linear-gradient(to right bottom, whitesmoke, #0000000d);
+    box-shadow: 0 2px 4px black;
+    border-radius: 10px;
+    padding-left: 7px ;
+}
+
+
+
+
+/* Define scrollbar styles */
+/* For WebKit based browsers */
+::-webkit-scrollbar {
+    width: 5px; /* Width of the scrollbar */
+}
+
+/* Track styles */
+::-webkit-scrollbar-track {
+    background: #f1f1f1; /* Background color of the track */
+}
+
+/* Handle styles */
+::-webkit-scrollbar-thumb {
+    background: #888; /* Color of the scrollbar handle */
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.744); /* Color of the scrollbar handle on hover */
+}
