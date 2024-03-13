@@ -13,10 +13,6 @@ const GroupMessage = database_1.default.define("grpmsg", {
         allowNull: false,
         primaryKey: true,
     },
-    userId: {
-        type: sequelize_1.default.INTEGER,
-        allowNull: false,
-    },
     message: { type: sequelize_1.default.STRING, allowNull: false },
 });
 exports.GroupMessage = GroupMessage;

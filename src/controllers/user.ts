@@ -46,7 +46,7 @@ const SecretKey = "bfishfldsbubifbo" // JWT key
 
 function generateAccessToken(id : number, name : string) {
   return jwt.sign(
-    { userId: id, name: name },
+    { userId: id, username: name },
     SecretKey
   );
 }

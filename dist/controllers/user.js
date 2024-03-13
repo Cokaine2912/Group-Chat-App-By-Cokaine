@@ -42,7 +42,7 @@ function DEHASHING(password, hash) {
 }
 const SecretKey = "bfishfldsbubifbo"; // JWT key 
 function generateAccessToken(id, name) {
-    return jsonwebtoken_1.default.sign({ userId: id, name: name }, SecretKey);
+    return jsonwebtoken_1.default.sign({ userId: id, username: name }, SecretKey);
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 exports.postNewUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {

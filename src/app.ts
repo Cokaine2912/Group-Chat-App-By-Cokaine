@@ -4,21 +4,22 @@ import bodyParser from "body-parser";
 import path from "path";
 import sequelize from './util/database';
 
+import { User } from "./models/user";
 
-const User = require("./models/user")
+import { GroupMessage } from "./models/grpmsg";
+
 const userRoutes = require("./routes/user")
-
-const GroupMessage = require("./models/grpmsg")
+const grpRoutes = require("./routes/grpmsg")
 
 const app = express();
 
 app.use(cors(
   { origin: "http://127.0.0.1:3000", methods: ["GET", "POST"] }
 ));
-
 app.use(bodyParser.json());
 
 app.use(userRoutes);
+app.use("/grpmsg",grpRoutes);
 
 app.get("/:file",(req :any,res:any)=>{
   const file = req.params.file
@@ -40,9 +41,8 @@ app.get("/css/:file", (req: any, res: any) => {
 
 console.log("Start at : ", new Date().toLocaleTimeString())
 
-// User.hasMany(GroupMessage);
-// GroupMessage.belongsTo(User);
-
+User.hasMany(GroupMessage);
+GroupMessage.belongsTo(User);
 
 sequelize
   .sync()

@@ -8,13 +8,15 @@ const express_1 = __importDefault(require("express"));
 const body_parser_1 = __importDefault(require("body-parser"));
 const path_1 = __importDefault(require("path"));
 const database_1 = __importDefault(require("./util/database"));
-const User = require("./models/user");
+const user_1 = require("./models/user");
+const grpmsg_1 = require("./models/grpmsg");
 const userRoutes = require("./routes/user");
-const GroupMessage = require("./models/grpmsg");
+const grpRoutes = require("./routes/grpmsg");
 const app = (0, express_1.default)();
 app.use((0, cors_1.default)({ origin: "http://127.0.0.1:3000", methods: ["GET", "POST"] }));
 app.use(body_parser_1.default.json());
 app.use(userRoutes);
+app.use("/grpmsg", grpRoutes);
 app.get("/:file", (req, res) => {
     const file = req.params.file;
     const fp = path_1.default.join(__dirname, `./public/views/${file}`);
@@ -31,8 +33,8 @@ app.get("/css/:file", (req, res) => {
     res.sendFile(fp);
 });
 console.log("Start at : ", new Date().toLocaleTimeString());
-// User.hasMany(GroupMessage);
-// GroupMessage.belongsTo(User);
+user_1.User.hasMany(grpmsg_1.GroupMessage);
+grpmsg_1.GroupMessage.belongsTo(user_1.User);
 database_1.default
     .sync()
     .then(() => {
