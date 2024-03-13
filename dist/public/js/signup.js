@@ -34,7 +34,7 @@ function LOGIN(event) {
             const res = op.data;
             const token = res.token;
             localStorage.setItem("token", token);
-            yield axios.get("http://localhost:6969/chat.html");
+            window.location.href = "./chat.html";
         }
         catch (err) {
             return alert(err.response.data.msg);

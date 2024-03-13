@@ -4,9 +4,11 @@ import bodyParser from "body-parser";
 import path from "path";
 import sequelize from './util/database';
 
-// const sequelize = require("./util/database")
+
 const User = require("./models/user")
 const userRoutes = require("./routes/user")
+
+const GroupMessage = require("./models/grpmsg")
 
 const app = express();
 
@@ -37,6 +39,11 @@ app.get("/css/:file", (req: any, res: any) => {
 })
 
 console.log("Start at : ", new Date().toLocaleTimeString())
+
+// User.hasMany(GroupMessage);
+// GroupMessage.belongsTo(User);
+
+
 sequelize
   .sync()
   .then(() => {

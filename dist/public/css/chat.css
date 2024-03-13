@@ -8,6 +8,7 @@ body, html {
     display: flex;
     flex-direction: column;
     height: 100%;
+    
 }
 
 #main-heading-div {
@@ -18,16 +19,20 @@ body, html {
 #chats-div {
     flex: 1;
     overflow-y: auto; /* Allow chats to scroll if overflow */
-    padding: 10px;
-    background-color:khaki ;
+    /* padding: 10px; */
+    background-size:cover ; /* Cover the entire background */
+    background-image: url('../../images/OIG3.jpeg');
+    background-color: rgba(255, 255, 255, 0.5);
+    background-blend-mode: overlay;
 }
 
+
 #msg-write-div {
-    background: linear-gradient(to right bottom, rgba(157, 234, 43, 0.804), #293f50b7);
     padding: 10px;
     position: sticky;
     bottom: 0;
     width: 100%;
+    background: linear-gradient(to right bottom, rgba(157, 234, 43, 0.804), #293f50b7);
 }
 #msg-write-form{
     display: flex;
@@ -36,12 +41,12 @@ body, html {
 }
 #send-button{
     margin-left : 7px;
-    background: gold ;
-    border: 1px solid gray;
-    border-radius: 40px;
+    background: rgba(255, 217, 0, 0.799) ;
+    border: 0;
+    border-radius: 30px;
 }
 #chat-msg {
-    width: 50%; /* Adjust width as needed */
+    width: 50%; 
     resize: none;
     border-radius: 7px;
 }
@@ -50,16 +55,42 @@ body, html {
     width: 60px;
     height: 30px;
 }
+
+#send-button:hover {
+    box-shadow: 0px 0px 5px 0px black;
+    transform: scale(1.05);
+}
+
+
 ul{
     list-style: none;
+    padding :0px 10px ;
 }
 .chat-item{
     margin : 0.5rem 0;
-    background: linear-gradient(to right bottom, whitesmoke, #0000000d);
+    /* background: linear-gradient(to right bottom, rgb(255, 255, 255), #0404042e); */
+    background-color: rgba(0, 0, 0, 0.795);
     box-shadow: 0 2px 4px black;
     border-radius: 10px;
     padding-left: 7px ;
+    color: white;
 }
+.ABC-msg{
+    font-weight: 600;
+    color: orange;
+}
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

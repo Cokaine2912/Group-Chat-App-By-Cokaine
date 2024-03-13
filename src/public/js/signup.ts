@@ -40,8 +40,8 @@ async function LOGIN(event: any) {
     const res = op.data
     const token = res.token
     localStorage.setItem("token", token)
-    await axios.get("http://localhost:6969/chat.html")
-
+    window.location.href = "./chat.html";
+    
   }
   catch (err: any) {
     return alert(err.response.data.msg)

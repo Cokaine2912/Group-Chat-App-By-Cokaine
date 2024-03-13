@@ -1,26 +1,26 @@
-import Sequilize from "sequelize";
+import Sequelize from "sequelize";
 
 import sequelize  from '../util/database';
 
 const User = sequelize.define("user", {
   id: {
-    type: Sequilize.INTEGER,
+    type: Sequelize.INTEGER,
     autoIncrement: true,
     allowNull: false,
     primaryKey: true,
   },
-  username: { type: Sequilize.STRING, allowNull: false },
+  username: { type: Sequelize.STRING, allowNull: false },
   email: {
-    type: Sequilize.STRING,
+    type: Sequelize.STRING,
     allowNull: false,
     unique: true,
   },
   phone: {
-    type: Sequilize.STRING,
+    type: Sequelize.STRING,
     allowNull: false,
   },
   password: {
-    type: Sequilize.STRING,
+    type: Sequelize.STRING,
     allowNull: false,
   },
 });
