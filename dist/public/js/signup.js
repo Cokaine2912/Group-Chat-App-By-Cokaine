@@ -35,7 +35,6 @@ function LOGIN(event) {
             return alert(res.msg);
         }
         catch (err) {
-            // console.log(err.response)
             return alert(err.response.data.msg);
         }
     });

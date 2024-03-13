@@ -15,6 +15,11 @@ const app = (0, express_1.default)();
 app.use((0, cors_1.default)({ origin: "http://127.0.0.1:3000", methods: ["GET", "POST"] }));
 app.use(body_parser_1.default.json());
 app.use(userRoutes);
+app.get("/:file", (req, res) => {
+    const file = req.params.file;
+    const fp = path_1.default.join(__dirname, `./public/views/${file}`);
+    res.sendFile(fp);
+});
 app.get("/js/:file", (req, res) => {
     const file = req.params.file;
     const fp = path_1.default.join(__dirname, `./public/js/${file}`);

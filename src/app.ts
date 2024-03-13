@@ -18,7 +18,12 @@ app.use(bodyParser.json());
 
 app.use(userRoutes);
 
+app.get("/:file",(req :any,res:any)=>{
+  const file = req.params.file
+  const fp = path.join(__dirname,`./public/views/${file}`)
+  res.sendFile(fp)
 
+})
 app.get("/js/:file", (req: any, res: any) => {
   const file = req.params.file
   const fp = path.join(__dirname, `./public/js/${file}`)

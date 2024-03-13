@@ -8,7 +8,7 @@ const path_1 = __importDefault(require("path"));
 const router = express.Router();
 const userController = require("../controllers/user");
 router.get("/", (req, res) => {
-    const filePath = path_1.default.join(__dirname, "../public/views/signup.html");
+    const filePath = path_1.default.join(__dirname, "../public/views/login.html");
     console.log(filePath);
     res.sendFile(filePath);
 });

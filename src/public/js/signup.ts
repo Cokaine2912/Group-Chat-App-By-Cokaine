@@ -42,7 +42,6 @@ async function LOGIN(event: any) {
 
   }
   catch (err :any) {
-    // console.log(err.response)
     return alert(err.response.data.msg)
   }
 

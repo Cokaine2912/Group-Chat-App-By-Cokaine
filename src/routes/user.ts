@@ -10,7 +10,7 @@ const userController = require("../controllers/user")
 
 
 router.get("/", (req: any, res: any) => {
-    const filePath = path.join(__dirname, "../public/views/signup.html");
+    const filePath = path.join(__dirname, "../public/views/login.html");
     console.log(filePath)
     res.sendFile(filePath)
 })
