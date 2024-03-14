@@ -10,7 +10,7 @@ interface PARSED {
 }
 
 exports.UserAuthentication = (req : any ,res : any , next : Function) => {
-    const token = req.body.token 
+    const token = req.headers.token 
     const parsed = jwt.verify(token,SecretKey) as PARSED
     req.headers.userOBJ = parsed
     next()

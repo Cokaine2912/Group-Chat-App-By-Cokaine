@@ -7,6 +7,8 @@ const MsgController = require("../controllers/msg")
 
 const router = express.Router();
 
+router.get("/allmsg",Middleware.UserAuthentication, MsgController.getAllMessages)
+
 router.post("/postmsg", Middleware.UserAuthentication,MsgController.postGrpMessage)
 
 

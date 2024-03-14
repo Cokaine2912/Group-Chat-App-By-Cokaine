@@ -9,6 +9,7 @@ const GroupMessage = sequelize.define("grpmsg", {
     allowNull: false,
     primaryKey: true,
   },
+  sender :{type : Sequelize.STRING , allowNull : false},
   message: { type: Sequelize.STRING, allowNull: false },
 });
 

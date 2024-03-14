@@ -17,7 +17,7 @@ app.use((0, cors_1.default)({ origin: "http://127.0.0.1:3000", methods: ["GET", 
 app.use(body_parser_1.default.json());
 app.use(userRoutes);
 app.use("/grpmsg", grpRoutes);
-app.get("/:file", (req, res) => {
+app.get("/view/:file", (req, res) => {
     const file = req.params.file;
     const fp = path_1.default.join(__dirname, `./public/views/${file}`);
     res.sendFile(fp);
@@ -30,6 +30,15 @@ app.get("/js/:file", (req, res) => {
 app.get("/css/:file", (req, res) => {
     const file = req.params.file;
     const fp = path_1.default.join(__dirname, `./public/css/${file}`);
+    res.sendFile(fp);
+});
+app.get("/images/:image", (req, res) => {
+    const image = req.params.image;
+    const fp = path_1.default.join(__dirname, `./images/${image}`);
+    res.sendFile(fp);
+});
+app.get("/favicon.ico", (req, res) => {
+    const fp = path_1.default.join(__dirname, "./favicon.ico");
     res.sendFile(fp);
 });
 console.log("Start at : ", new Date().toLocaleTimeString());

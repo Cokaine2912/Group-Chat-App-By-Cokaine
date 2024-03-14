@@ -18,9 +18,8 @@ body, html {
 
 #chats-div {
     flex: 1;
-    overflow-y: auto; /* Allow chats to scroll if overflow */
-    /* padding: 10px; */
-    background-size:cover ; /* Cover the entire background */
+    overflow-y: auto; 
+    background-size:cover ; 
     background-image: url('../../images/OIG3.jpeg');
     background-color: rgba(255, 255, 255, 0.5);
     background-blend-mode: overlay;
@@ -49,6 +48,7 @@ body, html {
     width: 50%; 
     resize: none;
     border-radius: 7px;
+    padding : 5px;
 }
 
 #send-button {

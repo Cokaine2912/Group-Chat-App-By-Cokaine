@@ -21,7 +21,7 @@ app.use(bodyParser.json());
 app.use(userRoutes);
 app.use("/grpmsg",grpRoutes);
 
-app.get("/:file",(req :any,res:any)=>{
+app.get("/view/:file",(req :any,res:any)=>{
   const file = req.params.file
   const fp = path.join(__dirname,`./public/views/${file}`)
   res.sendFile(fp)
@@ -36,6 +36,17 @@ app.get("/js/:file", (req: any, res: any) => {
 app.get("/css/:file", (req: any, res: any) => {
   const file = req.params.file
   const fp = path.join(__dirname, `./public/css/${file}`)
+  res.sendFile(fp)
+})
+
+app.get("/images/:image",(req : any,res : any)=>{
+  const image = req.params.image
+  const fp = path.join(__dirname,`./images/${image}`)
+  res.sendFile(fp)
+})
+
+app.get("/favicon.ico",(req : any, res : any)=>{
+  const fp = path.join(__dirname,"./favicon.ico")
   res.sendFile(fp)
 })
 

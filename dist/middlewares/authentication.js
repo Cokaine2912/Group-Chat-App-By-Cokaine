@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const SecretKey = "bfishfldsbubifbo"; // JWT key 
 exports.UserAuthentication = (req, res, next) => {
-    const token = req.body.token;
+    const token = req.headers.token;
     const parsed = jsonwebtoken_1.default.verify(token, SecretKey);
     req.headers.userOBJ = parsed;
     next();

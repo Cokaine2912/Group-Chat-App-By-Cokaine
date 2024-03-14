@@ -15,6 +15,10 @@ exports.postGrpMessage = (req, res) => __awaiter(void 0, void 0, void 0, functio
     const userId = userOBJ.userId;
     const username = userOBJ.username;
     const msg = req.body.msg;
-    const op = yield grpmsg_1.GroupMessage.create({ userId: userId, message: msg });
+    const op = yield grpmsg_1.GroupMessage.create({ userId: userId, sender: username, message: msg });
     return res.json({ sender: username, message: op.message, time: op.createdAt });
+});
+exports.getAllMessages = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const allMsgs = yield grpmsg_1.GroupMessage.findAll();
+    return res.json({ success: true, AllMessages: allMsgs });
 });
