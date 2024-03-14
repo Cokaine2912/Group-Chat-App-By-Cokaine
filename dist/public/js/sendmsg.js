@@ -38,6 +38,13 @@ function SENDMSG(event) {
         const obj = { msg: msg };
         const op = yield axios.post("http://localhost:6969/grpmsg/postmsg", obj, { headers: { token: token } });
         chatDisplay(op.data);
+        const scrollableDiv = document.getElementById('chats-div');
+        scrollableDiv.scrollTo({
+            top: scrollableDiv.scrollHeight,
+            behavior: 'smooth'
+        });
+        const msgBox = document.getElementById("chat-msg");
+        msgBox.value = "";
         // const message = op.data.message
         // const sender = op.data.sender
         // const time = op.data.time

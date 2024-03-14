@@ -1,22 +1,22 @@
-interface DISPLAYOBJ{
-    message : string,
-    sender : string,
-    time : any
+interface DISPLAYOBJ {
+    message: string,
+    sender: string,
+    time: any
 }
 
 async function ONLOAD() {
     const token = localStorage.getItem("token")
-    const all = await axios.get("http://localhost:6969/grpmsg/allmsg",{headers : {token : token}})
+    const all = await axios.get("http://localhost:6969/grpmsg/allmsg", { headers: { token: token } })
 
     const AllMessages: Array<object> = all.data.AllMessages
-   
-    for (let i = 0 ; i < AllMessages.length ; i++){
+
+    for (let i = 0; i < AllMessages.length; i++) {
         chatDisplay(AllMessages[i] as DISPLAYOBJ)
     }
 }
 ONLOAD()
 
-function chatDisplay(obj : DISPLAYOBJ) {
+function chatDisplay(obj: DISPLAYOBJ) {
     const sender = obj.sender
     const message = obj.message
     const time = obj.time
@@ -34,11 +34,18 @@ function chatDisplay(obj : DISPLAYOBJ) {
 
 async function SENDMSG(event: any) {
     event.preventDefault()
-    const msg : string = event.target.chatmsg.value ;
+    const msg: string = event.target.chatmsg.value;
     const token = localStorage.getItem("token")
-    const obj = {msg : msg}
-    const op = await axios.post("http://localhost:6969/grpmsg/postmsg",obj,{headers : {token : token}})
+    const obj = { msg: msg }
+    const op = await axios.post("http://localhost:6969/grpmsg/postmsg", obj, { headers: { token: token } })
     chatDisplay(op.data)
+    const scrollableDiv = document.getElementById('chats-div') as HTMLDivElement
+    scrollableDiv.scrollTo({
+        top: scrollableDiv.scrollHeight,
+        behavior: 'smooth'
+    });
+    const msgBox = document.getElementById("chat-msg") as HTMLTextAreaElement
+    msgBox.value = ""
     // const message = op.data.message
     // const sender = op.data.sender
     // const time = op.data.time
