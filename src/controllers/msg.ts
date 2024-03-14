@@ -10,7 +10,7 @@ exports.postGrpMessage = async (req : any ,res : any) => {
     const username = userOBJ.username
     const msg = req.body.msg
     const op = await GroupMessage.create({userId : userId , sender : username,message : msg}) as any
-    return res.json({sender : username,message : op.message, time : op.createdAt})
+    return res.json({sender : username,message : op.message, createdAt : op.createdAt})
 }
 
 exports.getAllMessages = async (req : any , res : any) => {

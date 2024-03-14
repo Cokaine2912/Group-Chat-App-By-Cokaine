@@ -76,7 +76,7 @@ exports.getUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         return res.status(401).json({ success: false, msg: "Incorrect Password !" });
     }
     const token = generateAccessToken(user.id, user.username);
-    return res.status(200).json({ success: true, msg: "Further App work in Progress !!", token: token });
+    return res.status(200).json({ success: true, msg: "Further App work in Progress !!", token: token, username: user.username });
 });
 // exports.postValidateUser = async (req: any, res: any) => {
 //     try {

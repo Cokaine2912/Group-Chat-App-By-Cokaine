@@ -89,7 +89,7 @@ exports.getUser = async (req:any,res:any)=>{
 
     const token = generateAccessToken(user.id , user.username )
 
-    return res.status(200).json({success : true , msg : "Further App work in Progress !!" ,token : token})
+    return res.status(200).json({success : true , msg : "Further App work in Progress !!" ,token : token , username : user.username})
 
 }
 

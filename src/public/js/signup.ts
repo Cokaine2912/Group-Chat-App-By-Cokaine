@@ -39,6 +39,8 @@ async function LOGIN(event: any) {
     const op = await axios.post("http://localhost:6969/userlogin", obj as LoginOBJ)
     const res = op.data
     const token = res.token
+    const ChatUser = res.username
+    localStorage.setItem("ChatUser" , ChatUser)
     localStorage.setItem("token", token)
     window.location.href = "./chat.html";
     

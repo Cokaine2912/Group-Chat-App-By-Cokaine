@@ -65,19 +65,26 @@ body, html {
 ul{
     list-style: none;
     padding :0px 10px ;
+    width: 100%;
 }
 .chat-item{
-    margin : 0.5rem 0;
+    margin : 1.5% 0;
     /* background: linear-gradient(to right bottom, rgb(255, 255, 255), #0404042e); */
     background-color: rgba(0, 0, 0, 0.795);
     box-shadow: 0 2px 4px black;
     border-radius: 10px;
     padding-left: 7px ;
     color: white;
+    width: 80%;
 }
 .ABC-msg{
     font-weight: 600;
     color: orange;
+}
+.msg-time-div{
+    margin-right : 10px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 12px;
 }
 
 

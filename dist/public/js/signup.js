@@ -33,6 +33,8 @@ function LOGIN(event) {
             const op = yield axios.post("http://localhost:6969/userlogin", obj);
             const res = op.data;
             const token = res.token;
+            const ChatUser = res.username;
+            localStorage.setItem("ChatUser", ChatUser);
             localStorage.setItem("token", token);
             window.location.href = "./chat.html";
         }
