@@ -1,3 +1,13 @@
+const token = localStorage.getItem("token")
+if (!token) {
+    window.location.href = "./login.html"
+}
+else {
+    setTimeout(ONLOAD, 0)
+    setInterval(constantAPIcalls,3000)
+}
+
+
 interface DISPLAYOBJ {
     message: string,
     sender: string,
@@ -18,15 +28,23 @@ let lastMsgID
 async function ONLOAD() {
     const chatList = document.getElementById("all-chats-list") as HTMLUListElement
     chatList.innerHTML = ""
-    const token = localStorage.getItem("token")
-    const all = await axios.get("http://localhost:6969/grpmsg/allmsg", { headers: { token: token } })
-
-    const AllMessages: Array<ARRAYOBJ> = all.data.AllMessages
     
-    localStorage.setItem("chatHistory" , JSON.stringify(AllMessages))
+    let History = localStorage.getItem("chatHistory")
+    let AllMessages: Array<ARRAYOBJ>
+    if  (History) {
+        AllMessages = JSON.parse(History)
+    }
+
+    else {
+        const all = await axios.get("http://localhost:6969/grpmsg/allmsg", { headers: { token: token } })
+        AllMessages = all.data.AllMessages
+        localStorage.setItem("chatHistory" , JSON.stringify(AllMessages))
+    }
 
     lastMsgID = AllMessages[AllMessages.length - 1].id
-    console.log(lastMsgID)
+
+    localStorage.setItem("lastMsgID" , `${lastMsgID}` )
+
     for (let i = 0; i < AllMessages.length; i++) {
         chatDisplay(AllMessages[i] as DISPLAYOBJ)
         // ScrollDown()
@@ -36,10 +54,25 @@ async function ONLOAD() {
 
     scrollableDiv.scrollTop = scrollableDiv.scrollHeight;
 }
-setTimeout(ONLOAD, 0)
-// setInterval(ONLOAD, 10000)
-// ONLOAD()
+
 async function constantAPIcalls(){
+    const lastMsgID = localStorage.getItem("lastMsgID")
+    const op = await axios.get(`http://localhost:6969/grpmsg/getlatest/${lastMsgID}`,{ headers: { token: token} })
+    console.log(op.data)
+
+    const LatestMessages = op.data.LatestMessages
+
+    if (LatestMessages.length > 0){
+        for (let i = 0 ; i < LatestMessages.length ; i++){
+            chatDisplay(LatestMessages[i])
+            ScrollDown()
+            
+        }
+        console.log(LatestMessages[LatestMessages.length - 1])
+        localStorage.setItem("lastMsgID",`${LatestMessages[LatestMessages.length - 1].id}`)
+    }
+
+    
 
 }
 
@@ -88,7 +121,10 @@ async function SENDMSG(event: any) {
     const token = localStorage.getItem("token")
     const obj = { msg: msg }
     const op = await axios.post("http://localhost:6969/grpmsg/postmsg", obj, { headers: { token: token } })
-    
+    let lastMsgID : any = localStorage.getItem("lastMsgID") 
+    let latest = +lastMsgID + 1
+    localStorage.setItem("lastMsgID" , `${latest}` )
+
     chatDisplay(op.data)
     ScrollDown()
     const msgBox = document.getElementById("chat-msg") as HTMLTextAreaElement

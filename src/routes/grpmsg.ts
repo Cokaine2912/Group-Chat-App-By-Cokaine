@@ -9,6 +9,8 @@ const router = express.Router();
 
 router.get("/allmsg",Middleware.UserAuthentication, MsgController.getAllMessages)
 
+router.get("/getlatest/:lastMsgID",Middleware.UserAuthentication,MsgController.getLatestMessages)
+
 router.post("/postmsg", Middleware.UserAuthentication,MsgController.postGrpMessage)
 
 
