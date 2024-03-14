@@ -10,24 +10,40 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 function ONLOAD() {
     return __awaiter(this, void 0, void 0, function* () {
+        const chatList = document.getElementById("all-chats-list");
+        chatList.innerHTML = "";
         const token = localStorage.getItem("token");
         const all = yield axios.get("http://localhost:6969/grpmsg/allmsg", { headers: { token: token } });
         const AllMessages = all.data.AllMessages;
         for (let i = 0; i < AllMessages.length; i++) {
             chatDisplay(AllMessages[i]);
+            // ScrollDown()
         }
+        const scrollableDiv = document.getElementById('chats-div');
+        scrollableDiv.scrollTop = scrollableDiv.scrollHeight;
     });
 }
-ONLOAD();
+setTimeout(ONLOAD, 0);
+setInterval(ONLOAD, 10000);
+// ONLOAD()
+function ScrollDown() {
+    const scrollableDiv = document.getElementById('chats-div');
+    scrollableDiv.scrollTo({
+        top: scrollableDiv.scrollHeight,
+        behavior: 'smooth'
+    });
+}
 function chatDisplay(obj) {
     const sender = obj.sender;
     const message = obj.message;
-    const time = obj.time;
+    const time = obj.createdAt;
+    const date = new Date(time);
+    const dateTime = date.toLocaleTimeString().replace('Z', '');
     const chatList = document.getElementById("all-chats-list");
     const newChatItem = document.createElement("li");
     newChatItem.className = "chat-item";
     newChatItem.innerHTML = `<label for="" class="${sender}-msg">${sender} :</label>
-    <p>${message}</p><p>${new Date().toLocaleTimeString()}</p>`;
+    <p>${message}</p><p>${dateTime}</p>`;
     chatList === null || chatList === void 0 ? void 0 : chatList.appendChild(newChatItem);
 }
 function SENDMSG(event) {
@@ -38,23 +54,8 @@ function SENDMSG(event) {
         const obj = { msg: msg };
         const op = yield axios.post("http://localhost:6969/grpmsg/postmsg", obj, { headers: { token: token } });
         chatDisplay(op.data);
-        const scrollableDiv = document.getElementById('chats-div');
-        scrollableDiv.scrollTo({
-            top: scrollableDiv.scrollHeight,
-            behavior: 'smooth'
-        });
+        ScrollDown();
         const msgBox = document.getElementById("chat-msg");
         msgBox.value = "";
-        // const message = op.data.message
-        // const sender = op.data.sender
-        // const time = op.data.time
-        // console.log("Message ready for DOM M",sender,message,time)
-        // /// DOM Manipulations accordingly
-        // const chatList = document.getElementById("all-chats-list")
-        // const newChatItem = document.createElement("li")
-        // newChatItem.className = "chat-item"
-        // newChatItem.innerHTML = `<label for="" class="${sender}-msg">${sender} :</label>
-        // <p>${message}</p><p>${new Date().toLocaleTimeString()}</p>`
-        // chatList?.appendChild(newChatItem)
     });
 }
