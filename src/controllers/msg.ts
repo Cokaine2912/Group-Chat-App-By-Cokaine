@@ -12,7 +12,7 @@ exports.postGrpMessage = async (req : any ,res : any) => {
     const username = userOBJ.username
     const msg = req.body.msg
     const op = await GroupMessage.create({userId : userId , sender : username,message : msg}) as any
-    return res.json({msgId : op.id , sender : username,message : op.message, createdAt : op.createdAt})
+    return res.json({id : op.id , sender : username,message : op.message, createdAt : op.createdAt})
 }
 
 exports.getAllMessages = async (req : any , res : any) => {
@@ -30,11 +30,11 @@ exports.getLatestMessages = async (req : any , res : any) =>{
         }
       });
 
-    if (allMsgs){
-        return res.status(200).json({success : true , LatestMessages : allMsgs })
+    if (allMsgs.length > 0){
+        return res.status(200).json({success : true , LatestMessages : allMsgs , status : "lagging" })
     }  
     else {
-        return
+        return res.status(200).json({success : true , LatestMessages : allMsgs , status : "up-to-date"})
     }
     
       

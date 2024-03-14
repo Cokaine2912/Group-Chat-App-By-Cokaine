@@ -4,7 +4,7 @@ if (!token) {
 }
 else {
     setTimeout(ONLOAD, 0)
-    setInterval(constantAPIcalls,3000)
+    setInterval(constantAPIcalls,2000)
 }
 
 
@@ -23,7 +23,7 @@ interface ARRAYOBJ {
     userId : number
 }
 
-let lastMsgID 
+let lastMsgID = 0
 
 async function ONLOAD() {
     const chatList = document.getElementById("all-chats-list") as HTMLUListElement
@@ -47,7 +47,7 @@ async function ONLOAD() {
 
     for (let i = 0; i < AllMessages.length; i++) {
         chatDisplay(AllMessages[i] as DISPLAYOBJ)
-        // ScrollDown()
+        
     }
 
     const scrollableDiv = document.getElementById('chats-div') as HTMLDivElement
@@ -58,8 +58,8 @@ async function ONLOAD() {
 async function constantAPIcalls(){
     const lastMsgID = localStorage.getItem("lastMsgID")
     const op = await axios.get(`http://localhost:6969/grpmsg/getlatest/${lastMsgID}`,{ headers: { token: token} })
-    console.log(op.data)
-
+    const status = op.data.status
+    console.log(status)
     const LatestMessages = op.data.LatestMessages
 
     if (LatestMessages.length > 0){
@@ -70,6 +70,13 @@ async function constantAPIcalls(){
         }
         console.log(LatestMessages[LatestMessages.length - 1])
         localStorage.setItem("lastMsgID",`${LatestMessages[LatestMessages.length - 1].id}`)
+        const History = localStorage.getItem("chatHistory") 
+        if (History) {
+            const chatHistory = JSON.parse(History)
+            let newArray = chatHistory.concat(LatestMessages)
+            localStorage.setItem("chatHistory",JSON.stringify(newArray))
+        }
+        
     }
 
     
@@ -124,6 +131,15 @@ async function SENDMSG(event: any) {
     let lastMsgID : any = localStorage.getItem("lastMsgID") 
     let latest = +lastMsgID + 1
     localStorage.setItem("lastMsgID" , `${latest}` )
+
+    const History = localStorage.getItem("chatHistory")
+    if (History) {
+        const chatHistory = JSON.parse(History)
+        chatHistory.push(op.data)
+        localStorage.setItem("chatHistory",JSON.stringify(chatHistory))
+    }
+    
+
 
     chatDisplay(op.data)
     ScrollDown()

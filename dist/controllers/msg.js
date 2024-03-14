@@ -17,7 +17,7 @@ exports.postGrpMessage = (req, res) => __awaiter(void 0, void 0, void 0, functio
     const username = userOBJ.username;
     const msg = req.body.msg;
     const op = yield grpmsg_1.GroupMessage.create({ userId: userId, sender: username, message: msg });
-    return res.json({ msgId: op.id, sender: username, message: op.message, createdAt: op.createdAt });
+    return res.json({ id: op.id, sender: username, message: op.message, createdAt: op.createdAt });
 });
 exports.getAllMessages = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const allMsgs = yield grpmsg_1.GroupMessage.findAll();
@@ -32,10 +32,10 @@ exports.getLatestMessages = (req, res) => __awaiter(void 0, void 0, void 0, func
             }
         }
     });
-    if (allMsgs) {
-        return res.status(200).json({ success: true, LatestMessages: allMsgs });
+    if (allMsgs.length > 0) {
+        return res.status(200).json({ success: true, LatestMessages: allMsgs, status: "lagging" });
     }
     else {
-        return;
+        return res.status(200).json({ success: true, LatestMessages: allMsgs, status: "up-to-date" });
     }
 });
