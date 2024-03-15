@@ -16,7 +16,9 @@ exports.postGrpMessage = async (req : any ,res : any) => {
 }
 
 exports.getAllMessages = async (req : any , res : any) => {
-    const allMsgs = await GroupMessage.findAll()
+    const allMsgs = await GroupMessage.findAll({
+      
+    })
     return res.json({success : true , AllMessages : allMsgs })
 }
 exports.getLatestMessages = async (req : any , res : any) =>{

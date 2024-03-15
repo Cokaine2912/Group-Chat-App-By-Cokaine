@@ -9,6 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 const token = localStorage.getItem("token");
+const capacity = 30;
 if (!token) {
     window.location.href = "./login.html";
 }
@@ -29,7 +30,7 @@ function ONLOAD() {
         else {
             const all = yield axios.get("http://localhost:6969/grpmsg/allmsg", { headers: { token: token } });
             AllMessages = all.data.AllMessages;
-            localStorage.setItem("chatHistory", JSON.stringify(AllMessages));
+            localStorage.setItem("chatHistory", JSON.stringify(AllMessages.slice(-30)));
         }
         lastMsgID = AllMessages[AllMessages.length - 1].id;
         localStorage.setItem("lastMsgID", `${lastMsgID}`);
@@ -48,6 +49,8 @@ function constantAPIcalls() {
         console.log(status);
         const LatestMessages = op.data.LatestMessages;
         if (LatestMessages.length > 0) {
+            const NumberOfLatest = LatestMessages.length;
+            const toKeep = capacity - NumberOfLatest;
             for (let i = 0; i < LatestMessages.length; i++) {
                 chatDisplay(LatestMessages[i]);
                 ScrollDown();
@@ -56,7 +59,8 @@ function constantAPIcalls() {
             localStorage.setItem("lastMsgID", `${LatestMessages[LatestMessages.length - 1].id}`);
             const History = localStorage.getItem("chatHistory");
             if (History) {
-                const chatHistory = JSON.parse(History);
+                let chatHistory = JSON.parse(History);
+                chatHistory = chatHistory.slice(-1 * (capacity - NumberOfLatest));
                 let newArray = chatHistory.concat(LatestMessages);
                 localStorage.setItem("chatHistory", JSON.stringify(newArray));
             }
@@ -106,7 +110,8 @@ function SENDMSG(event) {
         localStorage.setItem("lastMsgID", `${latest}`);
         const History = localStorage.getItem("chatHistory");
         if (History) {
-            const chatHistory = JSON.parse(History);
+            let chatHistory = JSON.parse(History);
+            chatHistory = chatHistory.slice(-1 * (capacity - 1));
             chatHistory.push(op.data);
             localStorage.setItem("chatHistory", JSON.stringify(chatHistory));
         }

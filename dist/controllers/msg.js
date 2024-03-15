@@ -20,7 +20,7 @@ exports.postGrpMessage = (req, res) => __awaiter(void 0, void 0, void 0, functio
     return res.json({ id: op.id, sender: username, message: op.message, createdAt: op.createdAt });
 });
 exports.getAllMessages = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const allMsgs = yield grpmsg_1.GroupMessage.findAll();
+    const allMsgs = yield grpmsg_1.GroupMessage.findAll({});
     return res.json({ success: true, AllMessages: allMsgs });
 });
 exports.getLatestMessages = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
