@@ -26,7 +26,6 @@ exports.postAddMember = async (req: any, res: any) => {
   const AddingName = parsed.username;
   const GroupName = req.body.GroupName;
   const NewMemberEmail = req.body.NewMemberEmail;
-  console.log("Inside the postAddMember !!! ##########");
 
   try {
     let GROUP: any = await Group.findOne({ where: { groupName: GroupName } });
@@ -48,7 +47,30 @@ exports.postAddMember = async (req: any, res: any) => {
       where: { email: NewMemberEmail },
     });
 
-    /// check for the member already exists
+    if (!NewMemberToAdd) {
+      return res
+        .status(200)
+        .json({
+          success: true,
+          msg: "This email isn't registered, Plz invite to sign up",
+        });
+    } // Check for the Member is present on the platform or not
+
+    const AlreadyExist = await Membership.findOne({
+      where: {
+        groupName: GroupName,
+        userId: NewMemberToAdd.id,
+      },
+    });
+
+    if (AlreadyExist) {
+      return res
+        .status(200)
+        .json({
+          success: true,
+          msg: "This email is already a part of the group !",
+        });
+    } /// check for the member if already exists in the group
 
     const NewMshipOBJ = {
       groupName: GROUP.groupName,
@@ -59,7 +81,13 @@ exports.postAddMember = async (req: any, res: any) => {
 
     const NewMship = await Membership.create(NewMshipOBJ);
 
-    return res.status(200).json({ success: true, NewMship: NewMship });
+    return res
+      .status(201)
+      .json({
+        success: true,
+        NewMship: NewMship,
+        msg: "New Member Added Successfully !",
+      });
   } catch (err) {
     console.log(err);
     return res

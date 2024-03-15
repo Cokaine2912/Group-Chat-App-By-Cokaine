@@ -7,6 +7,9 @@ const MsgController = require("../controllers/msg")
 
 const router = express.Router();
 
+
+// router.get("/:GroupToShow",Middleware.UserAuthentication,MsgController.getAllForGroup)
+
 router.get("/allmsg",Middleware.UserAuthentication, MsgController.getAllMessages)
 
 router.get("/getlatest/:lastMsgID",Middleware.UserAuthentication,MsgController.getLatestMessages)

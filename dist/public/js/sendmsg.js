@@ -9,17 +9,21 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 const token = localStorage.getItem("token");
+const currentGroup = localStorage.getItem("currentGroup");
 const capacity = 30;
 if (!token) {
     window.location.href = "./login.html";
 }
 else {
     setTimeout(ONLOAD, 0);
-    setInterval(constantAPIcalls, 30000);
+    setInterval(constantAPIcalls, 5000);
 }
 let lastMsgID = 0;
 function ONLOAD() {
     return __awaiter(this, void 0, void 0, function* () {
+        if (!currentGroup) {
+            window.location.href = "./home.html";
+        }
         const chatList = document.getElementById("all-chats-list");
         chatList.innerHTML = "";
         let History = localStorage.getItem("chatHistory");
@@ -29,7 +33,7 @@ function ONLOAD() {
         }
         else {
             const all = yield axios.get("http://localhost:6969/grpmsg/allmsg", {
-                headers: { token: token },
+                headers: { token: token, grouptoshow: currentGroup },
             });
             AllMessages = all.data.AllMessages;
             localStorage.setItem("chatHistory", JSON.stringify(AllMessages.slice(-30)));
@@ -51,7 +55,7 @@ function ONLOAD() {
 function constantAPIcalls() {
     return __awaiter(this, void 0, void 0, function* () {
         const lastMsgID = localStorage.getItem("lastMsgID");
-        const op = yield axios.get(`http://localhost:6969/grpmsg/getlatest/${lastMsgID}`, { headers: { token: token } });
+        const op = yield axios.get(`http://localhost:6969/grpmsg/getlatest/${lastMsgID}`, { headers: { token: token, grouptoshow: currentGroup } });
         const status = op.data.status;
         console.log(status);
         const LatestMessages = op.data.LatestMessages;
@@ -110,7 +114,7 @@ function SENDMSG(event) {
         event.preventDefault();
         const msg = event.target.chatmsg.value;
         const token = localStorage.getItem("token");
-        const obj = { msg: msg };
+        const obj = { msg: msg, toGroup: currentGroup };
         const op = yield axios.post("http://localhost:6969/grpmsg/postmsg", obj, {
             headers: { token: token },
         });

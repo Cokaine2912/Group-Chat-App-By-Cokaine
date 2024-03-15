@@ -31,7 +31,6 @@ exports.postAddMember = (req, res) => __awaiter(void 0, void 0, void 0, function
     const AddingName = parsed.username;
     const GroupName = req.body.GroupName;
     const NewMemberEmail = req.body.NewMemberEmail;
-    console.log("Inside the postAddMember !!! ##########");
     try {
         let GROUP = yield group_1.Group.findOne({ where: { groupName: GroupName } });
         if (!GROUP) {
@@ -49,7 +48,28 @@ exports.postAddMember = (req, res) => __awaiter(void 0, void 0, void 0, function
         const NewMemberToAdd = yield user_1.User.findOne({
             where: { email: NewMemberEmail },
         });
-        /// check for the member already exists
+        if (!NewMemberToAdd) {
+            return res
+                .status(200)
+                .json({
+                success: true,
+                msg: "This email isn't registered, Plz invite to sign up",
+            });
+        } // Check for the Member is present on the platform or not
+        const AlreadyExist = yield membership_1.Membership.findOne({
+            where: {
+                groupName: GroupName,
+                userId: NewMemberToAdd.id,
+            },
+        });
+        if (AlreadyExist) {
+            return res
+                .status(200)
+                .json({
+                success: true,
+                msg: "This email is already a part of the group !",
+            });
+        } /// check for the member if already exists in the group
         const NewMshipOBJ = {
             groupName: GROUP.groupName,
             member: NewMemberToAdd.username,
@@ -57,7 +77,13 @@ exports.postAddMember = (req, res) => __awaiter(void 0, void 0, void 0, function
             groupId: GROUP.id,
         };
         const NewMship = yield membership_1.Membership.create(NewMshipOBJ);
-        return res.status(200).json({ success: true, NewMship: NewMship });
+        return res
+            .status(201)
+            .json({
+            success: true,
+            NewMship: NewMship,
+            msg: "New Member Added Successfully !",
+        });
     }
     catch (err) {
         console.log(err);

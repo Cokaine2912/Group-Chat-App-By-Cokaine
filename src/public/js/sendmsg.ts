@@ -1,12 +1,14 @@
 const token = localStorage.getItem("token");
 
+const currentGroup = localStorage.getItem("currentGroup")
+
 const capacity = 30;
 
 if (!token) {
   window.location.href = "./login.html";
 } else {
   setTimeout(ONLOAD, 0);
-  setInterval(constantAPIcalls, 30000);
+  setInterval(constantAPIcalls, 5000);
 }
 
 interface DISPLAYOBJ {
@@ -27,6 +29,12 @@ interface ARRAYOBJ {
 let lastMsgID = 0;
 
 async function ONLOAD() {
+
+
+  if (!currentGroup) {
+    window.location.href = "./home.html"
+  }
+
   const chatList = document.getElementById(
     "all-chats-list"
   ) as HTMLUListElement;
@@ -38,7 +46,7 @@ async function ONLOAD() {
     AllMessages = JSON.parse(History);
   } else {
     const all = await axios.get("http://localhost:6969/grpmsg/allmsg", {
-      headers: { token: token },
+      headers: { token: token , grouptoshow : currentGroup},
     });
     AllMessages = all.data.AllMessages;
     localStorage.setItem("chatHistory", JSON.stringify(AllMessages.slice(-30)));
@@ -65,7 +73,7 @@ async function constantAPIcalls() {
   const lastMsgID = localStorage.getItem("lastMsgID");
   const op = await axios.get(
     `http://localhost:6969/grpmsg/getlatest/${lastMsgID}`,
-    { headers: { token: token } }
+    { headers: { token: token , grouptoshow : currentGroup} }
   );
   const status = op.data.status;
   console.log(status);
@@ -134,7 +142,7 @@ async function SENDMSG(event: any) {
   event.preventDefault();
   const msg: string = event.target.chatmsg.value;
   const token = localStorage.getItem("token");
-  const obj = { msg: msg };
+  const obj = { msg: msg ,toGroup : currentGroup};
   const op = await axios.post("http://localhost:6969/grpmsg/postmsg", obj, {
     headers: { token: token },
   });

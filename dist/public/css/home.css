@@ -24,6 +24,29 @@ body, html {
 }
 
 
+#all-groups-list{
+  list-style: none;
+}
+.group-list-item{
+  width: 5rem ;
+  text-align: start;
+  margin-left : 5rem;
+  margin : 10px 0px;
+  padding-left : 5px ;
+  background-color: gainsboro;
+  border: 1px solid black;
+  border-radius: 7px ;
+}
+
+.group-list-item a{
+  text-decoration: none;
+}
+
+.group-list-item a:hover{
+  text-decoration: underline;
+  cursor: pointer;
+}
+
 
 .popup {
     display: none; /* Hide the pop-up form by default */
