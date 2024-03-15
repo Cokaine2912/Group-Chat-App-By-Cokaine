@@ -3,18 +3,28 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.GroupMessage = void 0;
+exports.Membership = void 0;
 const sequelize_1 = __importDefault(require("sequelize"));
 const database_1 = __importDefault(require("../util/database"));
-const GroupMessage = database_1.default.define("grpmsg", {
+const Membership = database_1.default.define("membership", {
     id: {
         type: sequelize_1.default.INTEGER,
         autoIncrement: true,
         allowNull: false,
         primaryKey: true,
     },
-    sender: { type: sequelize_1.default.STRING, allowNull: false },
-    message: { type: sequelize_1.default.STRING, allowNull: false },
-    toGroup: { type: sequelize_1.default.STRING, allowNull: false },
+    groupName: {
+        type: sequelize_1.default.STRING,
+        allowNull: false,
+        unique: true,
+    },
+    member: {
+        type: sequelize_1.default.STRING,
+        allowNull: false,
+    },
+    isAdmin: {
+        type: sequelize_1.default.BOOLEAN,
+        defaultValue: false,
+    },
 });
-exports.GroupMessage = GroupMessage;
+exports.Membership = Membership;

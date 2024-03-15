@@ -8,6 +8,10 @@ import { User } from "./models/user";
 
 import { GroupMessage } from "./models/grpmsg";
 
+import { Membership } from "./models/membership";
+
+import { Group } from "./models/group";
+
 const userRoutes = require("./routes/user")
 const grpRoutes = require("./routes/grpmsg")
 
@@ -54,6 +58,16 @@ console.log("Start at : ", new Date().toLocaleTimeString())
 
 User.hasMany(GroupMessage);
 GroupMessage.belongsTo(User);
+
+User.hasMany(Membership)
+Membership.belongsTo(User)
+
+Group.hasMany(Membership)
+Membership.belongsTo(Group)
+
+Group.hasMany(GroupMessage)
+GroupMessage.belongsTo(Group)
+
 
 sequelize
   .sync()

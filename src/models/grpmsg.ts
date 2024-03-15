@@ -1,6 +1,6 @@
 import Sequelize from "sequelize";
 
-import sequelize  from '../util/database';
+import sequelize from "../util/database";
 
 const GroupMessage = sequelize.define("grpmsg", {
   id: {
@@ -9,8 +9,9 @@ const GroupMessage = sequelize.define("grpmsg", {
     allowNull: false,
     primaryKey: true,
   },
-  sender :{type : Sequelize.STRING , allowNull : false},
+  sender: { type: Sequelize.STRING, allowNull: false },
   message: { type: Sequelize.STRING, allowNull: false },
+  toGroup: { type: Sequelize.STRING, allowNull: false },
 });
 
-export {GroupMessage}
+export { GroupMessage };

@@ -10,6 +10,8 @@ const path_1 = __importDefault(require("path"));
 const database_1 = __importDefault(require("./util/database"));
 const user_1 = require("./models/user");
 const grpmsg_1 = require("./models/grpmsg");
+const membership_1 = require("./models/membership");
+const group_1 = require("./models/group");
 const userRoutes = require("./routes/user");
 const grpRoutes = require("./routes/grpmsg");
 const app = (0, express_1.default)();
@@ -44,6 +46,12 @@ app.get("/favicon.ico", (req, res) => {
 console.log("Start at : ", new Date().toLocaleTimeString());
 user_1.User.hasMany(grpmsg_1.GroupMessage);
 grpmsg_1.GroupMessage.belongsTo(user_1.User);
+user_1.User.hasMany(membership_1.Membership);
+membership_1.Membership.belongsTo(user_1.User);
+group_1.Group.hasMany(membership_1.Membership);
+membership_1.Membership.belongsTo(group_1.Group);
+group_1.Group.hasMany(grpmsg_1.GroupMessage);
+grpmsg_1.GroupMessage.belongsTo(group_1.Group);
 database_1.default
     .sync()
     .then(() => {

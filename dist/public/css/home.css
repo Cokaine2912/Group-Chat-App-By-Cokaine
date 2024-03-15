@@ -1,0 +1,19 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    font-family: candara;
+    height: 100%;
+}
+#wholepage-div {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    
+}
+
+#main-heading-div {
+    background: linear-gradient(to right bottom, rgba(157, 234, 43, 0.804), #293f50b7);
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+}

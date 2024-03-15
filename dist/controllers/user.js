@@ -40,7 +40,7 @@ function DEHASHING(password, hash) {
         });
     });
 }
-const SecretKey = "bfishfldsbubifbo"; // JWT key 
+const SecretKey = "bfishfldsbubifbo"; // JWT key
 function generateAccessToken(id, name) {
     return jsonwebtoken_1.default.sign({ userId: id, username: name }, SecretKey);
 }
@@ -49,14 +49,20 @@ exports.postNewUser = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     try {
         console.log("this route handler");
         console.log(req.body);
-        const Exist = yield user_1.User.count({ where: { email: req.body.email } });
+        const Exist = (yield user_1.User.count({
+            where: { email: req.body.email },
+        }));
         if (Exist) {
-            return res.status(200).json({ success: false, msg: "Email ID already regitered" });
+            return res
+                .status(200)
+                .json({ success: false, msg: "Email ID already regitered" });
         }
         const HASH = yield HASHING(req.body.password, 10);
         req.body.password = HASH;
         const op = yield user_1.User.create(req.body);
-        return res.status(201).json({ success: true, msg: "You can proceed to Login now" });
+        return res
+            .status(201)
+            .json({ success: true, msg: "You can proceed to Login now" });
     }
     catch (err) {
         console.log(err);
@@ -66,17 +72,36 @@ exports.postNewUser = (req, res) => __awaiter(void 0, void 0, void 0, function* 
 exports.getUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const email = req.body.email;
     const password = req.body.password;
-    const user = yield user_1.User.findOne({ where: { email: email }, attributes: ["id", "username", "password"] });
-    if (!user) {
-        return res.status(404).json({ success: false, msg: "This Email ID is not registered" });
+    try {
+        const user = (yield user_1.User.findOne({
+            where: { email: email },
+            attributes: ["id", "username", "password"],
+        }));
+        if (!user) {
+            return res
+                .status(404)
+                .json({ success: false, msg: "This Email ID is not registered" });
+        }
+        const hash = user.password;
+        const approve = yield DEHASHING(password, hash);
+        if (!approve) {
+            return res
+                .status(401)
+                .json({ success: false, msg: "Incorrect Password !" });
+        }
+        const token = generateAccessToken(user.id, user.username);
+        return res.status(200).json({
+            success: true,
+            msg: "Further App work in Progress !!",
+            token: token,
+            username: user.username,
+        });
     }
-    const hash = user.password;
-    const approve = yield DEHASHING(password, hash);
-    if (!approve) {
-        return res.status(401).json({ success: false, msg: "Incorrect Password !" });
+    catch (err) {
+        return res
+            .status(500)
+            .json({ success: false, message: "Internal Server Error" });
     }
-    const token = generateAccessToken(user.id, user.username);
-    return res.status(200).json({ success: true, msg: "Further App work in Progress !!", token: token, username: user.username });
 });
 // exports.postValidateUser = async (req: any, res: any) => {
 //     try {

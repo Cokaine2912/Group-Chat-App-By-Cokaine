@@ -15,7 +15,7 @@ if (!token) {
 }
 else {
     setTimeout(ONLOAD, 0);
-    setInterval(constantAPIcalls, 2000);
+    setInterval(constantAPIcalls, 30000);
 }
 let lastMsgID = 0;
 function ONLOAD() {
@@ -28,16 +28,23 @@ function ONLOAD() {
             AllMessages = JSON.parse(History);
         }
         else {
-            const all = yield axios.get("http://localhost:6969/grpmsg/allmsg", { headers: { token: token } });
+            const all = yield axios.get("http://localhost:6969/grpmsg/allmsg", {
+                headers: { token: token },
+            });
             AllMessages = all.data.AllMessages;
             localStorage.setItem("chatHistory", JSON.stringify(AllMessages.slice(-30)));
         }
-        lastMsgID = AllMessages[AllMessages.length - 1].id;
+        if (AllMessages.length > 0) {
+            lastMsgID = AllMessages[AllMessages.length - 1].id;
+        }
+        else {
+            lastMsgID = 0;
+        }
         localStorage.setItem("lastMsgID", `${lastMsgID}`);
         for (let i = 0; i < AllMessages.length; i++) {
             chatDisplay(AllMessages[i]);
         }
-        const scrollableDiv = document.getElementById('chats-div');
+        const scrollableDiv = document.getElementById("chats-div");
         scrollableDiv.scrollTop = scrollableDiv.scrollHeight;
     });
 }
@@ -68,10 +75,10 @@ function constantAPIcalls() {
     });
 }
 function ScrollDown() {
-    const scrollableDiv = document.getElementById('chats-div');
+    const scrollableDiv = document.getElementById("chats-div");
     scrollableDiv.scrollTo({
         top: scrollableDiv.scrollHeight,
-        behavior: 'smooth'
+        behavior: "smooth",
     });
 }
 function chatDisplay(obj) {
@@ -104,7 +111,9 @@ function SENDMSG(event) {
         const msg = event.target.chatmsg.value;
         const token = localStorage.getItem("token");
         const obj = { msg: msg };
-        const op = yield axios.post("http://localhost:6969/grpmsg/postmsg", obj, { headers: { token: token } });
+        const op = yield axios.post("http://localhost:6969/grpmsg/postmsg", obj, {
+            headers: { token: token },
+        });
         let lastMsgID = localStorage.getItem("lastMsgID");
         let latest = +lastMsgID + 1;
         localStorage.setItem("lastMsgID", `${latest}`);
