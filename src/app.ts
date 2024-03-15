@@ -14,6 +14,7 @@ import { Group } from "./models/group";
 
 const userRoutes = require("./routes/user")
 const grpRoutes = require("./routes/grpmsg")
+const homeRoutes = require("./routes/home")
 
 const app = express();
 
@@ -24,6 +25,7 @@ app.use(bodyParser.json());
 
 app.use(userRoutes);
 app.use("/grpmsg",grpRoutes);
+app.use("/home",homeRoutes)
 
 app.get("/view/:file",(req :any,res:any)=>{
   const file = req.params.file

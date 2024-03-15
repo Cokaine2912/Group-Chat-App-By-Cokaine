@@ -42,7 +42,7 @@ async function LOGIN(event: any) {
     const ChatUser = res.username
     localStorage.setItem("ChatUser" , ChatUser)
     localStorage.setItem("token", token)
-    window.location.href = "./chat.html";
+    window.location.href = "./home.html";
     
   }
   catch (err: any) {

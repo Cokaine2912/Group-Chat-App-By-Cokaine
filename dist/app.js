@@ -14,11 +14,13 @@ const membership_1 = require("./models/membership");
 const group_1 = require("./models/group");
 const userRoutes = require("./routes/user");
 const grpRoutes = require("./routes/grpmsg");
+const homeRoutes = require("./routes/home");
 const app = (0, express_1.default)();
 app.use((0, cors_1.default)({ origin: "http://127.0.0.1:3000", methods: ["GET", "POST"] }));
 app.use(body_parser_1.default.json());
 app.use(userRoutes);
 app.use("/grpmsg", grpRoutes);
+app.use("/home", homeRoutes);
 app.get("/view/:file", (req, res) => {
     const file = req.params.file;
     const fp = path_1.default.join(__dirname, `./public/views/${file}`);

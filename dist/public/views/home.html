@@ -22,18 +22,44 @@
       <div id="main-heading-div">
         <h3 id="main-heading-h3">Group Chat By Cokaine</h3>
         <div id="create-grp-div">
-            <a href="" id="crate-grp-link">create-grp</a>
+          <a href="" id="crate-grp-link">create-grp</a>
         </div>
       </div>
+
+      <button id="openFormBtn">Create New Group</button>
+
+      <div id="popupForm" class="popup">
+        <form class="popup-content" onsubmit="CREATEGROUP(event)">
+          <span class="close">&times;</span>
+          <h2>New Group</h2>
+          <input type="text" placeholder="Group Name" id="new-group-name" name = "name" required>
+          <br><br>
+          <input type="email" id="email" name="email" required placeholder="New Member Email"/><br><br>
+          <button type="submit">Add Member</button>
+        </form>
+      </div>
+
       <div id="groups-div">
         <ul id="all-groups-list">
-            <li><a href="./chat.html">Group 1</a></li>
-            <li><a href="./chat.html">Group 2</a></li>
+          <li><a href="./chat.html">Group 1</a></li>
+          <li><a href="./chat.html">Group 2</a></li>
         </ul>
       </div>
-      
+
     </div>
   </body>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>
+  <script>
+    document
+      .getElementById("openFormBtn")
+      .addEventListener("click", function () {
+        document.getElementById("popupForm").style.display = "block";
+      });
+
+    document.querySelector(".close").addEventListener("click", function () {
+      document.getElementById("popupForm").style.display = "none";
+    });
+  </script>
+
   <script src="../js/home.js"></script>
 </html>

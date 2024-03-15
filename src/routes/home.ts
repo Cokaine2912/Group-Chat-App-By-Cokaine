@@ -13,4 +13,10 @@ router.get(
   HomeController.getAllGroups
 );
 
+router.post(
+  "/creategrp",
+  Middleware.UserAuthentication,
+  HomeController.postAddMember
+);
+
 module.exports = router;

@@ -16,7 +16,6 @@ const Membership = database_1.default.define("membership", {
     groupName: {
         type: sequelize_1.default.STRING,
         allowNull: false,
-        unique: true,
     },
     member: {
         type: sequelize_1.default.STRING,

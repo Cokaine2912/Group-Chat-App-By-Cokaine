@@ -8,11 +8,27 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+const TOKEN = localStorage.getItem("token");
 function HOMELOAD() {
     return __awaiter(this, void 0, void 0, function* () {
         const op = yield axios.get("http://localhost:6969/home/allgrps", {
-            headers: { token: token },
+            headers: { token: TOKEN },
         });
         const AllGroupsForThisUser = op.data.AllGroupsForThisUser;
+    });
+}
+HOMELOAD();
+function CREATEGROUP(event) {
+    return __awaiter(this, void 0, void 0, function* () {
+        event.preventDefault();
+        const obj = {
+            GroupName: event.target.name.value,
+            NewMemberEmail: event.target.email.value,
+        };
+        console.log(obj);
+        const op = yield axios.post("http://localhost:6969/home/creategrp", obj, {
+            headers: { token: TOKEN },
+        });
+        console.log(op.data);
     });
 }
