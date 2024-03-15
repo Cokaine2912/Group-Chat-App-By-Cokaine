@@ -77,6 +77,10 @@ exports.postNewUser = async (req: any, res: any) => {
 exports.getUser = async (req:any,res:any)=>{
     const email = req.body.email as string
     const password = req.body.password
+
+
+    try{
+      
     const user = await User.findOne({where : {email : email},attributes :["id","username","password"]}) as LoginUserObj | null
     if (!user) {
         return res.status(404).json({success : false , msg : "This Email ID is not registered"})
@@ -91,6 +95,10 @@ exports.getUser = async (req:any,res:any)=>{
 
     return res.status(200).json({success : true , msg : "Further App work in Progress !!" ,token : token , username : user.username})
 
+
+    }catch(err){return res.status(500).json({success : false , message : "Internal Server Error"})}
+    
+    
 }
 
 // exports.postValidateUser = async (req: any, res: any) => {
