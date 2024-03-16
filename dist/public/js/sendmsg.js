@@ -9,20 +9,26 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 const token = localStorage.getItem("token");
-const currentGroup = localStorage.getItem("currentGroup");
+// const currentGroup = localStorage.getItem("currentGroup");
+const pageTitle = document.getElementById("pageTitle");
+// const GroupNameHeading = document.getElementById(
+//   "chat-header"
+// ) as HTMLDivElement;
+// GroupNameHeading.innerHTML = `<h3 id="main-heading-h3">${currentGroup}</h3>`;
 const capacity = 30;
 if (!token) {
     window.location.href = "./login.html";
 }
 else {
-    setTimeout(ONLOAD, 0);
+    // setTimeout(ONLOAD, 0);
     setInterval(constantAPIcalls, 5000);
 }
 let lastMsgID = 0;
 function ONLOAD() {
     return __awaiter(this, void 0, void 0, function* () {
+        const currentGroup = localStorage.getItem("currentGroup");
         if (!currentGroup) {
-            window.location.href = "./home.html";
+            window.location.href = "./chathome.html";
         }
         const chatList = document.getElementById("all-chats-list");
         chatList.innerHTML = "";
@@ -54,6 +60,7 @@ function ONLOAD() {
 }
 function constantAPIcalls() {
     return __awaiter(this, void 0, void 0, function* () {
+        const currentGroup = localStorage.getItem("currentGroup");
         const lastMsgID = localStorage.getItem("lastMsgID");
         const op = yield axios.get(`http://localhost:6969/grpmsg/getlatest/${lastMsgID}`, { headers: { token: token, grouptoshow: currentGroup } });
         const status = op.data.status;
@@ -111,6 +118,7 @@ function chatDisplay(obj) {
 }
 function SENDMSG(event) {
     return __awaiter(this, void 0, void 0, function* () {
+        const currentGroup = localStorage.getItem("currentGroup");
         event.preventDefault();
         const msg = event.target.chatmsg.value;
         const token = localStorage.getItem("token");

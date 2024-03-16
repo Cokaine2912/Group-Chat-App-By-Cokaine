@@ -15,7 +15,7 @@
       integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
       crossorigin="anonymous"
     ></script>
-    <link rel="stylesheet" href="../css/home.css" />
+    <link rel="stylesheet" href="../css/newhome.css" />
     <!-- <link rel="stylesheet" href="../css/chat.css"> -->
   </head>
   <body>
@@ -62,7 +62,23 @@
           <div class="row row-cols-5" id="group-tiles-div"></div>
         </div> -->
       </div>
-      <div id="right-side-div"></div>
+      <div id="right-side-div">
+        <div id="chats-div">
+          <ul id="all-chats-list"></ul>
+        </div>
+        <div id="msg-write-div">
+          <form onsubmit="SENDMSG(event)" id="msg-write-form">
+            <textarea
+              name="chatmsg"
+              id="chat-msg"
+              cols="50"
+              rows="2"
+              placeholder="Message...."
+            ></textarea>
+            <button id="send-button">➤</button>
+          </form>
+        </div>
+      </div>
     </div>
   </body>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>
@@ -77,28 +93,6 @@
       document.getElementById("popupForm").style.display = "none";
       HOMELOAD();
     });
-
-    var rightSideDiv = document.getElementById("right-side-div");
-
-    // URL of the webpage you want to load
-    var webpageURL = "http://localhost:6969/view/chat.html";
-    // var webpageURL = "https://www.google.com/";
-
-    // Use AJAX to fetch the content of the webpage
-    var xhr = new XMLHttpRequest();
-    xhr.onreadystatechange = function () {
-      if (xhr.readyState === XMLHttpRequest.DONE) {
-        if (xhr.status === 200) {
-          // Replace the content of the div with the fetched webpage content
-          rightSideDiv.innerHTML = xhr.responseText;
-        } else {
-          // Handle error
-          console.error("Failed to load webpage:", xhr.status);
-        }
-      }
-    };
-    xhr.open("GET", webpageURL, true);
-    xhr.send();
   </script>
 
   <script src="../js/home.js"></script>

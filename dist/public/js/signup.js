@@ -36,7 +36,7 @@ function LOGIN(event) {
             const ChatUser = res.username;
             localStorage.setItem("ChatUser", ChatUser);
             localStorage.setItem("token", token);
-            window.location.href = "./home.html";
+            window.location.href = "./chathome.html";
         }
         catch (err) {
             return alert(err.response.data.msg);

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Group Chat App</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>
+    <link rel="stylesheet" href="../css/chathome.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">Company/Product Name</div>
+      <div class="content">
+        <div class="sidebar">
+          <div class="sidebar-header">
+            <input type="text" placeholder="Search..." />
+            <div id="popup-button-div">
+              <button id="openFormBtn">➕Create New Group</button>
+
+              <div id="popupForm" class="popup">
+                <form class="popup-content" onsubmit="CREATEGROUP(event)">
+                  <span class="close">&times;</span>
+                  <h2>New Group</h2>
+                  <input
+                    type="text"
+                    placeholder="Group Name"
+                    id="new-group-name"
+                    name="name"
+                    required
+                  />
+                  <br /><br />
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    required
+                    placeholder="New Member Email"
+                  /><br /><br />
+                  <button type="submit">Add Member</button>
+                </form>
+              </div>
+            </div>
+          </div>
+          <ul id="all-groups-list"></ul>
+          <!-- Add more groups or contacts as needed -->
+        </div>
+
+        <div class="main" id="main"></div>
+      </div>
+    </div>
+    <script src="../js/home.js"></script>
+    <script src="../js/sendmsg.js"></script>
+  </body>
+  <script>
+    document
+      .getElementById("openFormBtn")
+      .addEventListener("click", function () {
+        document.getElementById("popupForm").style.display = "block";
+      });
+
+    document.querySelector(".close").addEventListener("click", function () {
+      document.getElementById("popupForm").style.display = "none";
+      HOMELOAD();
+    });
+  </script>
+</html>

@@ -1,13 +1,21 @@
 const token = localStorage.getItem("token");
 
-const currentGroup = localStorage.getItem("currentGroup")
+// const currentGroup = localStorage.getItem("currentGroup");
+
+const pageTitle = document.getElementById("pageTitle");
+
+// const GroupNameHeading = document.getElementById(
+//   "chat-header"
+// ) as HTMLDivElement;
+
+// GroupNameHeading.innerHTML = `<h3 id="main-heading-h3">${currentGroup}</h3>`;
 
 const capacity = 30;
 
 if (!token) {
   window.location.href = "./login.html";
 } else {
-  setTimeout(ONLOAD, 0);
+  // setTimeout(ONLOAD, 0);
   setInterval(constantAPIcalls, 5000);
 }
 
@@ -29,10 +37,9 @@ interface ARRAYOBJ {
 let lastMsgID = 0;
 
 async function ONLOAD() {
-
-
+  const currentGroup = localStorage.getItem("currentGroup");
   if (!currentGroup) {
-    window.location.href = "./home.html"
+    window.location.href = "./chathome.html";
   }
 
   const chatList = document.getElementById(
@@ -46,7 +53,7 @@ async function ONLOAD() {
     AllMessages = JSON.parse(History);
   } else {
     const all = await axios.get("http://localhost:6969/grpmsg/allmsg", {
-      headers: { token: token , grouptoshow : currentGroup},
+      headers: { token: token, grouptoshow: currentGroup },
     });
     AllMessages = all.data.AllMessages;
     localStorage.setItem("chatHistory", JSON.stringify(AllMessages.slice(-30)));
@@ -70,10 +77,11 @@ async function ONLOAD() {
 }
 
 async function constantAPIcalls() {
+  const currentGroup = localStorage.getItem("currentGroup");
   const lastMsgID = localStorage.getItem("lastMsgID");
   const op = await axios.get(
     `http://localhost:6969/grpmsg/getlatest/${lastMsgID}`,
-    { headers: { token: token , grouptoshow : currentGroup} }
+    { headers: { token: token, grouptoshow: currentGroup } }
   );
   const status = op.data.status;
   console.log(status);
@@ -139,10 +147,11 @@ function chatDisplay(obj: DISPLAYOBJ) {
 }
 
 async function SENDMSG(event: any) {
+  const currentGroup = localStorage.getItem("currentGroup");
   event.preventDefault();
   const msg: string = event.target.chatmsg.value;
   const token = localStorage.getItem("token");
-  const obj = { msg: msg ,toGroup : currentGroup};
+  const obj = { msg: msg, toGroup: currentGroup };
   const op = await axios.post("http://localhost:6969/grpmsg/postmsg", obj, {
     headers: { token: token },
   });
