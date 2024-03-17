@@ -31,6 +31,8 @@ exports.postAddMember = (req, res) => __awaiter(void 0, void 0, void 0, function
     const AddingName = parsed.username;
     const GroupName = req.body.GroupName;
     const NewMemberEmail = req.body.NewMemberEmail;
+    const AddingPersonOBJ = (yield user_1.User.findByPk(AddingId));
+    const AddingPersonEmail = AddingPersonOBJ.email;
     try {
         let GROUP = yield group_1.Group.findOne({ where: { groupName: GroupName } });
         if (!GROUP) {
@@ -38,6 +40,7 @@ exports.postAddMember = (req, res) => __awaiter(void 0, void 0, void 0, function
             const MshipOBJ = {
                 groupName: GroupName,
                 member: AddingName,
+                memberEmail: AddingPersonEmail,
                 isAdmin: true,
                 userId: AddingId,
                 groupId: GROUP.id,
@@ -45,14 +48,12 @@ exports.postAddMember = (req, res) => __awaiter(void 0, void 0, void 0, function
             let AdminMship = yield membership_1.Membership.create(MshipOBJ);
             console.log(AdminMship);
         }
-        // TO Check if the User Trying to Add is the 
+        // TO Check if the User Trying to Add is the
         const NewMemberToAdd = yield user_1.User.findOne({
             where: { email: NewMemberEmail },
         });
         if (!NewMemberToAdd) {
-            return res
-                .status(200)
-                .json({
+            return res.status(200).json({
                 success: true,
                 msg: "This email isn't registered, Plz invite to sign up",
             });
@@ -64,9 +65,7 @@ exports.postAddMember = (req, res) => __awaiter(void 0, void 0, void 0, function
             },
         });
         if (AlreadyExist) {
-            return res
-                .status(200)
-                .json({
+            return res.status(200).json({
                 success: true,
                 msg: "This email is already a part of the group !",
             });
@@ -74,13 +73,12 @@ exports.postAddMember = (req, res) => __awaiter(void 0, void 0, void 0, function
         const NewMshipOBJ = {
             groupName: GROUP.groupName,
             member: NewMemberToAdd.username,
+            memberEmail: NewMemberEmail,
             userId: NewMemberToAdd.id,
             groupId: GROUP.id,
         };
         const NewMship = yield membership_1.Membership.create(NewMshipOBJ);
-        return res
-            .status(201)
-            .json({
+        return res.status(201).json({
             success: true,
             NewMship: NewMship,
             msg: "New Member Added Successfully !",

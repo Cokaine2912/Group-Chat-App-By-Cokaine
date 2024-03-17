@@ -21,6 +21,10 @@ const Membership = database_1.default.define("membership", {
         type: sequelize_1.default.STRING,
         allowNull: false,
     },
+    memberEmail: {
+        type: sequelize_1.default.STRING,
+        allowNull: false,
+    },
     isAdmin: {
         type: sequelize_1.default.BOOLEAN,
         defaultValue: false,

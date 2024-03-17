@@ -46,7 +46,34 @@ async function TakeToGroup(event: any) {
   console.log("ADMIN CHECK  : ", AdminCheck.AdminCheck.isAdmin);
 
   if (AdminCheck.AdminCheck.isAdmin) {
-    AddButtonForAdmin = `<button id="add-member-button">Group Info</button>`;
+    AddButtonForAdmin = `<button id="add-member-button">Group Info</button>
+    <div id="add-member-popup-form" class="popup">
+    <form
+      class="popup-content"
+      id="add-member-popup-content"
+      onsubmit="CREATEGROUP(event)"
+    >
+      <span class="close" id="add-member-close" >&times;</span>
+      <h2 id="add-member-form-heading">New Group</h2>
+      <input
+        type="text"
+        placeholder="Group Name"
+        id="add-member-group-name"
+        name="name"
+        required
+      />
+      <br /><br />
+      <input
+        type="email"
+        id="add-member-email"
+        name="email"
+        required
+        placeholder="New Member Email"
+      /><br /><br />
+      <button type="submit">Add Member</button>
+      <div id="group-member-list-div"><ul id="group-members-list"></ul></div>
+    </form>
+  </div>`;
   }
 
   const chatHeader = document.getElementById("chat-header") as HTMLDivElement;
@@ -69,27 +96,40 @@ async function TakeToGroup(event: any) {
   const AddMemBtn = document.getElementById(
     "add-member-button"
   ) as HTMLButtonElement;
+
   if (AddMemBtn) {
-    const PopupForm = document.getElementById("popupForm") as HTMLDivElement;
+    const PopupForm = document.getElementById(
+      "add-member-popup-form"
+    ) as HTMLDivElement;
     const PopupFormHeading = document.getElementById(
-      "popup-form-heading"
+      "add-member-form-heading"
     ) as HTMLHeadingElement;
     PopupFormHeading.innerHTML = `${currentGroup}`;
 
-    const GroupMemberList = document.getElementById("group-members-list");
-    // let allMembers = await axios.get(
-    //   "http://localhost:6969/grpmsg/getallmembers",
-    //   {
-    //     headers: { token: TOKEN, grouptoshow: GroupToShow },
-    //   }
-    // );
+    const GroupMemberList = document.getElementById(
+      "group-members-list"
+    ) as HTMLUListElement;
+    GroupMemberList.innerHTML = "";
+    let allMembers = await axios.get(
+      "http://localhost:6969/grpmsg/getallmembers",
+      {
+        headers: { token: TOKEN, grouptoshow: GroupToShow },
+      }
+    );
 
-    // allMembers = allMembers.data
+    allMembers = allMembers.data.AllGroupMembers;
 
-    // console.log(allMembers)
+    console.log(allMembers);
+
+    for (let i = 0; i < allMembers.length; i++) {
+      const newli = document.createElement("li");
+      newli.id = `${allMembers[i].memberEmail}-list-item`;
+      newli.innerHTML = `${allMembers[i].member} - ${allMembers[i].memberEmail}`;
+      GroupMemberList.appendChild(newli);
+    }
 
     const FixedGroupName = document.getElementById(
-      "new-group-name"
+      "add-member-group-name"
     ) as HTMLInputElement;
     AddMemBtn.addEventListener("click", function () {
       console.log("Button clicked !!!");
@@ -97,6 +137,15 @@ async function TakeToGroup(event: any) {
       FixedGroupName.setAttribute("value", `${currentGroup}`);
       FixedGroupName.setAttribute("readonly", "true");
       PopupForm.style.display = "block";
+    });
+
+    const AddMemberClose = document.querySelector(
+      "#add-member-close"
+    ) as HTMLSpanElement;
+    AddMemberClose.addEventListener("click", function () {
+      PopupForm.style.display = "none";
+
+      HOMELOAD();
     });
   }
 
@@ -182,6 +231,7 @@ async function CREATEGROUP(event: any) {
   });
 
   console.log(op.data);
+  console.log(event.target.id)
   alert(op.data.msg);
 }
 

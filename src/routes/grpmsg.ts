@@ -27,6 +27,12 @@ router.get(
   MsgController.getAdminCheck
 );
 
+router.get(
+  "/getallmembers",
+  Middleware.UserAuthentication,
+  MsgController.getAllGroupMembers
+);
+
 router.post(
   "/postmsg",
   Middleware.UserAuthentication,

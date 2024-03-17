@@ -45,7 +45,34 @@ function TakeToGroup(event) {
         let AddButtonForAdmin = "";
         console.log("ADMIN CHECK  : ", AdminCheck.AdminCheck.isAdmin);
         if (AdminCheck.AdminCheck.isAdmin) {
-            AddButtonForAdmin = `<button id="add-member-button">Group Info</button>`;
+            AddButtonForAdmin = `<button id="add-member-button">Group Info</button>
+    <div id="add-member-popup-form" class="popup">
+    <form
+      class="popup-content"
+      id="add-member-popup-content"
+      onsubmit="CREATEGROUP(event)"
+    >
+      <span class="close" id="add-member-close" >&times;</span>
+      <h2 id="add-member-form-heading">New Group</h2>
+      <input
+        type="text"
+        placeholder="Group Name"
+        id="add-member-group-name"
+        name="name"
+        required
+      />
+      <br /><br />
+      <input
+        type="email"
+        id="add-member-email"
+        name="email"
+        required
+        placeholder="New Member Email"
+      /><br /><br />
+      <button type="submit">Add Member</button>
+      <div id="group-member-list-div"><ul id="group-members-list"></ul></div>
+    </form>
+  </div>`;
         }
         const chatHeader = document.getElementById("chat-header");
         chatHeader.innerHTML = `<h3 id="main-heading-h3">${GroupToShow}</h3>${AddButtonForAdmin}`;
@@ -61,25 +88,34 @@ function TakeToGroup(event) {
         localStorage.setItem("chatHistory", JSON.stringify(AllMessages.slice(-30)));
         const AddMemBtn = document.getElementById("add-member-button");
         if (AddMemBtn) {
-            const PopupForm = document.getElementById("popupForm");
-            const PopupFormHeading = document.getElementById("popup-form-heading");
+            const PopupForm = document.getElementById("add-member-popup-form");
+            const PopupFormHeading = document.getElementById("add-member-form-heading");
             PopupFormHeading.innerHTML = `${currentGroup}`;
             const GroupMemberList = document.getElementById("group-members-list");
-            // let allMembers = await axios.get(
-            //   "http://localhost:6969/grpmsg/getallmembers",
-            //   {
-            //     headers: { token: TOKEN, grouptoshow: GroupToShow },
-            //   }
-            // );
-            // allMembers = allMembers.data
-            // console.log(allMembers)
-            const FixedGroupName = document.getElementById("new-group-name");
+            GroupMemberList.innerHTML = "";
+            let allMembers = yield axios.get("http://localhost:6969/grpmsg/getallmembers", {
+                headers: { token: TOKEN, grouptoshow: GroupToShow },
+            });
+            allMembers = allMembers.data.AllGroupMembers;
+            console.log(allMembers);
+            for (let i = 0; i < allMembers.length; i++) {
+                const newli = document.createElement("li");
+                newli.id = `${allMembers[i].memberEmail}-list-item`;
+                newli.innerHTML = `${allMembers[i].member} - ${allMembers[i].memberEmail}`;
+                GroupMemberList.appendChild(newli);
+            }
+            const FixedGroupName = document.getElementById("add-member-group-name");
             AddMemBtn.addEventListener("click", function () {
                 console.log("Button clicked !!!");
                 FixedGroupName.setAttribute("type", `hidden`);
                 FixedGroupName.setAttribute("value", `${currentGroup}`);
                 FixedGroupName.setAttribute("readonly", "true");
                 PopupForm.style.display = "block";
+            });
+            const AddMemberClose = document.querySelector("#add-member-close");
+            AddMemberClose.addEventListener("click", function () {
+                PopupForm.style.display = "none";
+                HOMELOAD();
             });
         }
         NewONLOAD();
@@ -155,6 +191,7 @@ function CREATEGROUP(event) {
             headers: { token: TOKEN },
         });
         console.log(op.data);
+        console.log(event.target.id);
         alert(op.data.msg);
     });
 }

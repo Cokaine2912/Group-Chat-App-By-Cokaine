@@ -87,3 +87,11 @@ exports.getAdminCheck = (req, res) => __awaiter(void 0, void 0, void 0, function
     });
     return res.json({ success: true, AdminCheck: AdminCheck });
 });
+exports.getAllGroupMembers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const currentGroup = req.headers.grouptoshow;
+    const AllGroupMembers = yield membership_1.Membership.findAll({
+        where: { groupName: currentGroup },
+        attributes: ["member", "memberEmail", "isAdmin"],
+    });
+    return res.json({ success: true, AllGroupMembers: AllGroupMembers });
+});

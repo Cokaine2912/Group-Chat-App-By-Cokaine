@@ -89,3 +89,14 @@ exports.getAdminCheck = async (req: any, res: any) => {
 
   return res.json({ success: true, AdminCheck: AdminCheck });
 };
+
+exports.getAllGroupMembers = async (req: any, res: any) => {
+  const currentGroup = req.headers.grouptoshow;
+
+  const AllGroupMembers = await Membership.findAll({
+    where: { groupName: currentGroup },
+    attributes: ["member", "memberEmail", "isAdmin"],
+  });
+
+  return res.json({success : true , AllGroupMembers : AllGroupMembers })
+};
