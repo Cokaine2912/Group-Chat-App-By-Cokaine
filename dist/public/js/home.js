@@ -37,28 +37,51 @@ function TakeToGroup(event) {
 </div>`;
         console.log(event.target.id);
         const GroupToShow = event.target.id;
+        // ADMIN Checking
+        let AdminCheck = yield axios.get("http://localhost:6969/grpmsg/admincheck", {
+            headers: { token: TOKEN, grouptoshow: GroupToShow },
+        });
+        AdminCheck = AdminCheck.data;
+        let AddButtonForAdmin = "";
+        console.log("ADMIN CHECK  : ", AdminCheck.AdminCheck.isAdmin);
+        if (AdminCheck.AdminCheck.isAdmin) {
+            AddButtonForAdmin = `<button id="add-member-button">Group Info</button>`;
+        }
         const chatHeader = document.getElementById("chat-header");
-        chatHeader.innerHTML = `<h3 id="main-heading-h3">${GroupToShow}</h3><button id="add-member-button">➕Add Member</button>`;
+        chatHeader.innerHTML = `<h3 id="main-heading-h3">${GroupToShow}</h3>${AddButtonForAdmin}`;
         // const all = await axios.get(`http://localhost:6969/grpmsg/${GroupToShow}`, {
         //   headers: { token: TOKEN, GroupToShow: GroupToShow },
         // });
         const all = yield axios.get("http://localhost:6969/grpmsg/allmsg", {
             headers: { token: TOKEN, grouptoshow: GroupToShow },
         });
-        console.log(all.data);
         const currentGroup = all.data.currentGroup;
         localStorage.setItem("currentGroup", currentGroup);
         const AllMessages = all.data.AllMessages;
         localStorage.setItem("chatHistory", JSON.stringify(AllMessages.slice(-30)));
         const AddMemBtn = document.getElementById("add-member-button");
-        const PopupForm = document.getElementById("popupForm");
-        const FixedGroupName = document.getElementById("new-group-name");
-        AddMemBtn.addEventListener("click", function () {
-            console.log("Button clicked !!!");
-            FixedGroupName.setAttribute("value", `${currentGroup}`);
-            FixedGroupName.setAttribute("readonly", "true");
-            PopupForm.style.display = "block";
-        });
+        if (AddMemBtn) {
+            const PopupForm = document.getElementById("popupForm");
+            const PopupFormHeading = document.getElementById("popup-form-heading");
+            PopupFormHeading.innerHTML = `${currentGroup}`;
+            const GroupMemberList = document.getElementById("group-members-list");
+            // let allMembers = await axios.get(
+            //   "http://localhost:6969/grpmsg/getallmembers",
+            //   {
+            //     headers: { token: TOKEN, grouptoshow: GroupToShow },
+            //   }
+            // );
+            // allMembers = allMembers.data
+            // console.log(allMembers)
+            const FixedGroupName = document.getElementById("new-group-name");
+            AddMemBtn.addEventListener("click", function () {
+                console.log("Button clicked !!!");
+                FixedGroupName.setAttribute("type", `hidden`);
+                FixedGroupName.setAttribute("value", `${currentGroup}`);
+                FixedGroupName.setAttribute("readonly", "true");
+                PopupForm.style.display = "block";
+            });
+        }
         NewONLOAD();
         // window.location.href = "./chat.html";
     });
@@ -86,6 +109,27 @@ function DISPLAYGROUP(obj) {
 }
 function HOMELOAD() {
     return __awaiter(this, void 0, void 0, function* () {
+        // Fixing The PopUp Form
+        // const OriginalForm = `<span class="close">&times;</span>
+        //                 <h2 id="popup-form-heading">New Group</h2>
+        //                 <input
+        //                   type="text"
+        //                   placeholder="Group Name"
+        //                   id="new-group-name"
+        //                   name="name"
+        //                   required
+        //                 />
+        //                 <br /><br />
+        //                 <input
+        //                   type="email"
+        //                   id="email"
+        //                   name="email"
+        //                   required
+        //                   placeholder="New Member Email"
+        //                 /><br /><br />
+        //                 <button type="submit">Add Member</button>`;
+        // const ResetForm = document.getElementById("popup-content") as HTMLFormElement;
+        // ResetForm.innerHTML = OriginalForm;
         const op = yield axios.get("http://localhost:6969/home/allgrps", {
             headers: { token: TOKEN },
         });

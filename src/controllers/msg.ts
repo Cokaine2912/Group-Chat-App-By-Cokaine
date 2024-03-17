@@ -6,6 +6,8 @@ import { Op } from "sequelize";
 
 import { Group } from "../models/group";
 
+import { Membership } from "../models/membership";
+
 exports.postGrpMessage = async (req: any, res: any) => {
   const userOBJ = req.headers.userOBJ;
   const userId = userOBJ.userId;
@@ -47,7 +49,7 @@ exports.getAllMessages = async (req: any, res: any) => {
 exports.getLatestMessages = async (req: any, res: any) => {
   const lastMsgID = req.params.lastMsgID;
   const currentGroup = req.headers.grouptoshow;
-  console.log("!!!!!  ### GETTING FOR :",currentGroup)
+  console.log("!!!!!  ### GETTING FOR :", currentGroup);
   const allMsgs = await GroupMessage.findAll({
     where: {
       id: {
@@ -71,4 +73,19 @@ exports.getLatestMessages = async (req: any, res: any) => {
 exports.getAllForGroup = async (req: any, res: any) => {
   const currentGroup = req.headers.grouptoshow;
   return res.json({ msg: "Atlest Reahed here !", currentGroup: currentGroup });
+};
+
+exports.getAdminCheck = async (req: any, res: any) => {
+  const user = req.headers.userOBJ;
+  const currentGroup = req.headers.grouptoshow;
+
+  const AdminCheck = await Membership.findOne({
+    where: {
+      userId: user.userId,
+      groupName: currentGroup,
+    },
+    attributes: ["groupName", "member", "isAdmin"],
+  });
+
+  return res.json({ success: true, AdminCheck: AdminCheck });
 };

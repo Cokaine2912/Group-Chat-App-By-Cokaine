@@ -45,6 +45,7 @@ exports.postAddMember = (req, res) => __awaiter(void 0, void 0, void 0, function
             let AdminMship = yield membership_1.Membership.create(MshipOBJ);
             console.log(AdminMship);
         }
+        // TO Check if the User Trying to Add is the 
         const NewMemberToAdd = yield user_1.User.findOne({
             where: { email: NewMemberEmail },
         });

@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const grpmsg_1 = require("../models/grpmsg");
 const sequelize_1 = require("sequelize");
 const group_1 = require("../models/group");
+const membership_1 = require("../models/membership");
 exports.postGrpMessage = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const userOBJ = req.headers.userOBJ;
     const userId = userOBJ.userId;
@@ -73,4 +74,16 @@ exports.getLatestMessages = (req, res) => __awaiter(void 0, void 0, void 0, func
 exports.getAllForGroup = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const currentGroup = req.headers.grouptoshow;
     return res.json({ msg: "Atlest Reahed here !", currentGroup: currentGroup });
+});
+exports.getAdminCheck = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = req.headers.userOBJ;
+    const currentGroup = req.headers.grouptoshow;
+    const AdminCheck = yield membership_1.Membership.findOne({
+        where: {
+            userId: user.userId,
+            groupName: currentGroup,
+        },
+        attributes: ["groupName", "member", "isAdmin"],
+    });
+    return res.json({ success: true, AdminCheck: AdminCheck });
 });

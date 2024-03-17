@@ -3,59 +3,86 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Popup Info</title>
+    <title>Side Info Bar</title>
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+      .container {
+        position: relative;
+        display: flex;
+      }
+
+      #content {
+        flex-grow: 1;
+        padding-right: 10px; /* Adjust as needed */
+      }
+
+      .sidebar-container {
+        position: relative;
+        width: 250px; /* Width of the sidebar */
+      }
+
+      .info-bar {
+        position: absolute;
+        top: 0;
+        right: -250px; /* Initially hidden */
+        width: 250px;
+        height: 100%;
+        background-color: #f0f0f0;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        transition: right 0.3s ease-in-out;
+      }
+
+      .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+        margin-right: 10px;
+        margin-top: 10px;
+      }
+
+      .close:hover,
+      .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+      }
+    </style>
   </head>
-  <style>
-    .popup {
-      display: none;
-      position: fixed;
-      top: 50%;
-      left: 20%;
-      transform: translate(-50%, -50%);
-      background-color: rgba(0, 0, 0, 0.5);
-      padding: 20px;
-    }
-
-    .popup-content {
-      background-color: #fff;
-      padding: 20px;
-      border-radius: 5px;
-    }
-
-    .close {
-      color: #aaa;
-      float: right;
-      font-size: 28px;
-      font-weight: bold;
-    }
-
-    .close:hover,
-    .close:focus {
-      color: black;
-      text-decoration: none;
-      cursor: pointer;
-    }
-  </style>
   <body>
-    <button id="infoButton">Show Info</button>
-
-    <div id="infoPopup" class="popup">
-      <div class="popup-content">
-        <span class="close" onclick="closePopup()">&times;</span>
-        <p>This is the popup info!</p>
+    <div class="container">
+      <div id="content">
+        <!-- Your content here -->
+        <p>This is the main content.</p>
+      </div>
+      <div class="sidebar-container">
+        <button id="toggleButton">Toggle Info Bar</button>
+        <div id="infoBar" class="info-bar">
+          <span class="close" onclick="closeInfoBar()">&times;</span>
+          <p>This is the side info bar!</p>
+        </div>
       </div>
     </div>
 
     <script>
-      const infoButton = document.getElementById("infoButton");
-      const infoPopup = document.getElementById("infoPopup");
+      const toggleButton = document.getElementById("toggleButton");
+      const infoBar = document.getElementById("infoBar");
 
-      infoButton.addEventListener("click", () => {
-        infoPopup.style.display = "block";
+      toggleButton.addEventListener("click", () => {
+        const currentRight = parseInt(
+          window.getComputedStyle(infoBar).getPropertyValue("right")
+        );
+        if (currentRight < 0) {
+          // Slide in
+          infoBar.style.right = "0";
+        } else {
+          // Slide out
+          infoBar.style.right = "-250px";
+        }
       });
 
-      function closePopup() {
-        infoPopup.style.display = "none";
+      function closeInfoBar() {
+        infoBar.style.right = "-250px";
       }
     </script>
   </body>

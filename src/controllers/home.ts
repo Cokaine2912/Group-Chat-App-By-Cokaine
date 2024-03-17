@@ -43,6 +43,8 @@ exports.postAddMember = async (req: any, res: any) => {
       console.log(AdminMship);
     }
 
+    // TO Check if the User Trying to Add is the 
+
     const NewMemberToAdd: any = await User.findOne({
       where: { email: NewMemberEmail },
     });

@@ -18,9 +18,13 @@
               <button id="openFormBtn">➕Create New Group</button>
 
               <div id="popupForm" class="popup">
-                <form class="popup-content" onsubmit="CREATEGROUP(event)">
+                <form
+                  class="popup-content"
+                  id="popup-content"
+                  onsubmit="CREATEGROUP(event)"
+                >
                   <span class="close">&times;</span>
-                  <h2>New Group</h2>
+                  <h2 id="popup-form-heading">New Group</h2>
                   <input
                     type="text"
                     placeholder="Group Name"
@@ -38,6 +42,9 @@
                   /><br /><br />
                   <button type="submit">Add Member</button>
                 </form>
+                <div id="group-members-list-div">
+                  <ul id="group-members-list"></ul>
+                </div>
               </div>
             </div>
           </div>
@@ -62,6 +69,8 @@
 
     document.querySelector(".close").addEventListener("click", function () {
       document.getElementById("popupForm").style.display = "none";
+
+      
       HOMELOAD();
     });
   </script>

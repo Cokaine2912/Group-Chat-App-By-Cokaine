@@ -1,20 +1,36 @@
 const express = require("express");
 import path from "path";
 
-const Middleware = require("../middlewares/authentication")
+const Middleware = require("../middlewares/authentication");
 
-const MsgController = require("../controllers/msg")
+const MsgController = require("../controllers/msg");
 
 const router = express.Router();
 
-
 // router.get("/:GroupToShow",Middleware.UserAuthentication,MsgController.getAllForGroup)
 
-router.get("/allmsg",Middleware.UserAuthentication, MsgController.getAllMessages)
+router.get(
+  "/allmsg",
+  Middleware.UserAuthentication,
+  MsgController.getAllMessages
+);
 
-router.get("/getlatest/:lastMsgID",Middleware.UserAuthentication,MsgController.getLatestMessages)
+router.get(
+  "/getlatest/:lastMsgID",
+  Middleware.UserAuthentication,
+  MsgController.getLatestMessages
+);
 
-router.post("/postmsg", Middleware.UserAuthentication,MsgController.postGrpMessage)
+router.get(
+  "/admincheck",
+  Middleware.UserAuthentication,
+  MsgController.getAdminCheck
+);
 
+router.post(
+  "/postmsg",
+  Middleware.UserAuthentication,
+  MsgController.postGrpMessage
+);
 
 module.exports = router;
