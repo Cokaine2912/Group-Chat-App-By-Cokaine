@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Popup Info</title>
+  </head>
+  <style>
+    .popup {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 20%;
+      transform: translate(-50%, -50%);
+      background-color: rgba(0, 0, 0, 0.5);
+      padding: 20px;
+    }
+
+    .popup-content {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 5px;
+    }
+
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+    }
+
+    .close:hover,
+    .close:focus {
+      color: black;
+      text-decoration: none;
+      cursor: pointer;
+    }
+  </style>
+  <body>
+    <button id="infoButton">Show Info</button>
+
+    <div id="infoPopup" class="popup">
+      <div class="popup-content">
+        <span class="close" onclick="closePopup()">&times;</span>
+        <p>This is the popup info!</p>
+      </div>
+    </div>
+
+    <script>
+      const infoButton = document.getElementById("infoButton");
+      const infoPopup = document.getElementById("infoPopup");
+
+      infoButton.addEventListener("click", () => {
+        infoPopup.style.display = "block";
+      });
+
+      function closePopup() {
+        infoPopup.style.display = "none";
+      }
+    </script>
+  </body>
+</html>

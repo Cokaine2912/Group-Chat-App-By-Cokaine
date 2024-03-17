@@ -4,6 +4,12 @@ html {
   padding: 0;
   height: 100%;
   font-family: candara;
+
+  background: linear-gradient(
+    to right bottom,
+    rgba(157, 234, 43, 0.804),
+    #00000076
+  );
 }
 
 .container {
@@ -13,12 +19,21 @@ html {
 }
 
 .header {
-  background: linear-gradient(
+  /* background: linear-gradient(
     to right bottom,
     rgba(247, 243, 40, 0.961),
     #293f50b7
-  );
-  padding: 10px;
+  ); */
+  padding: 5px;
+  border-bottom : 1px solid black;
+
+  font-size: 20px;
+  font-weight: 600;
+  background-image: linear-gradient(to bottom left, #553c9a, #ee4b2b);
+  color: transparent;
+  background-clip: text;
+  -webkit-background-clip: text;
+
 }
 
 .content {
@@ -28,45 +43,60 @@ html {
 }
 
 .sidebar {
-  
   width: 30%;
   overflow-y: auto;
-}
-
-.main {
-  
-  width: 70%;
-  display: flex;
-  flex-direction: column;
-}
-
-.chat-header {
-  background: linear-gradient(
+  overflow-x: hidden;
+  /* background-color: rgba(8, 8, 8, 0.422); */
+  /* background: linear-gradient(
     to right bottom,
     rgba(157, 234, 43, 0.804),
     #293f50b7
-  );
+  ); */
+}
+
+.sidebar-header{
+  border-bottom : 1px solid black;
+}
+
+.main {
+  width: 70%;
+  display: flex;
+  flex-direction: column;
+  border-left: 1px solid black;
+}
+
+.chat-header {
+  /* background: linear-gradient(
+    to right bottom,
+    rgba(157, 234, 43, 0.804),
+    #293f50b7
+  ); */
+  padding : 4px;
   font-family: candara;
   height: 30px;
   display: flex;
-  justify-content: start;
+  justify-content: space-between;
   align-items: center;
-  
 }
 
 .chat-messages {
   flex: 1;
   overflow-y: auto;
-  border: 2px solid black;
 }
 
 #chats-div {
   flex: 1;
-  overflow-y: auto; 
-  background-size:cover ; 
-  background-image: url('../../images/OIG3.jpeg');
+  overflow-y: auto;
+  background-size: cover;
+  background-image: url("../../images/OIG3.jpeg");
   background-color: rgba(255, 255, 255, 0.5);
   background-blend-mode: overlay;
+}
+
+.msg-time-div {
+  margin-right: 10px;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 12px;
 }
 
 .message-input {
@@ -74,49 +104,89 @@ html {
   position: sticky;
   bottom: 0;
   width: 100%;
+  /* background: linear-gradient(
+    to right bottom,
+    rgba(157, 234, 43, 0.804),
+    #293f50b7
+  ); */
+}
+.sidebar-header {
+  padding: 10px;
+  text-align: center;
+}
+
+#all-groups-list {
+  list-style: none;
+  width: 100%;
+  /* border: 2px solid brown; */
+  margin: 0;
+  padding: 0;
+}
+.group-list-item {
+  width: 100%;
+  border-bottom: 1px solid black;
+  /* border-radius: 10px; */
+  padding: 20px 7px;
+  margin: auto;
+  /* background-color: rgba(12, 12, 12, 0.712); */
+}
+.group-list-item a {
+  color: white;
+}
+.group-list-item:hover {
+  cursor: pointer;
+  background-color: rgba(255, 255, 255, 0.153);
+}
+
+#all-chats-list {
+  list-style: none;
+  padding: 0px 10px;
+  /* width: 100%; */
+}
+.chat-item {
+  margin: 1.5% 0;
+  /* background: linear-gradient(to right bottom, rgb(255, 255, 255), #0404042e); */
+  background-color: rgba(0, 0, 0, 0.795);
+  box-shadow: 0 2px 4px black;
+  border-radius: 10px;
+  padding-left: 7px;
+  color: white;
+  width: 80%;
+}
+
+#group-search{
+  font-family: candara;
+  padding: 7px;
+  width: 90%;
+  background-color: rgba(255, 255, 255, 0.29);
+  border: 1px solid black;
+  border-radius: 10px;
+}
+#add-member-button{
+  font-family: candara;
+  border-radius: 10px;
+  border: 1px solid black;
+}
+#add-member-button:hover {
+  transform: scale(1.05);
+  cursor: pointer;
+}
+#openFormBtn {
+  font-family: candara;
   background: linear-gradient(
     to right bottom,
     rgba(157, 234, 43, 0.804),
     #293f50b7
   );
-}
-.sidebar-header {
-  
-  padding: 10px;
-  text-align: center;
-}
-
-#all-groups-list{
-  list-style: none;
-  width: 100%;
-  /* border: 2px solid brown; */
-  margin : 0;
-  padding: 0;
-}
-.group-list-item{
-  width: 90%;
-  border: 1px solid black;
-  padding : 20px 7px;
-  margin : auto ;
- 
-}
-
-
-
-#all-chats-list{
-  list-style: none;
-  padding :0px 10px ;
-  /* width: 100%; */
-}
-.chat-item{
-  margin : 1.5% 0;
-  /* background: linear-gradient(to right bottom, rgb(255, 255, 255), #0404042e); */
-  background-color: rgba(0, 0, 0, 0.795);
-  box-shadow: 0 2px 4px black;
   border-radius: 10px;
-  padding-left: 7px ;
-  color: white;
-  width: 80%;
+  border: 1px solid black;
+}
+#openFormBtn:hover{
+  box-shadow: 0px 0px 5px 0px gold;
+  transform: scale(1.05);
+}
+#popup-button-div{
+  margin : 7px
 }
 
 .popup {
@@ -128,6 +198,7 @@ html {
   width: 100%;
   height: 100%;
   overflow: auto;
+  font-family: candara;
   background-color: rgba(0, 0, 0, 0.4); /* Black background with opacity */
 }
 
@@ -138,6 +209,7 @@ html {
   border: 1px solid #888;
   width: 80%;
   max-width: 400px;
+  font-family: candara;
 }
 
 .close {
@@ -191,4 +263,21 @@ html {
 #send-button:hover {
   box-shadow: 0px 0px 5px 0px black;
   transform: scale(1.05);
+}
+
+
+
+/* Styling the .sidebar scrollbar */
+
+.sidebar::-webkit-scrollbar {
+  width: 7px; /* width of the scrollbar */
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+  background-color: rgba(7, 1, 1, 0.575); /* color of the thumb */
+  border-radius: 5px; /* roundness of the thumb */
+}
+
+.sidebar::-webkit-scrollbar-track {
+  background-color: rgba(0, 0, 0, 0.2); /* color of the track */
 }

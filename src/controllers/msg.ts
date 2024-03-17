@@ -47,6 +47,7 @@ exports.getAllMessages = async (req: any, res: any) => {
 exports.getLatestMessages = async (req: any, res: any) => {
   const lastMsgID = req.params.lastMsgID;
   const currentGroup = req.headers.grouptoshow;
+  console.log("!!!!!  ### GETTING FOR :",currentGroup)
   const allMsgs = await GroupMessage.findAll({
     where: {
       id: {

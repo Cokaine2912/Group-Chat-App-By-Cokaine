@@ -50,6 +50,7 @@ exports.getAllMessages = (req, res) => __awaiter(void 0, void 0, void 0, functio
 exports.getLatestMessages = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const lastMsgID = req.params.lastMsgID;
     const currentGroup = req.headers.grouptoshow;
+    console.log("!!!!!  ### GETTING FOR :", currentGroup);
     const allMsgs = yield grpmsg_1.GroupMessage.findAll({
         where: {
             id: {

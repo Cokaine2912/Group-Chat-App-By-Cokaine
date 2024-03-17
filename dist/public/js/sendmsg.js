@@ -16,12 +16,9 @@ const pageTitle = document.getElementById("pageTitle");
 // ) as HTMLDivElement;
 // GroupNameHeading.innerHTML = `<h3 id="main-heading-h3">${currentGroup}</h3>`;
 const capacity = 30;
+let currentGroup = localStorage.getItem("currentGroup");
 if (!token) {
     window.location.href = "./login.html";
-}
-else {
-    // setTimeout(ONLOAD, 0);
-    setInterval(constantAPIcalls, 5000);
 }
 let lastMsgID = 0;
 function ONLOAD() {

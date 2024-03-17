@@ -12,12 +12,15 @@ const pageTitle = document.getElementById("pageTitle");
 
 const capacity = 30;
 
+let currentGroup = localStorage.getItem("currentGroup");
+
 if (!token) {
   window.location.href = "./login.html";
-} else {
-  // setTimeout(ONLOAD, 0);
-  setInterval(constantAPIcalls, 5000);
 }
+// else if (currentGroup){
+//   // setTimeout(ONLOAD, 0);
+//   // setInterval(constantAPIcalls, 5000);
+// }
 
 interface DISPLAYOBJ {
   message: string;

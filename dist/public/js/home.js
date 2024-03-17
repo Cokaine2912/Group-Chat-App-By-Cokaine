@@ -12,6 +12,7 @@ const TOKEN = localStorage.getItem("token");
 function TakeToGroup(event) {
     return __awaiter(this, void 0, void 0, function* () {
         event.preventDefault();
+        setInterval(constantAPIcalls, 5000);
         const main = document.getElementById("main");
         main.innerHTML = `<div class="chat-header" id ="chat-header">
   <h3 id="main-heading-h3">Group Chat By Cokaine</h3>
@@ -37,7 +38,7 @@ function TakeToGroup(event) {
         console.log(event.target.id);
         const GroupToShow = event.target.id;
         const chatHeader = document.getElementById("chat-header");
-        chatHeader.innerHTML = `<h3 id="main-heading-h3">${GroupToShow}</h3>`;
+        chatHeader.innerHTML = `<h3 id="main-heading-h3">${GroupToShow}</h3><button id="add-member-button">➕Add Member</button>`;
         // const all = await axios.get(`http://localhost:6969/grpmsg/${GroupToShow}`, {
         //   headers: { token: TOKEN, GroupToShow: GroupToShow },
         // });
@@ -49,6 +50,15 @@ function TakeToGroup(event) {
         localStorage.setItem("currentGroup", currentGroup);
         const AllMessages = all.data.AllMessages;
         localStorage.setItem("chatHistory", JSON.stringify(AllMessages.slice(-30)));
+        const AddMemBtn = document.getElementById("add-member-button");
+        const PopupForm = document.getElementById("popupForm");
+        const FixedGroupName = document.getElementById("new-group-name");
+        AddMemBtn.addEventListener("click", function () {
+            console.log("Button clicked !!!");
+            FixedGroupName.setAttribute("value", `${currentGroup}`);
+            FixedGroupName.setAttribute("readonly", "true");
+            PopupForm.style.display = "block";
+        });
         NewONLOAD();
         // window.location.href = "./chat.html";
     });
@@ -56,7 +66,7 @@ function TakeToGroup(event) {
 function DISPLAYGROUP(obj) {
     const ul = document.getElementById("all-groups-list");
     const newli = document.createElement("li");
-    newli.innerHTML = `<li class = "group-list-item"><a class = "group-link-a" id = "${obj.groupName}" onclick = "TakeToGroup(event)">${obj.groupName}</a></li>`;
+    newli.innerHTML = `<li class = "group-list-item" id = "${obj.groupName}" onclick = "TakeToGroup(event)">${obj.groupName}</li>`;
     ul.appendChild(newli);
     //   const groupTiles = document.getElementById(
     //     "group-tiles-div"
