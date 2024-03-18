@@ -39,4 +39,16 @@ router.post(
   MsgController.postGrpMessage
 );
 
+router.post(
+  "/removemember",
+  Middleware.UserAuthentication,
+  MsgController.postRemoveMember
+);
+
+router.post(
+  "/makeadmin",
+  Middleware.UserAuthentication,
+  MsgController.postMakeAdmin
+);
+
 module.exports = router;

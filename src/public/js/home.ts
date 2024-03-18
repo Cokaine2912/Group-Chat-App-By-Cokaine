@@ -5,6 +5,8 @@ async function TakeToGroup(event: any) {
 
   setInterval(constantAPIcalls, 5000);
 
+  // Setting Up The Main Content
+
   const main = document.getElementById("main") as HTMLDivElement;
 
   main.innerHTML = `<div class="chat-header" id ="chat-header">
@@ -25,15 +27,13 @@ async function TakeToGroup(event: any) {
     ></textarea>
     <button id="send-button">➤</button>
   </form>
-  <!-- Message input form goes here -->
-  <!-- You can add input fields for message text, send button, etc. -->
 </div>`;
 
-  console.log(event.target.id);
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   const GroupToShow = event.target.id;
 
-  // ADMIN Checking
+  // ADMIN Checking  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   let AdminCheck = await axios.get("http://localhost:6969/grpmsg/admincheck", {
     headers: { token: TOKEN, grouptoshow: GroupToShow },
@@ -41,17 +41,23 @@ async function TakeToGroup(event: any) {
 
   AdminCheck = AdminCheck.data;
 
+  let isAdmin = AdminCheck.AdminCheck.isAdmin; // THE isAdmin Boolean
+
   let AddButtonForAdmin = "";
 
   console.log("ADMIN CHECK  : ", AdminCheck.AdminCheck.isAdmin);
 
-  if (AdminCheck.AdminCheck.isAdmin) {
+  let RemoveRight = "";
+  let MakeAdminRight = "";
+  let MemberStatus = "";
+
+  if (isAdmin) {
     AddButtonForAdmin = `<button id="add-member-button">Group Info</button>
     <div id="add-member-popup-form" class="popup">
     <form
       class="popup-content"
       id="add-member-popup-content"
-      onsubmit="CREATEGROUP(event)"
+      onsubmit="ADDINGMEMBERTOGROUP(event)"
     >
       <span class="close" id="add-member-close" >&times;</span>
       <h2 id="add-member-form-heading">New Group</h2>
@@ -62,7 +68,6 @@ async function TakeToGroup(event: any) {
         name="name"
         required
       />
-      <br /><br />
       <input
         type="email"
         id="add-member-email"
@@ -74,14 +79,37 @@ async function TakeToGroup(event: any) {
       <div id="group-member-list-div"><ul id="group-members-list"></ul></div>
     </form>
   </div>`;
+    RemoveRight = `<button id="remove-member-button" onclick="REMOVEMEMBER(event)">Remove</button>`;
+    MakeAdminRight = `<button id="make-admin-button" onclick="MAKEADMIN(event)">Make Admin</button>`;
+  } else {
+    AddButtonForAdmin = `<button id="add-member-button">Group Info</button>
+    <div id="add-member-popup-form" class="popup">
+    <form
+      class="popup-content"
+      id="add-member-popup-content"
+      onsubmit="ADDINGMEMBERTOGROUP(event)"
+    >
+      <span class="close" id="add-member-close" >&times;</span>
+      <h2 id="add-member-form-heading">New Group</h2>
+      <div id="group-member-list-div"><ul id="group-members-list"></ul></div>
+    </form>
+  </div>`;
   }
+
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  // Setting Up The Group Name Header ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   const chatHeader = document.getElementById("chat-header") as HTMLDivElement;
   chatHeader.innerHTML = `<h3 id="main-heading-h3">${GroupToShow}</h3>${AddButtonForAdmin}`;
 
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
   // const all = await axios.get(`http://localhost:6969/grpmsg/${GroupToShow}`, {
   //   headers: { token: TOKEN, GroupToShow: GroupToShow },
   // });
+
+  // Getting All The Group Messages/Chats - Storing In LS And Displaying ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   const all = await axios.get("http://localhost:6969/grpmsg/allmsg", {
     headers: { token: TOKEN, grouptoshow: GroupToShow },
@@ -92,6 +120,8 @@ async function TakeToGroup(event: any) {
 
   const AllMessages = all.data.AllMessages;
   localStorage.setItem("chatHistory", JSON.stringify(AllMessages.slice(-30)));
+
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   const AddMemBtn = document.getElementById(
     "add-member-button"
@@ -119,12 +149,19 @@ async function TakeToGroup(event: any) {
 
     allMembers = allMembers.data.AllGroupMembers;
 
-    console.log(allMembers);
-
     for (let i = 0; i < allMembers.length; i++) {
+      let memberOBJ = allMembers[i];
+      let ForMakingAdmin = "";
+      let MemberStatus;
+      if (memberOBJ.isAdmin) {
+        MemberStatus = "Admin";
+      } else {
+        MemberStatus = "Member";
+        ForMakingAdmin = MakeAdminRight;
+      }
       const newli = document.createElement("li");
-      newli.id = `${allMembers[i].memberEmail}-list-item`;
-      newli.innerHTML = `${allMembers[i].member} - ${allMembers[i].memberEmail}`;
+      newli.id = `${memberOBJ.memberEmail}-list-item`;
+      newli.innerHTML = `${memberOBJ.member} - ${memberOBJ.memberEmail} - <div id="${memberOBJ.memberEmail}-member-status">${MemberStatus}</div> ${RemoveRight} ${ForMakingAdmin}`;
       GroupMemberList.appendChild(newli);
     }
 
@@ -133,9 +170,11 @@ async function TakeToGroup(event: any) {
     ) as HTMLInputElement;
     AddMemBtn.addEventListener("click", function () {
       console.log("Button clicked !!!");
-      FixedGroupName.setAttribute("type", `hidden`);
-      FixedGroupName.setAttribute("value", `${currentGroup}`);
-      FixedGroupName.setAttribute("readonly", "true");
+      if (FixedGroupName) {
+        FixedGroupName.setAttribute("type", `hidden`);
+        FixedGroupName.setAttribute("value", `${currentGroup}`);
+        FixedGroupName.setAttribute("readonly", "true");
+      }
       PopupForm.style.display = "block";
     });
 
@@ -231,8 +270,46 @@ async function CREATEGROUP(event: any) {
   });
 
   console.log(op.data);
-  console.log(event.target.id)
+  console.log(event.target.id);
   alert(op.data.msg);
+}
+
+async function ADDINGMEMBERTOGROUP(event: any) {
+  event.preventDefault();
+  const obj = {
+    GroupName: event.target.name.value,
+    NewMemberEmail: event.target.email.value,
+  };
+
+  const op = await axios.post("http://localhost:6969/home/creategrp", obj, {
+    headers: { token: TOKEN },
+  });
+
+  console.log(op.data);
+  console.log(event.target.id);
+  alert(op.data.msg);
+
+  const TheUl = document.getElementById(
+    "group-members-list"
+  ) as HTMLUListElement;
+  console.log(TheUl);
+  const newli = document.createElement("li");
+
+  const memberOBJ = op.data.NewMship;
+  newli.id = `${memberOBJ.memberEmail}-list-item`;
+  let MemberStatus = "Member";
+  let MakeAdminRight = "";
+
+  if (memberOBJ.isAdmin) {
+    MemberStatus = "Admin";
+  } else {
+    MakeAdminRight = `<button id="make-admin-button" onclick="MAKEADMIN(event)">Make Admin</button>`;
+  }
+
+  const RemoveRight = `<button id="remove-member-button" onclick="REMOVEMEMBER(event)">Remove</button>`;
+
+  newli.innerHTML = `${memberOBJ.member} - ${memberOBJ.memberEmail} - <div id="${memberOBJ.memberEmail}-member-status">${MemberStatus}</div> ${RemoveRight} ${MakeAdminRight}`;
+  TheUl.appendChild(newli);
 }
 
 async function NewONLOAD() {

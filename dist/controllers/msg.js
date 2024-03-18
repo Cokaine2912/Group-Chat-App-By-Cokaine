@@ -95,3 +95,17 @@ exports.getAllGroupMembers = (req, res) => __awaiter(void 0, void 0, void 0, fun
     });
     return res.json({ success: true, AllGroupMembers: AllGroupMembers });
 });
+exports.postRemoveMember = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const currentGroup = req.headers.grouptoshow;
+    const toRemoveEmail = req.body.toRemoveId;
+    const op = yield membership_1.Membership.findOne({ where: { groupName: currentGroup, memberEmail: toRemoveEmail } });
+    const Delop = yield op.destroy();
+    return res.json({ success: true, removedMember: Delop });
+});
+exports.postMakeAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const currentGroup = req.headers.grouptoshow;
+    const toMakeEmail = req.body.toMakeId;
+    const op = yield membership_1.Membership.findOne({ where: { groupName: currentGroup, memberEmail: toMakeEmail } });
+    const Updateop = yield op.update({ isAdmin: 1 });
+    return res.json({ success: true, msg: `${toMakeEmail} is an Admin now !` });
+});

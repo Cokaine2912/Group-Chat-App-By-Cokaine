@@ -10,4 +10,6 @@ router.get("/getlatest/:lastMsgID", Middleware.UserAuthentication, MsgController
 router.get("/admincheck", Middleware.UserAuthentication, MsgController.getAdminCheck);
 router.get("/getallmembers", Middleware.UserAuthentication, MsgController.getAllGroupMembers);
 router.post("/postmsg", Middleware.UserAuthentication, MsgController.postGrpMessage);
+router.post("/removemember", Middleware.UserAuthentication, MsgController.postRemoveMember);
+router.post("/makeadmin", Middleware.UserAuthentication, MsgController.postMakeAdmin);
 module.exports = router;

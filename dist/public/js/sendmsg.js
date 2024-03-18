@@ -139,3 +139,33 @@ function SENDMSG(event) {
         msgBox.value = "";
     });
 }
+function REMOVEMEMBER(event) {
+    return __awaiter(this, void 0, void 0, function* () {
+        event.preventDefault();
+        const currentGroup = localStorage.getItem("currentGroup");
+        let toRemoveId = event.target.parentElement.id.split("-");
+        toRemoveId = toRemoveId[0];
+        const obj = { toRemoveId: toRemoveId };
+        const op = yield axios.post("http://localhost:6969/grpmsg/removemember", obj, {
+            headers: { token: token, grouptoshow: currentGroup },
+        });
+        console.log(op.data);
+        const liToRemove = document.getElementById(`${toRemoveId}-list-item`);
+        liToRemove.remove();
+    });
+}
+function MAKEADMIN(event) {
+    return __awaiter(this, void 0, void 0, function* () {
+        event.preventDefault();
+        let toMakeId = event.target.parentElement.id.split("-");
+        toMakeId = toMakeId[0];
+        const obj = { toMakeId: toMakeId };
+        const op = yield axios.post("http://localhost:6969/grpmsg/makeadmin", obj, {
+            headers: { token: token, grouptoshow: currentGroup },
+        });
+        if (op.data.success) {
+            const statusDiv = document.getElementById(`${toMakeId}-member-status`);
+            statusDiv.innerHTML = "Admin";
+        }
+    });
+}

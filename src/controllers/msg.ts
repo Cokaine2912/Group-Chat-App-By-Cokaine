@@ -98,5 +98,30 @@ exports.getAllGroupMembers = async (req: any, res: any) => {
     attributes: ["member", "memberEmail", "isAdmin"],
   });
 
-  return res.json({success : true , AllGroupMembers : AllGroupMembers })
+  return res.json({ success: true, AllGroupMembers: AllGroupMembers });
 };
+
+exports.postRemoveMember = async (req: any, res: any) => {
+  const currentGroup = req.headers.grouptoshow;
+
+  const toRemoveEmail = req.body.toRemoveId;
+
+  const op = await Membership.findOne({where : {groupName : currentGroup , memberEmail : toRemoveEmail}}) as any
+
+  const Delop = await op.destroy()
+  return res.json({success : true , removedMember : Delop})
+};
+
+exports.postMakeAdmin = async (req: any, res: any) => {
+
+  const currentGroup = req.headers.grouptoshow;
+
+  const toMakeEmail = req.body.toMakeId;
+
+  const op = await Membership.findOne({where : {groupName : currentGroup , memberEmail : toMakeEmail}}) as any
+
+  const Updateop = await op.update({isAdmin : 1})
+
+  return res.json({success : true , msg : `${toMakeEmail} is an Admin now !`})
+
+}

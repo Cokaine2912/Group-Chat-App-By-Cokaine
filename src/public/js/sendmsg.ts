@@ -175,3 +175,45 @@ async function SENDMSG(event: any) {
   const msgBox = document.getElementById("chat-msg") as HTMLTextAreaElement;
   msgBox.value = "";
 }
+
+async function REMOVEMEMBER(event: any) {
+  event.preventDefault();
+  const currentGroup = localStorage.getItem("currentGroup");
+  let toRemoveId = event.target.parentElement.id.split("-");
+  toRemoveId = toRemoveId[0];
+  const obj = { toRemoveId: toRemoveId };
+
+  const op = await axios.post(
+    "http://localhost:6969/grpmsg/removemember",
+    obj,
+    {
+      headers: { token: token, grouptoshow: currentGroup },
+    }
+  );
+  console.log(op.data);
+
+  const liToRemove = document.getElementById(
+    `${toRemoveId}-list-item`
+  ) as HTMLLIElement;
+  liToRemove.remove();
+}
+
+async function MAKEADMIN(event: any) {
+  event.preventDefault();
+  let toMakeId = event.target.parentElement.id.split("-");
+  toMakeId = toMakeId[0];
+
+  const obj = { toMakeId: toMakeId };
+
+  const op = await axios.post(
+    "http://localhost:6969/grpmsg/makeadmin",
+    obj,
+    {
+      headers: { token: token, grouptoshow: currentGroup },
+    }
+  );
+  if (op.data.success) {
+    const statusDiv = document.getElementById(`${toMakeId}-member-status`) as HTMLDivElement
+    statusDiv.innerHTML = "Admin"
+  }
+}
