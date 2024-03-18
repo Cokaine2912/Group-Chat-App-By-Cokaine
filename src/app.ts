@@ -21,9 +21,10 @@ const homeRoutes = require("./routes/home")
 
 const app = express();
 
-app.use(cors(
-  { origin: "http://127.0.0.1:3000", methods: ["GET", "POST"] }
-));
+// app.use(cors(
+//   { origin: "http://127.0.0.1:3000", methods: ["GET", "POST"] }
+// ));
+app.use(cors())
 app.use(bodyParser.json());
 
 app.use(userRoutes);
@@ -60,6 +61,8 @@ app.get("/favicon.ico",(req : any, res : any)=>{
 })
 
 console.log("Start at : ", new Date().toLocaleTimeString())
+
+console.log("##### DB Schema :",process.env.DB_SCHEMA)
 
 User.hasMany(GroupMessage);
 GroupMessage.belongsTo(User);

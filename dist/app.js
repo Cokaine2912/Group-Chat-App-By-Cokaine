@@ -13,12 +13,14 @@ const grpmsg_1 = require("./models/grpmsg");
 const membership_1 = require("./models/membership");
 const group_1 = require("./models/group");
 require('dotenv').config();
-console.log("#############################", process.env.TEST);
 const userRoutes = require("./routes/user");
 const grpRoutes = require("./routes/grpmsg");
 const homeRoutes = require("./routes/home");
 const app = (0, express_1.default)();
-app.use((0, cors_1.default)({ origin: "http://127.0.0.1:3000", methods: ["GET", "POST"] }));
+// app.use(cors(
+//   { origin: "http://127.0.0.1:3000", methods: ["GET", "POST"] }
+// ));
+app.use((0, cors_1.default)());
 app.use(body_parser_1.default.json());
 app.use(userRoutes);
 app.use("/grpmsg", grpRoutes);
@@ -48,6 +50,7 @@ app.get("/favicon.ico", (req, res) => {
     res.sendFile(fp);
 });
 console.log("Start at : ", new Date().toLocaleTimeString());
+console.log("##### DB Schema :", process.env.DB_SCHEMA);
 user_1.User.hasMany(grpmsg_1.GroupMessage);
 grpmsg_1.GroupMessage.belongsTo(user_1.User);
 user_1.User.hasMany(membership_1.Membership);

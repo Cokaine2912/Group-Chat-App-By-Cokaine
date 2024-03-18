@@ -22,7 +22,7 @@ async function SIGNUP(event: any) {
     password: event.target.password.value,
   };
 
-  const op = await axios.post("http://localhost:6969/adduser", obj as OBJ)
+  const op = await axios.post("http://13.201.21.152:6969/adduser", obj as OBJ)
 
   alert(op.data.msg);
 
@@ -36,7 +36,7 @@ async function LOGIN(event: any) {
   }
 
   try {
-    const op = await axios.post("http://localhost:6969/userlogin", obj as LoginOBJ)
+    const op = await axios.post("http://13.201.21.152:6969/userlogin", obj as LoginOBJ)
     const res = op.data
     const token = res.token
     const ChatUser = res.username

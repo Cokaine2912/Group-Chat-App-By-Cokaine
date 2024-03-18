@@ -35,7 +35,7 @@ function ONLOAD() {
             AllMessages = JSON.parse(History);
         }
         else {
-            const all = yield axios.get("http://localhost:6969/grpmsg/allmsg", {
+            const all = yield axios.get("http://13.201.21.152:6969/grpmsg/allmsg", {
                 headers: { token: token, grouptoshow: currentGroup },
             });
             AllMessages = all.data.AllMessages;
@@ -59,7 +59,7 @@ function constantAPIcalls() {
     return __awaiter(this, void 0, void 0, function* () {
         const currentGroup = localStorage.getItem("currentGroup");
         const lastMsgID = localStorage.getItem("lastMsgID");
-        const op = yield axios.get(`http://localhost:6969/grpmsg/getlatest/${lastMsgID}`, { headers: { token: token, grouptoshow: currentGroup } });
+        const op = yield axios.get(`http://13.201.21.152:6969/grpmsg/getlatest/${lastMsgID}`, { headers: { token: token, grouptoshow: currentGroup } });
         const status = op.data.status;
         console.log(status);
         const LatestMessages = op.data.LatestMessages;
@@ -120,7 +120,7 @@ function SENDMSG(event) {
         const msg = event.target.chatmsg.value;
         const token = localStorage.getItem("token");
         const obj = { msg: msg, toGroup: currentGroup };
-        const op = yield axios.post("http://localhost:6969/grpmsg/postmsg", obj, {
+        const op = yield axios.post("http://13.201.21.152:6969/grpmsg/postmsg", obj, {
             headers: { token: token },
         });
         let lastMsgID = localStorage.getItem("lastMsgID");
@@ -146,7 +146,7 @@ function REMOVEMEMBER(event) {
         let toRemoveId = event.target.parentElement.id.split("-");
         toRemoveId = toRemoveId[0];
         const obj = { toRemoveId: toRemoveId };
-        const op = yield axios.post("http://localhost:6969/grpmsg/removemember", obj, {
+        const op = yield axios.post("http://13.201.21.152:6969/grpmsg/removemember", obj, {
             headers: { token: token, grouptoshow: currentGroup },
         });
         console.log(op.data);
@@ -160,7 +160,7 @@ function MAKEADMIN(event) {
         let toMakeId = event.target.parentElement.id.split("-");
         toMakeId = toMakeId[0];
         const obj = { toMakeId: toMakeId };
-        const op = yield axios.post("http://localhost:6969/grpmsg/makeadmin", obj, {
+        const op = yield axios.post("http://13.201.21.152:6969/grpmsg/makeadmin", obj, {
             headers: { token: token, grouptoshow: currentGroup },
         });
         if (op.data.success) {

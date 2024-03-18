@@ -55,7 +55,7 @@ async function ONLOAD() {
   if (History) {
     AllMessages = JSON.parse(History);
   } else {
-    const all = await axios.get("http://localhost:6969/grpmsg/allmsg", {
+    const all = await axios.get("http://13.201.21.152:6969/grpmsg/allmsg", {
       headers: { token: token, grouptoshow: currentGroup },
     });
     AllMessages = all.data.AllMessages;
@@ -83,7 +83,7 @@ async function constantAPIcalls() {
   const currentGroup = localStorage.getItem("currentGroup");
   const lastMsgID = localStorage.getItem("lastMsgID");
   const op = await axios.get(
-    `http://localhost:6969/grpmsg/getlatest/${lastMsgID}`,
+    `http://13.201.21.152:6969/grpmsg/getlatest/${lastMsgID}`,
     { headers: { token: token, grouptoshow: currentGroup } }
   );
   const status = op.data.status;
@@ -155,7 +155,7 @@ async function SENDMSG(event: any) {
   const msg: string = event.target.chatmsg.value;
   const token = localStorage.getItem("token");
   const obj = { msg: msg, toGroup: currentGroup };
-  const op = await axios.post("http://localhost:6969/grpmsg/postmsg", obj, {
+  const op = await axios.post("http://13.201.21.152:6969/grpmsg/postmsg", obj, {
     headers: { token: token },
   });
   let lastMsgID: any = localStorage.getItem("lastMsgID");
@@ -184,7 +184,7 @@ async function REMOVEMEMBER(event: any) {
   const obj = { toRemoveId: toRemoveId };
 
   const op = await axios.post(
-    "http://localhost:6969/grpmsg/removemember",
+    "http://13.201.21.152:6969/grpmsg/removemember",
     obj,
     {
       headers: { token: token, grouptoshow: currentGroup },
@@ -206,7 +206,7 @@ async function MAKEADMIN(event: any) {
   const obj = { toMakeId: toMakeId };
 
   const op = await axios.post(
-    "http://localhost:6969/grpmsg/makeadmin",
+    "http://13.201.21.152:6969/grpmsg/makeadmin",
     obj,
     {
       headers: { token: token, grouptoshow: currentGroup },

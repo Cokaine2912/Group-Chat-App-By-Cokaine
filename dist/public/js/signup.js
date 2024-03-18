@@ -18,7 +18,7 @@ function SIGNUP(event) {
             phone: event.target.phone.value,
             password: event.target.password.value,
         };
-        const op = yield axios.post("http://localhost:6969/adduser", obj);
+        const op = yield axios.post("http://13.201.21.152:6969/adduser", obj);
         alert(op.data.msg);
     });
 }
@@ -30,7 +30,7 @@ function LOGIN(event) {
             password: event.target.password.value
         };
         try {
-            const op = yield axios.post("http://localhost:6969/userlogin", obj);
+            const op = yield axios.post("http://13.201.21.152:6969/userlogin", obj);
             const res = op.data;
             const token = res.token;
             const ChatUser = res.username;
