@@ -12,6 +12,8 @@ const user_1 = require("./models/user");
 const grpmsg_1 = require("./models/grpmsg");
 const membership_1 = require("./models/membership");
 const group_1 = require("./models/group");
+require('dotenv').config();
+console.log("#############################", process.env.TEST);
 const userRoutes = require("./routes/user");
 const grpRoutes = require("./routes/grpmsg");
 const homeRoutes = require("./routes/home");

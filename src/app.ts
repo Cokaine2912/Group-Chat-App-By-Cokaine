@@ -12,6 +12,9 @@ import { Membership } from "./models/membership";
 
 import { Group } from "./models/group";
 
+require('dotenv').config();
+
+
 const userRoutes = require("./routes/user")
 const grpRoutes = require("./routes/grpmsg")
 const homeRoutes = require("./routes/home")
