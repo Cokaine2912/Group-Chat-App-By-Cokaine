@@ -55,7 +55,7 @@ async function ONLOAD() {
   if (History) {
     AllMessages = JSON.parse(History);
   } else {
-    const all = await axios.get("http://13.201.21.152:6969/grpmsg/allmsg", {
+    const all = await axios.get("http://localhost:6969/grpmsg/allmsg", {
       headers: { token: token, grouptoshow: currentGroup },
     });
     AllMessages = all.data.AllMessages;
@@ -83,7 +83,7 @@ async function constantAPIcalls() {
   const currentGroup = localStorage.getItem("currentGroup");
   const lastMsgID = localStorage.getItem("lastMsgID");
   const op = await axios.get(
-    `http://13.201.21.152:6969/grpmsg/getlatest/${lastMsgID}`,
+    `http://localhost:6969/grpmsg/getlatest/${lastMsgID}`,
     { headers: { token: token, grouptoshow: currentGroup } }
   );
   const status = op.data.status;
@@ -158,7 +158,7 @@ async function SENDMSG(event: any) {
 
   try {
     const op = await axios.post(
-      "http://13.201.21.152:6969/grpmsg/postmsg",
+      "http://localhost:6969/grpmsg/postmsg",
       obj,
       {
         headers: { token: token },
@@ -195,7 +195,7 @@ async function REMOVEMEMBER(event: any) {
 
   try {
     const op = await axios.post(
-      "http://13.201.21.152:6969/grpmsg/removemember",
+      "http://localhost:6969/grpmsg/removemember",
       obj,
       {
         headers: { token: token, grouptoshow: currentGroup },
@@ -221,7 +221,7 @@ async function MAKEADMIN(event: any) {
 
   try {
     const op = await axios.post(
-      "http://13.201.21.152:6969/grpmsg/makeadmin",
+      "http://localhost:6969/grpmsg/makeadmin",
       obj,
       {
         headers: { token: token, grouptoshow: currentGroup },
@@ -233,6 +233,7 @@ async function MAKEADMIN(event: any) {
       ) as HTMLDivElement;
       statusDiv.innerHTML = "Admin";
     }
+    event.target.remove()
   } catch (error) {
     console.log(error);
     alert("Something Went Wrong !");
