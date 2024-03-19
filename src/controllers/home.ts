@@ -14,20 +14,40 @@ interface USEROBJ {
   updatedAt: any;
 }
 
+async function PRECHECK(memberId: any, group: string) {
+  try {
+    const temp = (await Membership.findOne({
+      where: { userId: memberId, groupName: group },
+    })) as any;
+    if (temp.isAdmin) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 exports.getAllGroups = async (req: any, res: any) => {
   const parsed = req.headers.userOBJ;
   const userId = parsed.userId;
 
-  const AllGroupsForThisUser = await Membership.findAll({
-    attributes: ["id", "groupName"], // Select only id and groupName columns
-    where: {
-      userId: userId, // Filter by userId
-    },
-  });
+  try {
+    const AllGroupsForThisUser = await Membership.findAll({
+      attributes: ["id", "groupName"], // Select only id and groupName columns
+      where: {
+        userId: userId, // Filter by userId
+      },
+    });
 
-  return res
-    .status(200)
-    .json({ success: true, AllGroupsForThisUser: AllGroupsForThisUser });
+    return res
+      .status(200)
+      .json({ success: true, AllGroupsForThisUser: AllGroupsForThisUser });
+  } catch (error) {
+    console.log(error);
+    return res.json({ success: false, msg: "Internal Server Error !" });
+  }
 };
 
 exports.postAddMember = async (req: any, res: any) => {
@@ -37,12 +57,12 @@ exports.postAddMember = async (req: any, res: any) => {
   const GroupName = req.body.GroupName;
   const NewMemberEmail = req.body.NewMemberEmail;
 
-  const AddingPersonOBJ = (await User.findByPk(AddingId)) as any;
-  const AddingPersonEmail = AddingPersonOBJ.email;
-
   try {
+    const AddingPersonOBJ = (await User.findByPk(AddingId)) as any;
+    const AddingPersonEmail = AddingPersonOBJ.email;
     let GROUP: any = await Group.findOne({ where: { groupName: GroupName } });
 
+    let test;
     if (!GROUP) {
       GROUP = await Group.create({ groupName: GroupName });
       const MshipOBJ = {
@@ -54,7 +74,11 @@ exports.postAddMember = async (req: any, res: any) => {
         groupId: GROUP.id,
       };
       let AdminMship = await Membership.create(MshipOBJ);
-      console.log(AdminMship);
+    } else {
+      test = await PRECHECK(AddingId, GroupName);
+      if (!test) {
+        return res.json({ success: false, msg: "You are not Authorized !" });
+      }
     }
 
     // TO Check if the User Trying to Add is the
@@ -98,11 +122,12 @@ exports.postAddMember = async (req: any, res: any) => {
       success: true,
       NewMship: NewMship,
       msg: "New Member Added Successfully !",
+      test: test,
     });
   } catch (err) {
     console.log(err);
     return res
       .status(500)
-      .json({ success: false, msg: "Something went wrong" });
+      .json({ success: false, msg: "Internal Server Error !" });
   }
 };

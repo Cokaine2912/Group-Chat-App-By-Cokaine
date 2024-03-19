@@ -12,18 +12,42 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const user_1 = require("../models/user");
 const group_1 = require("../models/group");
 const membership_1 = require("../models/membership");
+function PRECHECK(memberId, group) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            const temp = (yield membership_1.Membership.findOne({
+                where: { userId: memberId, groupName: group },
+            }));
+            if (temp.isAdmin) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+        catch (error) {
+            console.log(error);
+        }
+    });
+}
 exports.getAllGroups = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const parsed = req.headers.userOBJ;
     const userId = parsed.userId;
-    const AllGroupsForThisUser = yield membership_1.Membership.findAll({
-        attributes: ["id", "groupName"], // Select only id and groupName columns
-        where: {
-            userId: userId, // Filter by userId
-        },
-    });
-    return res
-        .status(200)
-        .json({ success: true, AllGroupsForThisUser: AllGroupsForThisUser });
+    try {
+        const AllGroupsForThisUser = yield membership_1.Membership.findAll({
+            attributes: ["id", "groupName"], // Select only id and groupName columns
+            where: {
+                userId: userId, // Filter by userId
+            },
+        });
+        return res
+            .status(200)
+            .json({ success: true, AllGroupsForThisUser: AllGroupsForThisUser });
+    }
+    catch (error) {
+        console.log(error);
+        return res.json({ success: false, msg: "Internal Server Error !" });
+    }
 });
 exports.postAddMember = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const parsed = req.headers.userOBJ;
@@ -31,10 +55,11 @@ exports.postAddMember = (req, res) => __awaiter(void 0, void 0, void 0, function
     const AddingName = parsed.username;
     const GroupName = req.body.GroupName;
     const NewMemberEmail = req.body.NewMemberEmail;
-    const AddingPersonOBJ = (yield user_1.User.findByPk(AddingId));
-    const AddingPersonEmail = AddingPersonOBJ.email;
     try {
+        const AddingPersonOBJ = (yield user_1.User.findByPk(AddingId));
+        const AddingPersonEmail = AddingPersonOBJ.email;
         let GROUP = yield group_1.Group.findOne({ where: { groupName: GroupName } });
+        let test;
         if (!GROUP) {
             GROUP = yield group_1.Group.create({ groupName: GroupName });
             const MshipOBJ = {
@@ -46,7 +71,12 @@ exports.postAddMember = (req, res) => __awaiter(void 0, void 0, void 0, function
                 groupId: GROUP.id,
             };
             let AdminMship = yield membership_1.Membership.create(MshipOBJ);
-            console.log(AdminMship);
+        }
+        else {
+            test = yield PRECHECK(AddingId, GroupName);
+            if (!test) {
+                return res.json({ success: false, msg: "You are not Authorized !" });
+            }
         }
         // TO Check if the User Trying to Add is the
         const NewMemberToAdd = yield user_1.User.findOne({
@@ -82,12 +112,13 @@ exports.postAddMember = (req, res) => __awaiter(void 0, void 0, void 0, function
             success: true,
             NewMship: NewMship,
             msg: "New Member Added Successfully !",
+            test: test,
         });
     }
     catch (err) {
         console.log(err);
         return res
             .status(500)
-            .json({ success: false, msg: "Something went wrong" });
+            .json({ success: false, msg: "Internal Server Error !" });
     }
 });

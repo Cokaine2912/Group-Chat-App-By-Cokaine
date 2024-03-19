@@ -24,6 +24,7 @@ html {
   justify-content: space-between;
   padding: 5px;
   border-bottom: 1px solid black;
+  background-color: rgba(255, 255, 255, 0.555);
 }
 
 #company-name {
@@ -38,8 +39,18 @@ html {
   margin-right: 10px;
 }
 
+#username-span{
+  font-weight: 600;
+  font-size: larger;
+  background-image: linear-gradient(to bottom left, gold, #a71d01);
+  color: transparent;
+  background-clip: text;
+  -webkit-background-clip: text;
+}
+
 #username-span:hover {
   cursor: default;
+  
 }
 
 .content {
@@ -182,9 +193,12 @@ html {
 }
 #openFormBtn {
   font-family: candara;
+  color: wheat;
+  font-weight: 700;
+  padding : 2px 7px;
   background: linear-gradient(
     to right bottom,
-    rgba(157, 234, 43, 0.804),
+    rgba(85, 238, 230, 0.772),
     #293f50b7
   );
   border-radius: 10px;

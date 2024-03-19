@@ -120,23 +120,29 @@ function SENDMSG(event) {
         const msg = event.target.chatmsg.value;
         const token = localStorage.getItem("token");
         const obj = { msg: msg, toGroup: currentGroup };
-        const op = yield axios.post("http://13.201.21.152:6969/grpmsg/postmsg", obj, {
-            headers: { token: token },
-        });
-        // let lastMsgID: any = localStorage.getItem("lastMsgID");
-        // let latest = +lastMsgID + 1;
-        // localStorage.setItem("lastMsgID", `${latest}`);
-        const History = localStorage.getItem("chatHistory");
-        if (History) {
-            let chatHistory = JSON.parse(History);
-            chatHistory = chatHistory.slice(-1 * (capacity - 1));
-            chatHistory.push(op.data);
-            localStorage.setItem("chatHistory", JSON.stringify(chatHistory));
+        try {
+            const op = yield axios.post("http://13.201.21.152:6969/grpmsg/postmsg", obj, {
+                headers: { token: token },
+            });
+            // let lastMsgID: any = localStorage.getItem("lastMsgID");
+            // let latest = +lastMsgID + 1;
+            // localStorage.setItem("lastMsgID", `${latest}`);
+            const History = localStorage.getItem("chatHistory");
+            if (History) {
+                let chatHistory = JSON.parse(History);
+                chatHistory = chatHistory.slice(-1 * (capacity - 1));
+                chatHistory.push(op.data);
+                localStorage.setItem("chatHistory", JSON.stringify(chatHistory));
+            }
+            // chatDisplay(op.data);
+            // ScrollDown();
+            const msgBox = document.getElementById("chat-msg");
+            msgBox.value = "";
         }
-        // chatDisplay(op.data);
-        // ScrollDown();
-        const msgBox = document.getElementById("chat-msg");
-        msgBox.value = "";
+        catch (err) {
+            console.log(err);
+            alert("Something Went Wrong !");
+        }
     });
 }
 function REMOVEMEMBER(event) {
@@ -146,12 +152,17 @@ function REMOVEMEMBER(event) {
         let toRemoveId = event.target.parentElement.id.split("-");
         toRemoveId = toRemoveId[0];
         const obj = { toRemoveId: toRemoveId };
-        const op = yield axios.post("http://13.201.21.152:6969/grpmsg/removemember", obj, {
-            headers: { token: token, grouptoshow: currentGroup },
-        });
-        console.log(op.data);
-        const liToRemove = document.getElementById(`${toRemoveId}-list-item`);
-        liToRemove.remove();
+        try {
+            const op = yield axios.post("http://13.201.21.152:6969/grpmsg/removemember", obj, {
+                headers: { token: token, grouptoshow: currentGroup },
+            });
+            const liToRemove = document.getElementById(`${toRemoveId}-list-item`);
+            liToRemove.remove();
+        }
+        catch (error) {
+            console.log(error);
+            alert("Something Went Wrong !");
+        }
     });
 }
 function MAKEADMIN(event) {
@@ -160,12 +171,18 @@ function MAKEADMIN(event) {
         let toMakeId = event.target.parentElement.id.split("-");
         toMakeId = toMakeId[0];
         const obj = { toMakeId: toMakeId };
-        const op = yield axios.post("http://13.201.21.152:6969/grpmsg/makeadmin", obj, {
-            headers: { token: token, grouptoshow: currentGroup },
-        });
-        if (op.data.success) {
-            const statusDiv = document.getElementById(`${toMakeId}-member-status`);
-            statusDiv.innerHTML = "Admin";
+        try {
+            const op = yield axios.post("http://13.201.21.152:6969/grpmsg/makeadmin", obj, {
+                headers: { token: token, grouptoshow: currentGroup },
+            });
+            if (op.data.success) {
+                const statusDiv = document.getElementById(`${toMakeId}-member-status`);
+                statusDiv.innerHTML = "Admin";
+            }
+        }
+        catch (error) {
+            console.log(error);
+            alert("Something Went Wrong !");
         }
     });
 }

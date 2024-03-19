@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const user_1 = require("../models/user");
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+require("dotenv").config();
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function HASHING(password, saltrounds) {
     return new Promise((resolve, reject) => {
@@ -40,7 +41,7 @@ function DEHASHING(password, hash) {
         });
     });
 }
-const SecretKey = "bfishfldsbubifbo"; // JWT key
+const SecretKey = process.env.JWT_SECRET_KEY; // JWT key
 function generateAccessToken(id, name) {
     return jsonwebtoken_1.default.sign({ userId: id, username: name }, SecretKey);
 }
@@ -103,10 +104,3 @@ exports.getUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             .json({ success: false, message: "Internal Server Error" });
     }
 });
-// exports.postValidateUser = async (req: any, res: any) => {
-//     try {
-//     }
-//     catch (err) {
-//         res.status(500).json({ error: err })
-//     }
-// }

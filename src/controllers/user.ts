@@ -1,6 +1,7 @@
 import { User } from "../models/user";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+require("dotenv").config();
 
 interface ReqBody {
   username: string;
@@ -42,7 +43,7 @@ function DEHASHING(password: string, hash: string) {
   });
 }
 
-const SecretKey = "bfishfldsbubifbo"; // JWT key
+const SecretKey = process.env.JWT_SECRET_KEY as string; // JWT key
 
 function generateAccessToken(id: number, name: string) {
   return jwt.sign({ userId: id, username: name }, SecretKey);
@@ -113,11 +114,4 @@ exports.getUser = async (req: any, res: any) => {
   }
 };
 
-// exports.postValidateUser = async (req: any, res: any) => {
-//     try {
 
-//     }
-//     catch (err) {
-//         res.status(500).json({ error: err })
-//     }
-// }

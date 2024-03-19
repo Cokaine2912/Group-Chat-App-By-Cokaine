@@ -155,25 +155,35 @@ async function SENDMSG(event: any) {
   const msg: string = event.target.chatmsg.value;
   const token = localStorage.getItem("token");
   const obj = { msg: msg, toGroup: currentGroup };
-  const op = await axios.post("http://13.201.21.152:6969/grpmsg/postmsg", obj, {
-    headers: { token: token },
-  });
-  // let lastMsgID: any = localStorage.getItem("lastMsgID");
-  // let latest = +lastMsgID + 1;
-  // localStorage.setItem("lastMsgID", `${latest}`);
 
-  const History = localStorage.getItem("chatHistory");
-  if (History) {
-    let chatHistory = JSON.parse(History);
-    chatHistory = chatHistory.slice(-1 * (capacity - 1));
-    chatHistory.push(op.data);
-    localStorage.setItem("chatHistory", JSON.stringify(chatHistory));
+  try {
+    const op = await axios.post(
+      "http://13.201.21.152:6969/grpmsg/postmsg",
+      obj,
+      {
+        headers: { token: token },
+      }
+    );
+    // let lastMsgID: any = localStorage.getItem("lastMsgID");
+    // let latest = +lastMsgID + 1;
+    // localStorage.setItem("lastMsgID", `${latest}`);
+
+    const History = localStorage.getItem("chatHistory");
+    if (History) {
+      let chatHistory = JSON.parse(History);
+      chatHistory = chatHistory.slice(-1 * (capacity - 1));
+      chatHistory.push(op.data);
+      localStorage.setItem("chatHistory", JSON.stringify(chatHistory));
+    }
+
+    // chatDisplay(op.data);
+    // ScrollDown();
+    const msgBox = document.getElementById("chat-msg") as HTMLTextAreaElement;
+    msgBox.value = "";
+  } catch (err) {
+    console.log(err);
+    alert("Something Went Wrong !");
   }
-
-  // chatDisplay(op.data);
-  // ScrollDown();
-  const msgBox = document.getElementById("chat-msg") as HTMLTextAreaElement;
-  msgBox.value = "";
 }
 
 async function REMOVEMEMBER(event: any) {
@@ -183,19 +193,23 @@ async function REMOVEMEMBER(event: any) {
   toRemoveId = toRemoveId[0];
   const obj = { toRemoveId: toRemoveId };
 
-  const op = await axios.post(
-    "http://13.201.21.152:6969/grpmsg/removemember",
-    obj,
-    {
-      headers: { token: token, grouptoshow: currentGroup },
-    }
-  );
-  console.log(op.data);
+  try {
+    const op = await axios.post(
+      "http://13.201.21.152:6969/grpmsg/removemember",
+      obj,
+      {
+        headers: { token: token, grouptoshow: currentGroup },
+      }
+    );
 
-  const liToRemove = document.getElementById(
-    `${toRemoveId}-list-item`
-  ) as HTMLLIElement;
-  liToRemove.remove();
+    const liToRemove = document.getElementById(
+      `${toRemoveId}-list-item`
+    ) as HTMLLIElement;
+    liToRemove.remove();
+  } catch (error) {
+    console.log(error);
+    alert("Something Went Wrong !");
+  }
 }
 
 async function MAKEADMIN(event: any) {
@@ -205,15 +219,22 @@ async function MAKEADMIN(event: any) {
 
   const obj = { toMakeId: toMakeId };
 
-  const op = await axios.post(
-    "http://13.201.21.152:6969/grpmsg/makeadmin",
-    obj,
-    {
-      headers: { token: token, grouptoshow: currentGroup },
+  try {
+    const op = await axios.post(
+      "http://13.201.21.152:6969/grpmsg/makeadmin",
+      obj,
+      {
+        headers: { token: token, grouptoshow: currentGroup },
+      }
+    );
+    if (op.data.success) {
+      const statusDiv = document.getElementById(
+        `${toMakeId}-member-status`
+      ) as HTMLDivElement;
+      statusDiv.innerHTML = "Admin";
     }
-  );
-  if (op.data.success) {
-    const statusDiv = document.getElementById(`${toMakeId}-member-status`) as HTMLDivElement
-    statusDiv.innerHTML = "Admin"
+  } catch (error) {
+    console.log(error);
+    alert("Something Went Wrong !");
   }
 }
