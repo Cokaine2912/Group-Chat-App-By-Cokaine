@@ -9,10 +9,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 const TOKEN = localStorage.getItem("token");
+const ChatUser = localStorage.getItem("ChatUser");
+const UsernameDrop = document.getElementById("username-span");
+UsernameDrop.innerHTML = `${ChatUser}`;
 function TakeToGroup(event) {
     return __awaiter(this, void 0, void 0, function* () {
         event.preventDefault();
-        setInterval(constantAPIcalls, 5000);
+        setInterval(constantAPIcalls, 2000);
         // Setting Up The Main Content
         const main = document.getElementById("main");
         main.innerHTML = `<div class="chat-header" id ="chat-header">
@@ -43,7 +46,6 @@ function TakeToGroup(event) {
         AdminCheck = AdminCheck.data;
         let isAdmin = AdminCheck.AdminCheck.isAdmin; // THE isAdmin Boolean
         let AddButtonForAdmin = "";
-        console.log("ADMIN CHECK  : ", AdminCheck.AdminCheck.isAdmin);
         let RemoveRight = "";
         let MakeAdminRight = "";
         let MemberStatus = "";
@@ -109,6 +111,7 @@ function TakeToGroup(event) {
         const AllMessages = all.data.AllMessages;
         localStorage.setItem("chatHistory", JSON.stringify(AllMessages.slice(-30)));
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Group Info button ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
         const AddMemBtn = document.getElementById("add-member-button");
         if (AddMemBtn) {
             const PopupForm = document.getElementById("add-member-popup-form");
@@ -153,7 +156,6 @@ function TakeToGroup(event) {
             });
         }
         NewONLOAD();
-        // window.location.href = "./chat.html";
     });
 }
 function DISPLAYGROUP(obj) {
@@ -161,59 +163,30 @@ function DISPLAYGROUP(obj) {
     const newli = document.createElement("li");
     newli.innerHTML = `<li class = "group-list-item" id = "${obj.groupName}" onclick = "TakeToGroup(event)">${obj.groupName}</li>`;
     ul.appendChild(newli);
-    //   const groupTiles = document.getElementById(
-    //     "group-tiles-div"
-    //   ) as HTMLDivElement;
-    //   const newDiv = document.createElement("div");
-    //   newDiv.className = "col";
-    //   newDiv.id = obj.groupName;
-    //   newDiv.setAttribute("onclick", "TakeToGroup(event)");
-    //   newDiv.innerHTML = `<img
-    //   src="../../images/OIG4.6TcaQbttp97gtr.jpeg"
-    //   alt="DP"
-    //   class="group-dp"
-    //   id = "${obj.groupName}" onclick = "TakeToGroup(event)"
-    // />${obj.groupName}`;
-    //   //
-    //   groupTiles.appendChild(newDiv);
 }
 function HOMELOAD() {
     return __awaiter(this, void 0, void 0, function* () {
-        // Fixing The PopUp Form
-        // const OriginalForm = `<span class="close">&times;</span>
-        //                 <h2 id="popup-form-heading">New Group</h2>
-        //                 <input
-        //                   type="text"
-        //                   placeholder="Group Name"
-        //                   id="new-group-name"
-        //                   name="name"
-        //                   required
-        //                 />
-        //                 <br /><br />
-        //                 <input
-        //                   type="email"
-        //                   id="email"
-        //                   name="email"
-        //                   required
-        //                   placeholder="New Member Email"
-        //                 /><br /><br />
-        //                 <button type="submit">Add Member</button>`;
-        // const ResetForm = document.getElementById("popup-content") as HTMLFormElement;
-        // ResetForm.innerHTML = OriginalForm;
-        const op = yield axios.get("http://13.201.21.152:6969/home/allgrps", {
-            headers: { token: TOKEN },
-        });
-        const AllGroupsForThisUser = op.data.AllGroupsForThisUser;
-        const groupList = document.getElementById("all-groups-list");
-        groupList.innerHTML = "";
-        if (AllGroupsForThisUser.length > 0) {
-            for (let i = 0; i < AllGroupsForThisUser.length; i++) {
-                DISPLAYGROUP(AllGroupsForThisUser[i]);
+        try {
+            const op = yield axios.get("http://13.201.21.152:6969/home/allgrps", {
+                headers: { token: TOKEN },
+            });
+            const AllGroupsForThisUser = op.data.AllGroupsForThisUser;
+            const groupList = document.getElementById("all-groups-list");
+            groupList.innerHTML = "";
+            if (AllGroupsForThisUser.length > 0) {
+                for (let i = 0; i < AllGroupsForThisUser.length; i++) {
+                    DISPLAYGROUP(AllGroupsForThisUser[i]);
+                }
             }
+        }
+        catch (err) {
+            console.log(err);
+            alert("Something went wrong !");
         }
     });
 }
 HOMELOAD();
+setInterval(HOMELOAD, 2000);
 function CREATEGROUP(event) {
     return __awaiter(this, void 0, void 0, function* () {
         event.preventDefault();
@@ -236,28 +209,32 @@ function ADDINGMEMBERTOGROUP(event) {
             GroupName: event.target.name.value,
             NewMemberEmail: event.target.email.value,
         };
-        const op = yield axios.post("http://13.201.21.152:6969/home/creategrp", obj, {
-            headers: { token: TOKEN },
-        });
-        console.log(op.data);
-        console.log(event.target.id);
-        alert(op.data.msg);
-        const TheUl = document.getElementById("group-members-list");
-        console.log(TheUl);
-        const newli = document.createElement("li");
-        const memberOBJ = op.data.NewMship;
-        newli.id = `${memberOBJ.memberEmail}-list-item`;
-        let MemberStatus = "Member";
-        let MakeAdminRight = "";
-        if (memberOBJ.isAdmin) {
-            MemberStatus = "Admin";
+        try {
+            const op = yield axios.post("http://13.201.21.152:6969/home/creategrp", obj, {
+                headers: { token: TOKEN },
+            });
+            alert(op.data.msg);
+            const TheUl = document.getElementById("group-members-list");
+            console.log(TheUl);
+            const newli = document.createElement("li");
+            const memberOBJ = op.data.NewMship;
+            newli.id = `${memberOBJ.memberEmail}-list-item`;
+            let MemberStatus = "Member";
+            let MakeAdminRight = "";
+            if (memberOBJ.isAdmin) {
+                MemberStatus = "Admin";
+            }
+            else {
+                MakeAdminRight = `<button id="make-admin-button" onclick="MAKEADMIN(event)">Make Admin</button>`;
+            }
+            const RemoveRight = `<button id="remove-member-button" onclick="REMOVEMEMBER(event)">Remove</button>`;
+            newli.innerHTML = `${memberOBJ.member} - ${memberOBJ.memberEmail} - <div id="${memberOBJ.memberEmail}-member-status">${MemberStatus}</div> ${RemoveRight} ${MakeAdminRight}`;
+            TheUl.appendChild(newli);
         }
-        else {
-            MakeAdminRight = `<button id="make-admin-button" onclick="MAKEADMIN(event)">Make Admin</button>`;
+        catch (err) {
+            console.log(err);
+            alert("Something Went Wrong !");
         }
-        const RemoveRight = `<button id="remove-member-button" onclick="REMOVEMEMBER(event)">Remove</button>`;
-        newli.innerHTML = `${memberOBJ.member} - ${memberOBJ.memberEmail} - <div id="${memberOBJ.memberEmail}-member-status">${MemberStatus}</div> ${RemoveRight} ${MakeAdminRight}`;
-        TheUl.appendChild(newli);
     });
 }
 function NewONLOAD() {

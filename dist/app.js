@@ -12,7 +12,7 @@ const user_1 = require("./models/user");
 const grpmsg_1 = require("./models/grpmsg");
 const membership_1 = require("./models/membership");
 const group_1 = require("./models/group");
-require('dotenv').config();
+require("dotenv").config();
 const userRoutes = require("./routes/user");
 const grpRoutes = require("./routes/grpmsg");
 const homeRoutes = require("./routes/home");
@@ -50,7 +50,6 @@ app.get("/favicon.ico", (req, res) => {
     res.sendFile(fp);
 });
 console.log("Start at : ", new Date().toLocaleTimeString());
-console.log("##### DB Schema :", process.env.DB_SCHEMA);
 user_1.User.hasMany(grpmsg_1.GroupMessage);
 grpmsg_1.GroupMessage.belongsTo(user_1.User);
 user_1.User.hasMany(membership_1.Membership);

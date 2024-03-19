@@ -1,90 +1,96 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Side Info Bar</title>
-    <link rel="stylesheet" href="styles.css" />
-    <style>
-      .container {
-        position: relative;
-        display: flex;
-      }
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dropdown Menu</title>
+<link rel="stylesheet" href="styles.css">
+<style>
+  /* Style the dropdown button */
+.dropbtn-container {
+  display: inline-block;
+}
 
-      #content {
-        flex-grow: 1;
-        padding-right: 10px; /* Adjust as needed */
-      }
+.dropbtn {
+  background-color: #ffffff;
+  color: #333333;
+  padding: 10px;
+  font-size: 16px;
+  border: none;
+}
 
-      .sidebar-container {
-        position: relative;
-        width: 250px; /* Width of the sidebar */
-      }
+/* Style the vertical dots icon */
+.vertical-dots {
+  font-size: 16px;
+  color: #333333;
+  cursor: pointer; /* Add pointer cursor only to the vertical dots icon */
+}
 
-      .info-bar {
-        position: absolute;
-        top: 0;
-        right: -250px; /* Initially hidden */
-        width: 250px;
-        height: 100%;
-        background-color: #f0f0f0;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-        transition: right 0.3s ease-in-out;
-      }
+/* Style the dropdown content (hidden by default) */
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #ffffff;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
 
-      .close {
-        color: #aaa;
-        float: right;
-        font-size: 28px;
-        font-weight: bold;
-        margin-right: 10px;
-        margin-top: 10px;
-      }
+/* Style the links inside the dropdown */
+.dropdown-content a {
+  color: #333333;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
 
-      .close:hover,
-      .close:focus {
-        color: black;
-        text-decoration: none;
-        cursor: pointer;
-      }
-    </style>
-  </head>
-  <body>
-    <div class="container">
-      <div id="content">
-        <!-- Your content here -->
-        <p>This is the main content.</p>
-      </div>
-      <div class="sidebar-container">
-        <button id="toggleButton">Toggle Info Bar</button>
-        <div id="infoBar" class="info-bar">
-          <span class="close" onclick="closeInfoBar()">&times;</span>
-          <p>This is the side info bar!</p>
-        </div>
-      </div>
-    </div>
-  
+/* Change color of dropdown links on hover */
+.dropdown-content a:hover {
+  background-color: #f2f2f2;
+}
 
-    <script>
-      const toggleButton = document.getElementById("toggleButton");
-      const infoBar = document.getElementById("infoBar");
+/* Show the dropdown content when active class is added */
+.dropdown-content.active {
+  display: block;
+}
+</style>
+</head>
+<body>
 
-      toggleButton.addEventListener("click", () => {
-        const currentRight = parseInt(
-          window.getComputedStyle(infoBar).getPropertyValue("right")
-        );
-        if (currentRight < 0) {
-          // Slide in
-          infoBar.style.right = "0";
-        } else {
-          // Slide out
-          infoBar.style.right = "-250px";
+ 
+<div class="dropdown">
+  <div class="dropbtn-container">
+    <span class="dropbtn">Username</span>
+  </div>
+  <span class="vertical-dots" onclick="toggleDropdown()">&#8942;</span>
+  <div class="dropdown-content" id="myDropdown">
+    <a href="#">Your Profile</a>
+    <a href="#">Logout</a>
+    <a href="#">Settings</a>
+  </div>
+</div>
+
+
+<script>
+  // Toggle the dropdown menu
+  function toggleDropdown() {
+    var dropdownMenu = document.getElementById("myDropdown");
+    dropdownMenu.classList.toggle("active");
+  }
+
+  // Close the dropdown menu if the user clicks outside of it
+  window.onclick = function(event) {
+    if (!event.target.matches('.vertical-dots')) {
+      var dropdowns = document.getElementsByClassName("dropdown-content");
+      for (var i = 0; i < dropdowns.length; i++) {
+        var openDropdown = dropdowns[i];
+        if (openDropdown.classList.contains('active')) {
+          openDropdown.classList.remove('active');
         }
-      });
-
-      function closeInfoBar() {
-        infoBar.style.right = "-250px";
       }
-    </script>
-  </body>
+    }
+  }
+</script>
+
+</body>
 </html>

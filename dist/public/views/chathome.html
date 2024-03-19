@@ -6,16 +6,101 @@
     <title>Group Chat App</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>
     <link rel="stylesheet" href="../css/chathome.css" />
+    <style>
+      /* Style the dropdown button */
+      .dropbtn-container {
+        display: inline-block;
+      }
+
+      .dropbtn {
+        background-color: #ffffff00;
+        color: white;
+        padding: 10px;
+        font-size: 16px;
+        border: none;
+      }
+
+      /* Style the vertical dots icon */
+      .vertical-dots {
+        font-size: 16px;
+        color: black;
+        cursor: pointer; /* Add pointer cursor only to the vertical dots icon */
+      }
+
+      /* Style the dropdown content (hidden by default) */
+      .dropdown-content {
+        display: none;
+        position: absolute;
+        background-color: #000000a5;
+        min-width: 160px;
+        box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+        z-index: 1;
+        right: 11px;
+        opacity: 0;
+        transform: translateY(-10px); /* Initially move the dropdown up */
+      }
+
+      /* Style the links inside the dropdown */
+      .dropdown-content a {
+        color: #dfdcdc;
+        padding: 4px 4px;
+        text-decoration: none;
+        display: block;
+        border: 1px solid black;
+      }
+
+      /* Change color of dropdown links on hover */
+      .dropdown-content a:hover {
+        background-color: #f2f2f216;
+      }
+
+      /* Show the dropdown content when active class is added */
+      .dropdown-content.active {
+        display: block;
+        animation: dropdownFadeIn 0.3s forwards;
+      }
+
+      /* Keyframe animation for dropdown fade-in */
+      @keyframes dropdownFadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(-10px); /* Move the dropdown up slightly */
+        }
+        to {
+          opacity: 1;
+          transform: translateY(
+            0
+          ); /* Move the dropdown back to its original position */
+        }
+      }
+    </style>
   </head>
   <body>
     <div class="container">
-      <div class="header">Group Chat App By Cokaine</div>
+      <div class="header">
+        <div id="company-name">Group Chat App By Cokaine</div>
+        <div id="userProfile">
+          <div class="dropdown">
+            <div class="dropbtn-container">
+              <span class="dropbtn" id="username-span">Username</span>
+            </div>
+            <span class="vertical-dots" onclick="toggleDropdown()"
+              >&#8942;</span
+            >
+            <div class="dropdown-content" id="myDropdown">
+              <a href="#">👤 My Account</a>
+              <a href="./login.html">📤 Logout</a>
+              <a href="#">⚙️ Settings</a>
+            </div>
+          </div>
+        </div>
+      </div>
       <div class="content">
         <div class="sidebar">
           <div class="sidebar-header">
             <input type="text" id="group-search" placeholder="Search..." />
             <div id="popup-button-div">
-              <button id="openFormBtn">➕Create New Group</button>
+              <button id="openFormBtn">➕New Group</button>
 
               <div id="popupForm" class="popup">
                 <form
@@ -67,8 +152,26 @@
     document.querySelector(".close").addEventListener("click", function () {
       document.getElementById("popupForm").style.display = "none";
 
-      
       HOMELOAD();
     });
+
+    // Toggle the dropdown menu
+    function toggleDropdown() {
+      var dropdownMenu = document.getElementById("myDropdown");
+      dropdownMenu.classList.toggle("active");
+    }
+
+    // Close the dropdown menu if the user clicks outside of it
+    window.onclick = function (event) {
+      if (!event.target.matches(".vertical-dots")) {
+        var dropdowns = document.getElementsByClassName("dropdown-content");
+        for (var i = 0; i < dropdowns.length; i++) {
+          var openDropdown = dropdowns[i];
+          if (openDropdown.classList.contains("active")) {
+            openDropdown.classList.remove("active");
+          }
+        }
+      }
+    };
   </script>
 </html>

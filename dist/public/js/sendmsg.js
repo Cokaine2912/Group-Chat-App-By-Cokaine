@@ -123,9 +123,9 @@ function SENDMSG(event) {
         const op = yield axios.post("http://13.201.21.152:6969/grpmsg/postmsg", obj, {
             headers: { token: token },
         });
-        let lastMsgID = localStorage.getItem("lastMsgID");
-        let latest = +lastMsgID + 1;
-        localStorage.setItem("lastMsgID", `${latest}`);
+        // let lastMsgID: any = localStorage.getItem("lastMsgID");
+        // let latest = +lastMsgID + 1;
+        // localStorage.setItem("lastMsgID", `${latest}`);
         const History = localStorage.getItem("chatHistory");
         if (History) {
             let chatHistory = JSON.parse(History);
@@ -133,8 +133,8 @@ function SENDMSG(event) {
             chatHistory.push(op.data);
             localStorage.setItem("chatHistory", JSON.stringify(chatHistory));
         }
-        chatDisplay(op.data);
-        ScrollDown();
+        // chatDisplay(op.data);
+        // ScrollDown();
         const msgBox = document.getElementById("chat-msg");
         msgBox.value = "";
     });
