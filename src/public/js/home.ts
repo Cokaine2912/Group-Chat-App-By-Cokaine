@@ -12,7 +12,7 @@ UsernameDrop.innerHTML = `${ChatUser}`;
 
 async function TakeToGroup(event: any) {
   event.preventDefault();
-
+  console.log(event.target);
   const target = event.target;
   let GroupToShow = null;
 
@@ -24,7 +24,7 @@ async function TakeToGroup(event: any) {
   ) {
     // Find the closest ancestor <li> element
     const listItem = target.closest(".group-list-item");
-  
+
     if (listItem) {
       // Get the id attribute of the <li> element
       GroupToShow = listItem.id;
@@ -61,8 +61,6 @@ async function TakeToGroup(event: any) {
 </div>`;
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-  // socket.emit('joinRoom', GroupToShow);
 
   // ADMIN Checking  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -233,7 +231,7 @@ function DISPLAYGROUP(obj: DISPLAYGROUPOBJ) {
   // newli.innerHTML = `<li class = "group-list-item" id = "${obj.groupName}" onclick = "TakeToGroup(event)">${obj.groupName}</li>`;
 
   newli.innerHTML = `
-  <li class="group-list-item" id="${obj.groupName}">
+  <li class="group-list-item" id="${obj.groupName}" onclick = "TakeToGroup(event)">
   <div class="group-info">
   <img src="../../images/group_default.png" alt="Group DP" class="group-dp">
   <div class="group-name">${obj.groupName}</div>
@@ -243,19 +241,20 @@ function DISPLAYGROUP(obj: DISPLAYGROUPOBJ) {
 
   ul.appendChild(newli);
 
-  document.addEventListener("click", (event: any) => {
-    // event.stopPropagation();
-    const target = event.target;
-    if (
-      target.matches(".group-dp") ||
-      target.matches(".latest-msg-preview") ||
-      target.matches(".group-name") ||
-      target.matches(".group-info")
-    ) {
-      // Handle click on the <li>, <img>, or <div> element
-      TakeToGroup(event);
-    }
-  });
+  // document.addEventListener("click", (event: any) => {
+  //   // event.stopPropagation();
+  //   const target = event.target;
+  //   console.log("YE wala !", target);
+  //   // if (
+  //   //   target.matches(".group-dp") ||
+  //   //   target.matches(".latest-msg-preview") ||
+  //   //   target.matches(".group-name") ||
+  //   //   target.matches(".group-info")
+  //   // ) {
+  //   //   // Handle click on the <li>, <img>, or <div> element
+  //   //   TakeToGroup(event);
+  //   // }
+  // });
 }
 
 async function HOMELOAD() {

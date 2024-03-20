@@ -18,6 +18,7 @@ UsernameDrop.innerHTML = `${ChatUser}`;
 function TakeToGroup(event) {
     return __awaiter(this, void 0, void 0, function* () {
         event.preventDefault();
+        console.log(event.target);
         const target = event.target;
         let GroupToShow = null;
         if (target.matches(".group-dp") ||
@@ -183,7 +184,7 @@ function DISPLAYGROUP(obj) {
     const newli = document.createElement("li");
     // newli.innerHTML = `<li class = "group-list-item" id = "${obj.groupName}" onclick = "TakeToGroup(event)">${obj.groupName}</li>`;
     newli.innerHTML = `
-  <li class="group-list-item" id="${obj.groupName}">
+  <li class="group-list-item" id="${obj.groupName}" onclick = "TakeToGroup(event)">
   <div class="group-info">
   <img src="../../images/group_default.png" alt="Group DP" class="group-dp">
   <div class="group-name">${obj.groupName}</div>
@@ -191,17 +192,20 @@ function DISPLAYGROUP(obj) {
 <div class="latest-msg-preview">Latest message preview</div>
   </li>`;
     ul.appendChild(newli);
-    document.addEventListener("click", (event) => {
-        // event.stopPropagation();
-        const target = event.target;
-        if (target.matches(".group-dp") ||
-            target.matches(".latest-msg-preview") ||
-            target.matches(".group-name") ||
-            target.matches(".group-info")) {
-            // Handle click on the <li>, <img>, or <div> element
-            TakeToGroup(event);
-        }
-    });
+    // document.addEventListener("click", (event: any) => {
+    //   // event.stopPropagation();
+    //   const target = event.target;
+    //   console.log("YE wala !", target);
+    //   // if (
+    //   //   target.matches(".group-dp") ||
+    //   //   target.matches(".latest-msg-preview") ||
+    //   //   target.matches(".group-name") ||
+    //   //   target.matches(".group-info")
+    //   // ) {
+    //   //   // Handle click on the <li>, <img>, or <div> element
+    //   //   TakeToGroup(event);
+    //   // }
+    // });
 }
 function HOMELOAD() {
     return __awaiter(this, void 0, void 0, function* () {
