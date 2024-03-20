@@ -24,8 +24,10 @@ html {
   justify-content: space-between;
   padding: 5px;
   border-bottom: 1px solid black;
-  background-color: rgba(255, 255, 255, 0.555);
+  background-color: black;
 }
+
+
 
 #company-name {
   font-size: 20px;
@@ -52,6 +54,7 @@ html {
   cursor: default;
   
 }
+
 
 .content {
   display: flex;
@@ -192,6 +195,7 @@ html {
   cursor: pointer;
 }
 #openFormBtn {
+  text-align: center;
   font-family: candara;
   color: wheat;
   font-weight: 700;
@@ -291,14 +295,51 @@ html {
 /* Styling the .sidebar scrollbar */
 
 .sidebar::-webkit-scrollbar {
-  width: 7px; /* width of the scrollbar */
+  width: 4px; /* width of the scrollbar */
 }
 
 .sidebar::-webkit-scrollbar-thumb {
-  background-color: rgba(7, 1, 1, 0.575); /* color of the thumb */
+  background-color: rgba(171, 171, 171, 0.632); /* color of the thumb */
   border-radius: 5px; /* roundness of the thumb */
 }
 
 .sidebar::-webkit-scrollbar-track {
-  background-color: rgba(0, 0, 0, 0.2); /* color of the track */
+  background-color: rgba(0, 0, 0, 0); /* color of the track */
 }
+
+
+.group-list-item {
+  display: inline-block;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid #ccc; /* Add a bottom border for separation */
+}
+
+.group-info {
+  display: flex;
+  align-items: center;
+  margin-right: 20px; /* Adjust spacing between DP and group name */
+}
+
+.group-dp {
+  width: 32px; /* Adjust to desired size */
+  height: 32px; /* Adjust to desired size */
+  border-radius: 50%; /* Ensures the image is displayed as a circle */
+  margin-right: 10px; /* Adjust spacing between DP and group name */
+}
+
+.personal-dp {
+  width: 32px; /* Adjust to desired size */
+  height: 32px; /* Adjust to desired size */
+  border-radius: 50%; /* Ensures the image is displayed as a circle */
+  margin-right: 10px; /* Adjust spacing between DP and group name */
+}
+
+.group-name {
+  font-weight: bold;
+}
+
+.latest-msg-preview {
+  color: gray;
+}
+

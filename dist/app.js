@@ -7,6 +7,9 @@ const cors_1 = __importDefault(require("cors"));
 const express_1 = __importDefault(require("express"));
 const body_parser_1 = __importDefault(require("body-parser"));
 const path_1 = __importDefault(require("path"));
+const http_1 = __importDefault(require("http"));
+// import { createServer } from "http";
+const socket_io_1 = require("socket.io");
 const database_1 = __importDefault(require("./util/database"));
 const user_1 = require("./models/user");
 const grpmsg_1 = require("./models/grpmsg");
@@ -17,11 +20,41 @@ const userRoutes = require("./routes/user");
 const grpRoutes = require("./routes/grpmsg");
 const homeRoutes = require("./routes/home");
 const app = (0, express_1.default)();
+// const server = createServer();
+const server = http_1.default.createServer(app);
+const io = new socket_io_1.Server(server);
+io.on("connection", (socket) => {
+    console.log("A USER CONNECTED :", socket.id, "!!!!");
+    socket.on("joinRoom", (obj) => {
+        // Join the specified room
+        socket.join(obj.room);
+        console.log(`Socket ${socket.id} - ${obj.chatUser} joined room ${obj.room}`);
+    });
+    socket.on("chat message", (obj) => {
+        const msg = obj.msg;
+        const sender = obj.sender;
+        const groupName = obj.to;
+        console.log(`${sender} ===> ${groupName} : ${msg}`);
+        socket.emit("update own", { toUpdate: groupName, desc: "to self update" });
+        socket.broadcast.to(groupName).emit("chat message", obj);
+    });
+    socket.on("disconnect", () => {
+        console.log("user disconnected");
+    });
+});
 // app.use(cors(
 //   { origin: "http://127.0.0.1:3000", methods: ["GET", "POST"] }
 // ));
 app.use((0, cors_1.default)());
 app.use(body_parser_1.default.json());
+// app.get("/socket.io/socket.io.js", (req: any, res: any) => {
+//   // const file = req.params.file;
+//   const fp = path.join(
+//     __dirname,
+//     `../node_modules/socket.io/client-dist/socket.io.js`
+//   );
+//   res.sendFile(fp);
+// });
 app.use(userRoutes);
 app.use("/grpmsg", grpRoutes);
 app.use("/home", homeRoutes);
@@ -61,7 +94,7 @@ grpmsg_1.GroupMessage.belongsTo(group_1.Group);
 database_1.default
     .sync()
     .then(() => {
-    app.listen(6969);
+    server.listen(6969);
 })
     .catch((err) => {
     console.log(err);

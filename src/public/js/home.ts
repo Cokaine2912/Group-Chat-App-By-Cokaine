@@ -1,5 +1,9 @@
+// import { io } from 'socket.io-client';
 const TOKEN = localStorage.getItem("token");
 const ChatUser = localStorage.getItem("ChatUser");
+
+const WINDOW = window as any;
+const socket = WINDOW.io();
 
 const UsernameDrop = document.getElementById(
   "username-span"
@@ -9,7 +13,27 @@ UsernameDrop.innerHTML = `${ChatUser}`;
 async function TakeToGroup(event: any) {
   event.preventDefault();
 
-  setInterval(constantAPIcalls, 2000);
+  const target = event.target;
+  let GroupToShow = null;
+
+  if (
+    target.matches(".group-dp") ||
+    target.matches(".latest-msg-preview") ||
+    target.matches(".group-name") ||
+    target.matches(".group-info")
+  ) {
+    // Find the closest ancestor <li> element
+    const listItem = target.closest(".group-list-item");
+  
+    if (listItem) {
+      // Get the id attribute of the <li> element
+      GroupToShow = listItem.id;
+    }
+  } else {
+    GroupToShow = event.target.id;
+  }
+
+  // setInterval(constantAPIcalls, 2000);
 
   // Setting Up The Main Content
 
@@ -30,6 +54,7 @@ async function TakeToGroup(event: any) {
       cols="50"
       rows="2"
       placeholder="Message...."
+      required
     ></textarea>
     <button id="send-button">➤</button>
   </form>
@@ -37,16 +62,13 @@ async function TakeToGroup(event: any) {
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  const GroupToShow = event.target.id;
+  // socket.emit('joinRoom', GroupToShow);
 
   // ADMIN Checking  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  let AdminCheck = await axios.get(
-    "http://localhost:6969/grpmsg/admincheck",
-    {
-      headers: { token: TOKEN, grouptoshow: GroupToShow },
-    }
-  );
+  let AdminCheck = await axios.get("http://localhost:6969/grpmsg/admincheck", {
+    headers: { token: TOKEN, grouptoshow: GroupToShow },
+  });
 
   AdminCheck = AdminCheck.data;
 
@@ -208,8 +230,32 @@ interface DISPLAYGROUPOBJ {
 function DISPLAYGROUP(obj: DISPLAYGROUPOBJ) {
   const ul = document.getElementById("all-groups-list") as HTMLUListElement;
   const newli = document.createElement("li");
-  newli.innerHTML = `<li class = "group-list-item" id = "${obj.groupName}" onclick = "TakeToGroup(event)">${obj.groupName}</li>`;
+  // newli.innerHTML = `<li class = "group-list-item" id = "${obj.groupName}" onclick = "TakeToGroup(event)">${obj.groupName}</li>`;
+
+  newli.innerHTML = `
+  <li class="group-list-item" id="${obj.groupName}">
+  <div class="group-info">
+  <img src="../../images/group_default.png" alt="Group DP" class="group-dp">
+  <div class="group-name">${obj.groupName}</div>
+</div>
+<div class="latest-msg-preview">Latest message preview</div>
+  </li>`;
+
   ul.appendChild(newli);
+
+  document.addEventListener("click", (event: any) => {
+    // event.stopPropagation();
+    const target = event.target;
+    if (
+      target.matches(".group-dp") ||
+      target.matches(".latest-msg-preview") ||
+      target.matches(".group-name") ||
+      target.matches(".group-info")
+    ) {
+      // Handle click on the <li>, <img>, or <div> element
+      TakeToGroup(event);
+    }
+  });
 }
 
 async function HOMELOAD() {
@@ -225,6 +271,10 @@ async function HOMELOAD() {
     if (AllGroupsForThisUser.length > 0) {
       for (let i = 0; i < AllGroupsForThisUser.length; i++) {
         DISPLAYGROUP(AllGroupsForThisUser[i]);
+        socket.emit("joinRoom", {
+          chatUser: ChatUser,
+          room: AllGroupsForThisUser[i].groupName,
+        });
       }
     }
   } catch (err) {
@@ -233,7 +283,7 @@ async function HOMELOAD() {
   }
 }
 HOMELOAD();
-setInterval(HOMELOAD, 2000);
+// setInterval(HOMELOAD, 2000);
 
 async function CREATEGROUP(event: any) {
   event.preventDefault();
@@ -258,13 +308,9 @@ async function ADDINGMEMBERTOGROUP(event: any) {
     NewMemberEmail: event.target.email.value,
   };
   try {
-    const op = await axios.post(
-      "http://localhost:6969/home/creategrp",
-      obj,
-      {
-        headers: { token: TOKEN },
-      }
-    );
+    const op = await axios.post("http://localhost:6969/home/creategrp", obj, {
+      headers: { token: TOKEN },
+    });
 
     alert(op.data.msg);
 

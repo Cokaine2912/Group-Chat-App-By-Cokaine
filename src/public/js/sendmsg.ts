@@ -87,7 +87,7 @@ async function constantAPIcalls() {
     { headers: { token: token, grouptoshow: currentGroup } }
   );
   const status = op.data.status;
-  console.log(status);
+  // console.log(status);
   const LatestMessages = op.data.LatestMessages;
 
   if (LatestMessages.length > 0) {
@@ -98,7 +98,7 @@ async function constantAPIcalls() {
       chatDisplay(LatestMessages[i]);
       ScrollDown();
     }
-    console.log(LatestMessages[LatestMessages.length - 1]);
+    // console.log(LatestMessages[LatestMessages.length - 1]);
     localStorage.setItem(
       "lastMsgID",
       `${LatestMessages[LatestMessages.length - 1].id}`
@@ -152,18 +152,16 @@ function chatDisplay(obj: DISPLAYOBJ) {
 async function SENDMSG(event: any) {
   const currentGroup = localStorage.getItem("currentGroup");
   event.preventDefault();
+
   const msg: string = event.target.chatmsg.value;
+
   const token = localStorage.getItem("token");
   const obj = { msg: msg, toGroup: currentGroup };
 
   try {
-    const op = await axios.post(
-      "http://localhost:6969/grpmsg/postmsg",
-      obj,
-      {
-        headers: { token: token },
-      }
-    );
+    const op = await axios.post("http://localhost:6969/grpmsg/postmsg", obj, {
+      headers: { token: token },
+    });
     // let lastMsgID: any = localStorage.getItem("lastMsgID");
     // let latest = +lastMsgID + 1;
     // localStorage.setItem("lastMsgID", `${latest}`);
@@ -174,6 +172,16 @@ async function SENDMSG(event: any) {
       chatHistory = chatHistory.slice(-1 * (capacity - 1));
       chatHistory.push(op.data);
       localStorage.setItem("chatHistory", JSON.stringify(chatHistory));
+    }
+
+    if (msg) {
+      const chatUser = localStorage.getItem("ChatUser") as string;
+      const groupName = currentGroup;
+      socket.emit("chat message", {
+        sender: chatUser,
+        to: groupName,
+        msg: msg,
+      });
     }
 
     // chatDisplay(op.data);
@@ -220,22 +228,47 @@ async function MAKEADMIN(event: any) {
   const obj = { toMakeId: toMakeId };
 
   try {
-    const op = await axios.post(
-      "http://localhost:6969/grpmsg/makeadmin",
-      obj,
-      {
-        headers: { token: token, grouptoshow: currentGroup },
-      }
-    );
+    const op = await axios.post("http://localhost:6969/grpmsg/makeadmin", obj, {
+      headers: { token: token, grouptoshow: currentGroup },
+    });
     if (op.data.success) {
       const statusDiv = document.getElementById(
         `${toMakeId}-member-status`
       ) as HTMLDivElement;
       statusDiv.innerHTML = "Admin";
     }
-    event.target.remove()
+    event.target.remove();
   } catch (error) {
     console.log(error);
     alert("Something Went Wrong !");
   }
+}
+
+socket.on("chat message", (obj: any) => {
+  // console.log(obj);
+  const msg = obj.msg;
+  const sender = obj.sender;
+  const groupName = obj.to;
+  console.log(`${sender} ===> ${groupName} : ${msg}`);
+
+  let currentGroup = localStorage.getItem("currentGroup");
+  if (currentGroup === groupName) {
+    constantAPIcalls();
+  }
+  upadteLatestMsg(obj);
+});
+
+socket.on("update own", (obj: any) => {
+  // console.log(obj.toUpdate);
+  constantAPIcalls();
+  // upadteLatestMsg(obj);
+});
+
+function upadteLatestMsg(obj: any) {
+  const msg = obj.msg;
+  const sender = obj.sender;
+  const groupName = obj.to;
+  const toUpdate = document.getElementById(groupName) as any;
+  const test = toUpdate.children;
+  test[1].innerHTML = `${sender.split(" ")[0]} : ${msg}`;
 }

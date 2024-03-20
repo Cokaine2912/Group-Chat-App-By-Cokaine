@@ -9,7 +9,7 @@ exports.UserAuthentication = (req, res, next) => {
     const token = req.headers.token;
     const parsed = jsonwebtoken_1.default.verify(token, SecretKey);
     req.headers.userOBJ = parsed;
-    console.log(parsed);
-    console.log("MiddleWare Authentication Successful !");
+    // console.log(parsed);
+    // console.log("MiddleWare Authentication Successful !");
     next();
 };

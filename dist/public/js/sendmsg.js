@@ -61,7 +61,7 @@ function constantAPIcalls() {
         const lastMsgID = localStorage.getItem("lastMsgID");
         const op = yield axios.get(`http://localhost:6969/grpmsg/getlatest/${lastMsgID}`, { headers: { token: token, grouptoshow: currentGroup } });
         const status = op.data.status;
-        console.log(status);
+        // console.log(status);
         const LatestMessages = op.data.LatestMessages;
         if (LatestMessages.length > 0) {
             const NumberOfLatest = LatestMessages.length;
@@ -70,7 +70,7 @@ function constantAPIcalls() {
                 chatDisplay(LatestMessages[i]);
                 ScrollDown();
             }
-            console.log(LatestMessages[LatestMessages.length - 1]);
+            // console.log(LatestMessages[LatestMessages.length - 1]);
             localStorage.setItem("lastMsgID", `${LatestMessages[LatestMessages.length - 1].id}`);
             const History = localStorage.getItem("chatHistory");
             if (History) {
@@ -134,6 +134,15 @@ function SENDMSG(event) {
                 chatHistory.push(op.data);
                 localStorage.setItem("chatHistory", JSON.stringify(chatHistory));
             }
+            if (msg) {
+                const chatUser = localStorage.getItem("ChatUser");
+                const groupName = currentGroup;
+                socket.emit("chat message", {
+                    sender: chatUser,
+                    to: groupName,
+                    msg: msg,
+                });
+            }
             // chatDisplay(op.data);
             // ScrollDown();
             const msgBox = document.getElementById("chat-msg");
@@ -186,4 +195,29 @@ function MAKEADMIN(event) {
             alert("Something Went Wrong !");
         }
     });
+}
+socket.on("chat message", (obj) => {
+    // console.log(obj);
+    const msg = obj.msg;
+    const sender = obj.sender;
+    const groupName = obj.to;
+    console.log(`${sender} ===> ${groupName} : ${msg}`);
+    let currentGroup = localStorage.getItem("currentGroup");
+    if (currentGroup === groupName) {
+        constantAPIcalls();
+    }
+    upadteLatestMsg(obj);
+});
+socket.on("update own", (obj) => {
+    // console.log(obj.toUpdate);
+    constantAPIcalls();
+    // upadteLatestMsg(obj);
+});
+function upadteLatestMsg(obj) {
+    const msg = obj.msg;
+    const sender = obj.sender;
+    const groupName = obj.to;
+    const toUpdate = document.getElementById(groupName);
+    const test = toUpdate.children;
+    test[1].innerHTML = `${sender.split(" ")[0]} : ${msg}`;
 }

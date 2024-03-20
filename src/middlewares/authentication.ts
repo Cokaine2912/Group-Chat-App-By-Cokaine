@@ -12,7 +12,7 @@ exports.UserAuthentication = (req: any, res: any, next: Function) => {
   const token = req.headers.token;
   const parsed = jwt.verify(token, SecretKey) as PARSED;
   req.headers.userOBJ = parsed;
-  console.log(parsed);
-  console.log("MiddleWare Authentication Successful !");
+  // console.log(parsed);
+  // console.log("MiddleWare Authentication Successful !");
   next();
 };

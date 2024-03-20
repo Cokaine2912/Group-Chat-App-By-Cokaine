@@ -8,14 +8,33 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+// import { io } from 'socket.io-client';
 const TOKEN = localStorage.getItem("token");
 const ChatUser = localStorage.getItem("ChatUser");
+const WINDOW = window;
+const socket = WINDOW.io();
 const UsernameDrop = document.getElementById("username-span");
 UsernameDrop.innerHTML = `${ChatUser}`;
 function TakeToGroup(event) {
     return __awaiter(this, void 0, void 0, function* () {
         event.preventDefault();
-        setInterval(constantAPIcalls, 2000);
+        const target = event.target;
+        let GroupToShow = null;
+        if (target.matches(".group-dp") ||
+            target.matches(".latest-msg-preview") ||
+            target.matches(".group-name") ||
+            target.matches(".group-info")) {
+            // Find the closest ancestor <li> element
+            const listItem = target.closest(".group-list-item");
+            if (listItem) {
+                // Get the id attribute of the <li> element
+                GroupToShow = listItem.id;
+            }
+        }
+        else {
+            GroupToShow = event.target.id;
+        }
+        // setInterval(constantAPIcalls, 2000);
         // Setting Up The Main Content
         const main = document.getElementById("main");
         main.innerHTML = `<div class="chat-header" id ="chat-header">
@@ -33,12 +52,13 @@ function TakeToGroup(event) {
       cols="50"
       rows="2"
       placeholder="Message...."
+      required
     ></textarea>
     <button id="send-button">➤</button>
   </form>
 </div>`;
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        const GroupToShow = event.target.id;
+        // socket.emit('joinRoom', GroupToShow);
         // ADMIN Checking  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
         let AdminCheck = yield axios.get("http://localhost:6969/grpmsg/admincheck", {
             headers: { token: TOKEN, grouptoshow: GroupToShow },
@@ -161,8 +181,27 @@ function TakeToGroup(event) {
 function DISPLAYGROUP(obj) {
     const ul = document.getElementById("all-groups-list");
     const newli = document.createElement("li");
-    newli.innerHTML = `<li class = "group-list-item" id = "${obj.groupName}" onclick = "TakeToGroup(event)">${obj.groupName}</li>`;
+    // newli.innerHTML = `<li class = "group-list-item" id = "${obj.groupName}" onclick = "TakeToGroup(event)">${obj.groupName}</li>`;
+    newli.innerHTML = `
+  <li class="group-list-item" id="${obj.groupName}">
+  <div class="group-info">
+  <img src="../../images/group_default.png" alt="Group DP" class="group-dp">
+  <div class="group-name">${obj.groupName}</div>
+</div>
+<div class="latest-msg-preview">Latest message preview</div>
+  </li>`;
     ul.appendChild(newli);
+    document.addEventListener("click", (event) => {
+        // event.stopPropagation();
+        const target = event.target;
+        if (target.matches(".group-dp") ||
+            target.matches(".latest-msg-preview") ||
+            target.matches(".group-name") ||
+            target.matches(".group-info")) {
+            // Handle click on the <li>, <img>, or <div> element
+            TakeToGroup(event);
+        }
+    });
 }
 function HOMELOAD() {
     return __awaiter(this, void 0, void 0, function* () {
@@ -176,6 +215,10 @@ function HOMELOAD() {
             if (AllGroupsForThisUser.length > 0) {
                 for (let i = 0; i < AllGroupsForThisUser.length; i++) {
                     DISPLAYGROUP(AllGroupsForThisUser[i]);
+                    socket.emit("joinRoom", {
+                        chatUser: ChatUser,
+                        room: AllGroupsForThisUser[i].groupName,
+                    });
                 }
             }
         }
@@ -186,7 +229,7 @@ function HOMELOAD() {
     });
 }
 HOMELOAD();
-setInterval(HOMELOAD, 2000);
+// setInterval(HOMELOAD, 2000);
 function CREATEGROUP(event) {
     return __awaiter(this, void 0, void 0, function* () {
         event.preventDefault();
