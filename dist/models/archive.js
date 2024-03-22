@@ -13,10 +13,10 @@ const ArchiveMessage = database_1.default.define("archivemsg", {
         allowNull: false,
         primaryKey: true,
     },
-    sender: { type: sequelize_1.default.STRING, allowNull: false },
+    sender: { type: sequelize_1.default.STRING },
     message: { type: sequelize_1.default.STRING },
     fileName: { type: sequelize_1.default.STRING },
     fileUrl: { type: sequelize_1.default.STRING },
-    toGroup: { type: sequelize_1.default.STRING, allowNull: false },
+    toGroup: { type: sequelize_1.default.STRING },
 });
 exports.ArchiveMessage = ArchiveMessage;

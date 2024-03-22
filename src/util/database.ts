@@ -8,7 +8,7 @@ const sequelize = new Sequelize(
   {
     dialect: process.env.DB_DIALECT as any,
     host: process.env.DB_HOST as any,
-    logging: false,
+    // logging: false,
   }
 );
 

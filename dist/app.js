@@ -126,7 +126,18 @@ function DAILYARCHIVE() {
         try {
             console.log("Time to Archive Chats of the Day.......");
             const allGrpMsgs = (yield grpmsg_1.GroupMessage.findAll());
-            yield archive_1.ArchiveMessage.bulkCreate(allGrpMsgs);
+            for (let i = 0; i < allGrpMsgs.length; i++) {
+                yield archive_1.ArchiveMessage.create({
+                    sender: allGrpMsgs[i].sender,
+                    message: allGrpMsgs[i].message,
+                    fileName: allGrpMsgs[i].fileName,
+                    fileUrl: allGrpMsgs[i].fileUrl,
+                    toGroup: allGrpMsgs[i].toGroup,
+                    userId: allGrpMsgs[i].UserId,
+                    groupId: allGrpMsgs[i].groupId,
+                    createdAt: allGrpMsgs[i].createdAt,
+                });
+            }
             console.log("All records transformed !");
         }
         catch (error) {
@@ -134,7 +145,7 @@ function DAILYARCHIVE() {
         }
     });
 }
-const job = new cron_1.CronJob("*/5 * * * *", // cronTime
+const job = new cron_1.CronJob("0 0 0 */1 * *", // cronTime
 DAILYARCHIVE, // onTick
 null, // onComplete
 true, // start

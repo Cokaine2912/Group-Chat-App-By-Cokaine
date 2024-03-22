@@ -9,11 +9,11 @@ const ArchiveMessage = sequelize.define("archivemsg", {
     allowNull: false,
     primaryKey: true,
   },
-  sender: { type: Sequelize.STRING, allowNull: false },
+  sender: { type: Sequelize.STRING },
   message: { type: Sequelize.STRING},
   fileName : {type : Sequelize.STRING},
   fileUrl : {type : Sequelize.STRING},
-  toGroup: { type: Sequelize.STRING, allowNull: false },
+  toGroup: { type: Sequelize.STRING},
 });
 
 export { ArchiveMessage };
