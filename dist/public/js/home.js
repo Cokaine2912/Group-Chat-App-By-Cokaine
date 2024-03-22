@@ -331,7 +331,7 @@ function displayFileName() {
     var fileInput = document.getElementById('file');
     var fileNameDisplay = document.getElementById('file-name-display');
     if (((_a = fileInput === null || fileInput === void 0 ? void 0 : fileInput.files) === null || _a === void 0 ? void 0 : _a.length) > 0) {
-        fileNameDisplay.innerText = "Selected file: " + fileInput.files[0].name;
+        fileNameDisplay.innerText = fileInput.files[0].name;
     }
     else {
         fileNameDisplay.innerText = "";

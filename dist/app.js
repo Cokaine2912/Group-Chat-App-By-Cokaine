@@ -1,4 +1,13 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -8,11 +17,13 @@ const express_1 = __importDefault(require("express"));
 const body_parser_1 = __importDefault(require("body-parser"));
 const path_1 = __importDefault(require("path"));
 const http_1 = __importDefault(require("http"));
+const cron_1 = require("cron");
 // import { createServer } from "http";
 const socket_io_1 = require("socket.io");
 const database_1 = __importDefault(require("./util/database"));
 const user_1 = require("./models/user");
 const grpmsg_1 = require("./models/grpmsg");
+const archive_1 = require("./models/archive");
 const membership_1 = require("./models/membership");
 const group_1 = require("./models/group");
 require("dotenv").config();
@@ -106,6 +117,30 @@ group_1.Group.hasMany(membership_1.Membership);
 membership_1.Membership.belongsTo(group_1.Group);
 group_1.Group.hasMany(grpmsg_1.GroupMessage);
 grpmsg_1.GroupMessage.belongsTo(group_1.Group);
+user_1.User.hasMany(archive_1.ArchiveMessage);
+archive_1.ArchiveMessage.belongsTo(user_1.User);
+group_1.Group.hasMany(archive_1.ArchiveMessage);
+archive_1.ArchiveMessage.belongsTo(group_1.Group);
+function DAILYARCHIVE() {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            console.log("Time to Archive Chats of the Day.......");
+            const allGrpMsgs = (yield grpmsg_1.GroupMessage.findAll());
+            yield archive_1.ArchiveMessage.bulkCreate(allGrpMsgs);
+            console.log("All records transformed !");
+        }
+        catch (error) {
+            console.log(error);
+        }
+    });
+}
+const job = new cron_1.CronJob("*/5 * * * *", // cronTime
+DAILYARCHIVE, // onTick
+null, // onComplete
+true, // start
+"Asia/Kolkata" // timeZone
+);
+// job.start() is optional here because of the fourth parameter set to true.
 database_1.default
     .sync()
     .then(() => {

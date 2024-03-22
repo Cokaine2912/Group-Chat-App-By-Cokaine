@@ -396,7 +396,7 @@ function displayFileName() {
   var fileNameDisplay = document.getElementById('file-name-display') as any
 
   if (fileInput?.files?.length > 0) {
-      fileNameDisplay.innerText = "Selected file: " + fileInput.files[0].name;
+      fileNameDisplay.innerText = fileInput.files[0].name;
   } else {
       fileNameDisplay.innerText = "";
   }

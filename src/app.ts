@@ -3,6 +3,7 @@ import express from "express";
 import bodyParser from "body-parser";
 import path from "path";
 import http from "http";
+import { CronJob } from "cron";
 // import { createServer } from "http";
 import { Server } from "socket.io";
 
@@ -11,6 +12,8 @@ import sequelize from "./util/database";
 import { User } from "./models/user";
 
 import { GroupMessage } from "./models/grpmsg";
+
+import { ArchiveMessage } from "./models/archive";
 
 import { Membership } from "./models/membership";
 
@@ -132,6 +135,35 @@ Membership.belongsTo(Group);
 
 Group.hasMany(GroupMessage);
 GroupMessage.belongsTo(Group);
+
+User.hasMany(ArchiveMessage);
+ArchiveMessage.belongsTo(User);
+
+Group.hasMany(ArchiveMessage);
+ArchiveMessage.belongsTo(Group);
+
+async function DAILYARCHIVE() {
+  try {
+    console.log("Time to Archive Chats of the Day.......");
+
+    const allGrpMsgs = (await GroupMessage.findAll()) as any;
+
+    await ArchiveMessage.bulkCreate(allGrpMsgs);
+
+    console.log("All records transformed !");
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+const job = new CronJob(
+  "*/5 * * * *", // cronTime
+  DAILYARCHIVE, // onTick
+  null, // onComplete
+  true, // start
+  "Asia/Kolkata" // timeZone
+);
+// job.start() is optional here because of the fourth parameter set to true.
 
 sequelize
   .sync()
