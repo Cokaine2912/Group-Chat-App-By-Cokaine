@@ -10,6 +10,7 @@
   "author": "Mai hi hu",
   "license": "ISC",
   "dependencies": {
+    "@types/aws-sdk": "^2.7.0",
     "@types/axios": "^0.14.0",
     "@types/bcrypt": "^5.0.2",
     "@types/cors": "^2.8.17",
@@ -19,6 +20,7 @@
     "@types/sequelize": "^4.28.20",
     "@types/socket.io": "^3.0.2",
     "@types/socket.io-client": "^3.0.0",
+    "aws-sdk": "^2.1582.0",
     "axios": "^1.6.7",
     "bcrypt": "^5.1.1",
     "cors": "^2.8.5",

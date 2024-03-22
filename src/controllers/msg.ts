@@ -14,6 +14,8 @@ exports.postGrpMessage = async (req: any, res: any) => {
   const username = userOBJ.username;
   const msg = req.body.msg;
   const toGroup = req.body.toGroup;
+  const fileUrl = req.body.fileUrl;
+  const fileName = req.body.fileName;
 
   try {
     const ForGroupId: any = await Group.findOne({
@@ -24,6 +26,8 @@ exports.postGrpMessage = async (req: any, res: any) => {
       userId: userId,
       sender: username,
       message: msg,
+      fileUrl: fileUrl,
+      fileName: fileName,
       toGroup: toGroup,
       groupId: ForGroupId.id,
     })) as any;

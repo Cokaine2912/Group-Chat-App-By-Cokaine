@@ -9,6 +9,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 const token = localStorage.getItem("token");
+const AWS = WINDOW.AWS;
+AWS.config.update({ region: "ap-south-1" });
 // const currentGroup = localStorage.getItem("currentGroup");
 const pageTitle = document.getElementById("pageTitle");
 // const GroupNameHeading = document.getElementById(
@@ -103,24 +105,52 @@ function chatDisplay(obj) {
     }
     const message = obj.message;
     const time = obj.createdAt;
+    const fileUrl = obj.fileUrl;
+    const fileName = obj.fileName;
     const date = new Date(time);
     const dateTime = date.toLocaleTimeString();
     const chatList = document.getElementById("all-chats-list");
     const newChatItem = document.createElement("li");
     newChatItem.className = "chat-item";
     newChatItem.style.marginLeft = `${margin}%`;
-    newChatItem.innerHTML = `<label for="" class="${sender}-msg">${sender} :</label>
+    if (fileUrl) {
+        newChatItem.innerHTML = `<label for="" class="${sender}-msg">${sender} :</label>
+    <div class = "file-showing-div" ><a href = "${fileUrl}" class ="fileUrl-link">${fileName}</a></div>
     <p>${message}</p><div class="msg-time-div" style="text-align: end;">${dateTime}</div>`;
+    }
+    else {
+        newChatItem.innerHTML = `<label for="" class="${sender}-msg">${sender} :</label>
+    <p>${message}</p><div class="msg-time-div" style="text-align: end;">${dateTime}</div>`;
+    }
     chatList === null || chatList === void 0 ? void 0 : chatList.appendChild(newChatItem);
 }
 function SENDMSG(event) {
     return __awaiter(this, void 0, void 0, function* () {
         const currentGroup = localStorage.getItem("currentGroup");
         event.preventDefault();
+        const fileInput = document.getElementById("file");
+        const file = fileInput.files ? fileInput.files[0] : null;
+        let fileNameToShow;
+        if (file) {
+            fileNameToShow = file.name;
+        }
         const msg = event.target.chatmsg.value;
         const token = localStorage.getItem("token");
-        const obj = { msg: msg, toGroup: currentGroup };
+        // let obj = { msg: msg, toGroup: currentGroup };
+        const obj = {
+            msg: msg,
+            toGroup: currentGroup,
+        };
         try {
+            let uploadUrl;
+            if (file) {
+                const fileData = yield readFileAsArrayBuffer(file);
+                const filename = "GroupChatApp/" + `${new Date().toTimeString()}` + file.name;
+                uploadUrl = yield uploadToS3(fileData, filename);
+                obj.fileUrl = uploadUrl;
+                obj.fileName = fileNameToShow;
+                console.log(obj.fileUrl);
+            }
             const op = yield axios.post("http://localhost:6969/grpmsg/postmsg", obj, {
                 headers: { token: token },
             });
@@ -147,6 +177,8 @@ function SENDMSG(event) {
             // ScrollDown();
             const msgBox = document.getElementById("chat-msg");
             msgBox.value = "";
+            const tempFile = document.getElementById("file");
+            tempFile.value = "";
         }
         catch (err) {
             console.log(err);
@@ -213,6 +245,13 @@ socket.on("update own", (obj) => {
     constantAPIcalls();
     // upadteLatestMsg(obj);
 });
+socket.on("update home", (dummy) => {
+    console.log("Updating Home !");
+    HOMELOAD();
+});
+socket.on("HOMELOAD", (dummy) => {
+    HOMELOAD();
+});
 function upadteLatestMsg(obj) {
     const msg = obj.msg;
     const sender = obj.sender;
@@ -220,4 +259,55 @@ function upadteLatestMsg(obj) {
     const toUpdate = document.getElementById(groupName);
     const test = toUpdate.children;
     test[1].innerHTML = `${sender.split(" ")[0]} : ${msg}`;
+}
+function readFileAsArrayBuffer(file) {
+    return __awaiter(this, void 0, void 0, function* () {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                if (event.target && event.target.result) {
+                    resolve(event.target.result);
+                }
+                else {
+                    reject(new Error("Error reading file"));
+                }
+            };
+            reader.onerror = (error) => {
+                reject(error);
+            };
+            reader.readAsArrayBuffer(file);
+        });
+    });
+}
+function uploadToS3(data, filename) {
+    return __awaiter(this, void 0, void 0, function* () {
+        console.log("Uploading !!!");
+        const BUCKET_NAME = "cokaineexpensetracker";
+        const AWScreds = (yield axios.get("http://localhost:6969/creds/getConfig"));
+        const IAM_USER_KEY = AWScreds.data.IAM_USER_KEY;
+        const IAM_USER_SECRET = AWScreds.data.IAM_USER_SECRET;
+        let s3bucket = new AWS.S3({
+            accessKeyId: IAM_USER_KEY,
+            secretAccessKey: IAM_USER_SECRET,
+            Bucket: BUCKET_NAME,
+        });
+        var params = {
+            Bucket: BUCKET_NAME,
+            Key: filename,
+            Body: data,
+            ACL: "public-read",
+        };
+        return new Promise((resolve, reject) => {
+            s3bucket.upload(params, (err, res) => {
+                if (err) {
+                    console.log("Something went wrong !", err);
+                    reject(err);
+                }
+                else {
+                    console.log("Success", res);
+                    resolve(res.Location);
+                }
+            });
+        });
+    });
 }

@@ -47,19 +47,22 @@ function TakeToGroup(event) {
 
 <div class="message-input">
   <form onsubmit="SENDMSG(event)" id="msg-write-form">
+  <label for="file" class="custom-file-upload">
+      <i class="fas fa-cloud-upload-alt"></i> Attach File
+    </label>
+  <input type="file" id="file" name="file" onchange="displayFileName()">
+  <span id="file-name-display"></span>
     <textarea
       name="chatmsg"
       id="chat-msg"
       cols="50"
       rows="2"
       placeholder="Message...."
-      required
     ></textarea>
     <button id="send-button">➤</button>
   </form>
 </div>`;
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // socket.emit('joinRoom', GroupToShow);
         // ADMIN Checking  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
         let AdminCheck = yield axios.get("http://localhost:6969/grpmsg/admincheck", {
             headers: { token: TOKEN, grouptoshow: GroupToShow },
@@ -132,7 +135,7 @@ function TakeToGroup(event) {
         const AllMessages = all.data.AllMessages;
         localStorage.setItem("chatHistory", JSON.stringify(AllMessages.slice(-30)));
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Group Info button ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        //GroupInfobutton ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
         const AddMemBtn = document.getElementById("add-member-button");
         if (AddMemBtn) {
             const PopupForm = document.getElementById("add-member-popup-form");
@@ -244,6 +247,7 @@ function CREATEGROUP(event) {
         const op = yield axios.post("http://localhost:6969/home/creategrp", obj, {
             headers: { token: TOKEN },
         });
+        socket.emit("new group creation", { groupName: obj.GroupName });
         console.log(op.data);
         console.log(event.target.id);
         alert(op.data.msg);
@@ -265,6 +269,10 @@ function ADDINGMEMBERTOGROUP(event) {
             console.log(TheUl);
             const newli = document.createElement("li");
             const memberOBJ = op.data.NewMship;
+            socket.emit("new member addition", {
+                groupToUpdate: memberOBJ.groupName,
+                newMember: memberOBJ.member,
+            });
             newli.id = `${memberOBJ.memberEmail}-list-item`;
             let MemberStatus = "Member";
             let MakeAdminRight = "";
@@ -317,4 +325,15 @@ function NewONLOAD() {
         const scrollableDiv = document.getElementById("chats-div");
         scrollableDiv.scrollTop = scrollableDiv.scrollHeight;
     });
+}
+function displayFileName() {
+    var _a;
+    var fileInput = document.getElementById('file');
+    var fileNameDisplay = document.getElementById('file-name-display');
+    if (((_a = fileInput === null || fileInput === void 0 ? void 0 : fileInput.files) === null || _a === void 0 ? void 0 : _a.length) > 0) {
+        fileNameDisplay.innerText = "Selected file: " + fileInput.files[0].name;
+    }
+    else {
+        fileNameDisplay.innerText = "";
+    }
 }

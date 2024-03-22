@@ -24,6 +24,8 @@ const homeRoutes = require("./routes/home");
 
 const app = express();
 
+app.use(cors());
+
 // const server = createServer();
 const server = http.createServer(app);
 const io = new Server(server);
@@ -47,6 +49,17 @@ io.on("connection", (socket) => {
     socket.broadcast.to(groupName).emit("chat message", obj);
   });
 
+  socket.on("new member addition", (obj: any) => {
+    const groupToUpdate = obj.groupName;
+    const newMember = obj.member;
+    io.emit("HOMELOAD", { msg: "dummy" });
+    // socket.broadcast.to(groupToUpdate).emit("update home", { msg: "dummy" });
+  });
+
+  socket.on("new group creation", (obj: any) => {
+    io.emit("HOMELOAD", { msg: "dummy" });
+  });
+
   socket.on("disconnect", () => {
     console.log("user disconnected");
   });
@@ -55,7 +68,7 @@ io.on("connection", (socket) => {
 // app.use(cors(
 //   { origin: "http://127.0.0.1:3000", methods: ["GET", "POST"] }
 // ));
-app.use(cors());
+
 app.use(bodyParser.json());
 
 // app.get("/socket.io/socket.io.js", (req: any, res: any) => {
@@ -97,6 +110,13 @@ app.get("/images/:image", (req: any, res: any) => {
 app.get("/favicon.ico", (req: any, res: any) => {
   const fp = path.join(__dirname, "./favicon.ico");
   res.sendFile(fp);
+});
+
+app.get("/creds/getConfig", (req: any, res: any) => {
+  return res.json({
+    IAM_USER_KEY: process.env.IAM_USER_KEY,
+    IAM_USER_SECRET: process.env.IAM_USER_SECRET,
+  });
 });
 
 console.log("Start at : ", new Date().toLocaleTimeString());

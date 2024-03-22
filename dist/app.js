@@ -20,6 +20,7 @@ const userRoutes = require("./routes/user");
 const grpRoutes = require("./routes/grpmsg");
 const homeRoutes = require("./routes/home");
 const app = (0, express_1.default)();
+app.use((0, cors_1.default)());
 // const server = createServer();
 const server = http_1.default.createServer(app);
 const io = new socket_io_1.Server(server);
@@ -38,6 +39,15 @@ io.on("connection", (socket) => {
         socket.emit("update own", { toUpdate: groupName, desc: "to self update" });
         socket.broadcast.to(groupName).emit("chat message", obj);
     });
+    socket.on("new member addition", (obj) => {
+        const groupToUpdate = obj.groupName;
+        const newMember = obj.member;
+        io.emit("HOMELOAD", { msg: "dummy" });
+        // socket.broadcast.to(groupToUpdate).emit("update home", { msg: "dummy" });
+    });
+    socket.on("new group creation", (obj) => {
+        io.emit("HOMELOAD", { msg: "dummy" });
+    });
     socket.on("disconnect", () => {
         console.log("user disconnected");
     });
@@ -45,7 +55,6 @@ io.on("connection", (socket) => {
 // app.use(cors(
 //   { origin: "http://127.0.0.1:3000", methods: ["GET", "POST"] }
 // ));
-app.use((0, cors_1.default)());
 app.use(body_parser_1.default.json());
 // app.get("/socket.io/socket.io.js", (req: any, res: any) => {
 //   // const file = req.params.file;
@@ -81,6 +90,12 @@ app.get("/images/:image", (req, res) => {
 app.get("/favicon.ico", (req, res) => {
     const fp = path_1.default.join(__dirname, "./favicon.ico");
     res.sendFile(fp);
+});
+app.get("/creds/getConfig", (req, res) => {
+    return res.json({
+        IAM_USER_KEY: process.env.IAM_USER_KEY,
+        IAM_USER_SECRET: process.env.IAM_USER_SECRET,
+    });
 });
 console.log("Start at : ", new Date().toLocaleTimeString());
 user_1.User.hasMany(grpmsg_1.GroupMessage);

@@ -14,7 +14,9 @@ const GroupMessage = database_1.default.define("grpmsg", {
         primaryKey: true,
     },
     sender: { type: sequelize_1.default.STRING, allowNull: false },
-    message: { type: sequelize_1.default.STRING, allowNull: false },
+    message: { type: sequelize_1.default.STRING },
+    fileName: { type: sequelize_1.default.STRING },
+    fileUrl: { type: sequelize_1.default.STRING },
     toGroup: { type: sequelize_1.default.STRING, allowNull: false },
 });
 exports.GroupMessage = GroupMessage;

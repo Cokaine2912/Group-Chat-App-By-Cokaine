@@ -10,7 +10,9 @@ const GroupMessage = sequelize.define("grpmsg", {
     primaryKey: true,
   },
   sender: { type: Sequelize.STRING, allowNull: false },
-  message: { type: Sequelize.STRING, allowNull: false },
+  message: { type: Sequelize.STRING},
+  fileName : {type : Sequelize.STRING},
+  fileUrl : {type : Sequelize.STRING},
   toGroup: { type: Sequelize.STRING, allowNull: false },
 });
 

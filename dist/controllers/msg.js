@@ -19,6 +19,8 @@ exports.postGrpMessage = (req, res) => __awaiter(void 0, void 0, void 0, functio
     const username = userOBJ.username;
     const msg = req.body.msg;
     const toGroup = req.body.toGroup;
+    const fileUrl = req.body.fileUrl;
+    const fileName = req.body.fileName;
     try {
         const ForGroupId = yield group_1.Group.findOne({
             where: { groupName: toGroup },
@@ -27,6 +29,8 @@ exports.postGrpMessage = (req, res) => __awaiter(void 0, void 0, void 0, functio
             userId: userId,
             sender: username,
             message: msg,
+            fileUrl: fileUrl,
+            fileName: fileName,
             toGroup: toGroup,
             groupId: ForGroupId.id,
         }));
