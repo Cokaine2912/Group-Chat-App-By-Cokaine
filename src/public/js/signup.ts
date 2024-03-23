@@ -24,7 +24,7 @@ async function SIGNUP(event: any) {
 
   try {
     const op = await axios.post(
-      "http://localhost:6969/adduser",
+      "http://13.201.21.152:6969/adduser",
       obj as OBJ
     );
 
@@ -44,7 +44,7 @@ async function LOGIN(event: any) {
 
   try {
     const op = await axios.post(
-      "http://localhost:6969/userlogin",
+      "http://13.201.21.152:6969/userlogin",
       obj as LoginOBJ
     );
     const res = op.data;

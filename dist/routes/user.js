@@ -8,6 +8,7 @@ const userController = require("../controllers/user");
 //   console.log(filePath);
 //   res.sendFile(filePath);
 // });
+router.get("/creds/getConfig", userController.getCreds);
 router.post("/adduser", userController.postNewUser);
 router.post("/userlogin", userController.getUser);
 module.exports = router;

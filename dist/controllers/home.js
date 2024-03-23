@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const user_1 = require("../models/user");
 const group_1 = require("../models/group");
 const membership_1 = require("../models/membership");
+const grpmsg_1 = require("../models/grpmsg");
 function PRECHECK(memberId, group) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -121,4 +122,13 @@ exports.postAddMember = (req, res) => __awaiter(void 0, void 0, void 0, function
             .status(500)
             .json({ success: false, msg: "Internal Server Error !" });
     }
+});
+exports.getLatestMsg = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const group = req.headers.group;
+    const op = yield grpmsg_1.GroupMessage.findAll({
+        where: { toGroup: group },
+        order: [['createdAt', 'DESC']],
+        limit: 1,
+    });
+    return res.json({ success: true, latest: op });
 });

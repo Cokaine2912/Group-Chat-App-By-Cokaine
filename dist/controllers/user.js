@@ -104,3 +104,9 @@ exports.getUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             .json({ success: false, message: "Internal Server Error" });
     }
 });
+exports.getCreds = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    return res.json({
+        IAM_USER_KEY: process.env.IAM_USER_KEY,
+        IAM_USER_SECRET: process.env.IAM_USER_SECRET,
+    });
+});

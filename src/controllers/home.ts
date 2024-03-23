@@ -3,6 +3,7 @@ import { User } from "../models/user";
 import { Group } from "../models/group";
 
 import { Membership } from "../models/membership";
+import { GroupMessage } from "../models/grpmsg";
 
 interface USEROBJ {
   id: number;
@@ -130,4 +131,14 @@ exports.postAddMember = async (req: any, res: any) => {
       .status(500)
       .json({ success: false, msg: "Internal Server Error !" });
   }
+};
+
+exports.getLatestMsg = async (req: any, res: any) => {
+  const group = req.headers.group;
+  const op = await GroupMessage.findAll({
+    where: { toGroup: group },
+    order: [['createdAt', 'DESC']],
+    limit: 1,
+  });
+  return res.json({ success: true, latest: op });
 };

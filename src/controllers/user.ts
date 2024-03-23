@@ -114,4 +114,9 @@ exports.getUser = async (req: any, res: any) => {
   }
 };
 
-
+exports.getCreds = async (req: any, res: any) => {
+  return res.json({
+    IAM_USER_KEY: process.env.IAM_USER_KEY,
+    IAM_USER_SECRET: process.env.IAM_USER_SECRET,
+  });
+}

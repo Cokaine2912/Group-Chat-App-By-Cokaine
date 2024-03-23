@@ -13,6 +13,12 @@ router.get(
   HomeController.getAllGroups
 );
 
+router.get(
+  "/getlatest",
+  Middleware.UserAuthentication,
+  HomeController.getLatestMsg
+);
+
 router.post(
   "/creategrp",
   Middleware.UserAuthentication,

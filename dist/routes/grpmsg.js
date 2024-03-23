@@ -1,6 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const express = require("express");
+const multer = require("multer");
+const upload = multer();
 const Middleware = require("../middlewares/authentication");
 const MsgController = require("../controllers/msg");
 const router = express.Router();
@@ -12,4 +14,5 @@ router.get("/getallmembers", Middleware.UserAuthentication, MsgController.getAll
 router.post("/postmsg", Middleware.UserAuthentication, MsgController.postGrpMessage);
 router.post("/removemember", Middleware.UserAuthentication, MsgController.postRemoveMember);
 router.post("/makeadmin", Middleware.UserAuthentication, MsgController.postMakeAdmin);
+router.post("/uploadfile", upload.single("file"), MsgController.postPostUploadFile);
 module.exports = router;

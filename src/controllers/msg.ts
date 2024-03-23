@@ -8,6 +8,8 @@ import { Group } from "../models/group";
 
 import { Membership } from "../models/membership";
 
+const AWS = require("aws-sdk");
+
 exports.postGrpMessage = async (req: any, res: any) => {
   const userOBJ = req.headers.userOBJ;
   const userId = userOBJ.userId;
@@ -167,4 +169,45 @@ exports.postMakeAdmin = async (req: any, res: any) => {
     console.log(error);
     res.json({ success: false, msg: "Internal Server Error !" });
   }
+};
+
+async function uploadToS3(data: any, filename: any) {
+  const BUCKET_NAME = "cokaineexpensetracker";
+
+  const IAM_USER_KEY = process.env.IAM_USER_KEY;
+  const IAM_USER_SECRET = process.env.IAM_USER_SECRET;
+
+  let s3bucket = new AWS.S3({
+    accessKeyId: IAM_USER_KEY,
+    secretAccessKey: IAM_USER_SECRET,
+    Bucket: BUCKET_NAME,
+  });
+  var params = {
+    Bucket: BUCKET_NAME,
+    Key: filename,
+    Body: data,
+    ACL: "public-read",
+  };
+  return new Promise((resolve, reject) => {
+    s3bucket.upload(params, (err: any, res: any) => {
+      if (err) {
+        console.log("Something went wrong !", err);
+        reject(err);
+      } else {
+        console.log("Success", res);
+        resolve(res.Location);
+      }
+    });
+  });
+}
+
+exports.postPostUploadFile = async (req: any, res: any) => {
+  console.log(req.body);
+  const fileData = req.file.buffer;
+  const filename = req.body.filename;
+  console.log(fileData, filename);
+  const op = await uploadToS3(fileData, filename);
+  console.log(op);
+  console.log("FILE Uploaded From the Backend !!");
+  return res.json({ URL: op });
 };

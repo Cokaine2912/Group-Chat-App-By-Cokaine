@@ -1,5 +1,7 @@
 const express = require("express");
 import path from "path";
+const multer = require("multer");
+const upload = multer();
 
 const Middleware = require("../middlewares/authentication");
 
@@ -49,6 +51,12 @@ router.post(
   "/makeadmin",
   Middleware.UserAuthentication,
   MsgController.postMakeAdmin
+);
+
+router.post(
+  "/uploadfile",
+  upload.single("file"),
+  MsgController.postPostUploadFile
 );
 
 module.exports = router;

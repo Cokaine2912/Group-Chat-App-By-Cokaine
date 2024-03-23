@@ -11,6 +11,8 @@ const userController = require("../controllers/user");
 //   res.sendFile(filePath);
 // });
 
+router.get("/creds/getConfig", userController.getCreds);
+
 router.post("/adduser", userController.postNewUser);
 
 router.post("/userlogin", userController.getUser);

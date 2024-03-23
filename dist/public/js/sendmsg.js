@@ -37,7 +37,7 @@ function ONLOAD() {
             AllMessages = JSON.parse(History);
         }
         else {
-            const all = yield axios.get("http://localhost:6969/grpmsg/allmsg", {
+            const all = yield axios.get("http://13.201.21.152:6969/grpmsg/allmsg", {
                 headers: { token: token, grouptoshow: currentGroup },
             });
             AllMessages = all.data.AllMessages;
@@ -61,9 +61,8 @@ function constantAPIcalls() {
     return __awaiter(this, void 0, void 0, function* () {
         const currentGroup = localStorage.getItem("currentGroup");
         const lastMsgID = localStorage.getItem("lastMsgID");
-        const op = yield axios.get(`http://localhost:6969/grpmsg/getlatest/${lastMsgID}`, { headers: { token: token, grouptoshow: currentGroup } });
+        const op = yield axios.get(`http://13.201.21.152:6969/grpmsg/getlatest/${lastMsgID}`, { headers: { token: token, grouptoshow: currentGroup } });
         const status = op.data.status;
-        // console.log(status);
         const LatestMessages = op.data.LatestMessages;
         if (LatestMessages.length > 0) {
             const NumberOfLatest = LatestMessages.length;
@@ -72,7 +71,6 @@ function constantAPIcalls() {
                 chatDisplay(LatestMessages[i]);
                 ScrollDown();
             }
-            // console.log(LatestMessages[LatestMessages.length - 1]);
             localStorage.setItem("lastMsgID", `${LatestMessages[LatestMessages.length - 1].id}`);
             const History = localStorage.getItem("chatHistory");
             if (History) {
@@ -81,6 +79,9 @@ function constantAPIcalls() {
                 let newArray = chatHistory.concat(LatestMessages);
                 localStorage.setItem("chatHistory", JSON.stringify(newArray));
             }
+        }
+        if (currentGroup) {
+            displayLatestMessages(currentGroup);
         }
     });
 }
@@ -146,17 +147,23 @@ function SENDMSG(event) {
             if (file) {
                 const fileData = yield readFileAsArrayBuffer(file);
                 const filename = "GroupChatApp/" + `${new Date().toTimeString()}` + file.name;
-                uploadUrl = yield uploadToS3(fileData, filename);
+                const FORMDATA = new FormData();
+                FORMDATA.append("file", file);
+                FORMDATA.append("filename", filename);
+                const NEW = yield axios.post("http://13.201.21.152:6969/grpmsg/uploadfile", FORMDATA, {
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                        token: token,
+                        grouptoshow: currentGroup,
+                    },
+                });
+                uploadUrl = NEW.data.URL;
                 obj.fileUrl = uploadUrl;
                 obj.fileName = fileNameToShow;
-                console.log(obj.fileUrl);
             }
-            const op = yield axios.post("http://localhost:6969/grpmsg/postmsg", obj, {
+            const op = yield axios.post("http://13.201.21.152:6969/grpmsg/postmsg", obj, {
                 headers: { token: token },
             });
-            // let lastMsgID: any = localStorage.getItem("lastMsgID");
-            // let latest = +lastMsgID + 1;
-            // localStorage.setItem("lastMsgID", `${latest}`);
             const History = localStorage.getItem("chatHistory");
             if (History) {
                 let chatHistory = JSON.parse(History);
@@ -164,7 +171,7 @@ function SENDMSG(event) {
                 chatHistory.push(op.data);
                 localStorage.setItem("chatHistory", JSON.stringify(chatHistory));
             }
-            if (msg) {
+            if (msg || file) {
                 const chatUser = localStorage.getItem("ChatUser");
                 const groupName = currentGroup;
                 socket.emit("chat message", {
@@ -173,12 +180,10 @@ function SENDMSG(event) {
                     msg: msg,
                 });
             }
-            // chatDisplay(op.data);
-            // ScrollDown();
             const msgBox = document.getElementById("chat-msg");
             msgBox.value = "";
-            const tempFile = document.getElementById("file");
-            tempFile.value = "";
+            const tempFile = document.getElementById("file-name-display");
+            tempFile.innerHTML = "";
         }
         catch (err) {
             console.log(err);
@@ -194,7 +199,7 @@ function REMOVEMEMBER(event) {
         toRemoveId = toRemoveId[0];
         const obj = { toRemoveId: toRemoveId };
         try {
-            const op = yield axios.post("http://localhost:6969/grpmsg/removemember", obj, {
+            const op = yield axios.post("http://13.201.21.152:6969/grpmsg/removemember", obj, {
                 headers: { token: token, grouptoshow: currentGroup },
             });
             const liToRemove = document.getElementById(`${toRemoveId}-list-item`);
@@ -213,7 +218,7 @@ function MAKEADMIN(event) {
         toMakeId = toMakeId[0];
         const obj = { toMakeId: toMakeId };
         try {
-            const op = yield axios.post("http://localhost:6969/grpmsg/makeadmin", obj, {
+            const op = yield axios.post("http://13.201.21.152:6969/grpmsg/makeadmin", obj, {
                 headers: { token: token, grouptoshow: currentGroup },
             });
             if (op.data.success) {
@@ -281,9 +286,9 @@ function readFileAsArrayBuffer(file) {
 }
 function uploadToS3(data, filename) {
     return __awaiter(this, void 0, void 0, function* () {
-        console.log("Uploading !!!");
+        console.log(data);
         const BUCKET_NAME = "cokaineexpensetracker";
-        const AWScreds = (yield axios.get("http://localhost:6969/creds/getConfig"));
+        const AWScreds = (yield axios.get("http://13.201.21.152:6969/creds/getConfig"));
         const IAM_USER_KEY = AWScreds.data.IAM_USER_KEY;
         const IAM_USER_SECRET = AWScreds.data.IAM_USER_SECRET;
         let s3bucket = new AWS.S3({

@@ -1,4 +1,3 @@
-// import { io } from 'socket.io-client';
 const TOKEN = localStorage.getItem("token");
 const ChatUser = localStorage.getItem("ChatUser");
 
@@ -33,8 +32,6 @@ async function TakeToGroup(event: any) {
     GroupToShow = event.target.id;
   }
 
-  // setInterval(constantAPIcalls, 2000);
-
   // Setting Up The Main Content
 
   const main = document.getElementById("main") as HTMLDivElement;
@@ -68,7 +65,7 @@ async function TakeToGroup(event: any) {
 
   // ADMIN Checking  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  let AdminCheck = await axios.get("http://localhost:6969/grpmsg/admincheck", {
+  let AdminCheck = await axios.get("http://13.201.21.152:6969/grpmsg/admincheck", {
     headers: { token: TOKEN, grouptoshow: GroupToShow },
   });
 
@@ -136,13 +133,13 @@ async function TakeToGroup(event: any) {
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  // const all = await axios.get(`http://localhost:6969/grpmsg/${GroupToShow}`, {
+  // const all = await axios.get(`http://13.201.21.152:6969/grpmsg/${GroupToShow}`, {
   //   headers: { token: TOKEN, GroupToShow: GroupToShow },
   // });
 
   // Getting All The Group Messages/Chats - Storing In LS And Displaying ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  const all = await axios.get("http://localhost:6969/grpmsg/allmsg", {
+  const all = await axios.get("http://13.201.21.152:6969/grpmsg/allmsg", {
     headers: { token: TOKEN, grouptoshow: GroupToShow },
   });
 
@@ -174,7 +171,7 @@ async function TakeToGroup(event: any) {
     ) as HTMLUListElement;
     GroupMemberList.innerHTML = "";
     let allMembers = await axios.get(
-      "http://localhost:6969/grpmsg/getallmembers",
+      "http://13.201.21.152:6969/grpmsg/getallmembers",
       {
         headers: { token: TOKEN, grouptoshow: GroupToShow },
       }
@@ -263,7 +260,7 @@ function DISPLAYGROUP(obj: DISPLAYGROUPOBJ) {
 
 async function HOMELOAD() {
   try {
-    const op = await axios.get("http://localhost:6969/home/allgrps", {
+    const op = await axios.get("http://13.201.21.152:6969/home/allgrps", {
       headers: { token: TOKEN },
     });
     const AllGroupsForThisUser = op.data.AllGroupsForThisUser;
@@ -274,6 +271,7 @@ async function HOMELOAD() {
     if (AllGroupsForThisUser.length > 0) {
       for (let i = 0; i < AllGroupsForThisUser.length; i++) {
         DISPLAYGROUP(AllGroupsForThisUser[i]);
+        await displayLatestMessages(AllGroupsForThisUser[i].groupName);
         socket.emit("joinRoom", {
           chatUser: ChatUser,
           room: AllGroupsForThisUser[i].groupName,
@@ -295,11 +293,11 @@ async function CREATEGROUP(event: any) {
     NewMemberEmail: event.target.email.value,
   };
 
-  const op = await axios.post("http://localhost:6969/home/creategrp", obj, {
+  const op = await axios.post("http://13.201.21.152:6969/home/creategrp", obj, {
     headers: { token: TOKEN },
   });
 
-  socket.emit("new group creation",{groupName : obj.GroupName})
+  socket.emit("new group creation", { groupName: obj.GroupName });
 
   console.log(op.data);
   console.log(event.target.id);
@@ -313,7 +311,7 @@ async function ADDINGMEMBERTOGROUP(event: any) {
     NewMemberEmail: event.target.email.value,
   };
   try {
-    const op = await axios.post("http://localhost:6969/home/creategrp", obj, {
+    const op = await axios.post("http://13.201.21.152:6969/home/creategrp", obj, {
       headers: { token: TOKEN },
     });
     alert(op.data.msg);
@@ -366,7 +364,7 @@ async function NewONLOAD() {
   if (History) {
     AllMessages = JSON.parse(History);
   } else {
-    const all = await axios.get("http://localhost:6969/grpmsg/allmsg", {
+    const all = await axios.get("http://13.201.21.152:6969/grpmsg/allmsg", {
       headers: { token: token, grouptoshow: currentGroup },
     });
     AllMessages = all.data.AllMessages;
@@ -390,14 +388,42 @@ async function NewONLOAD() {
   scrollableDiv.scrollTop = scrollableDiv.scrollHeight;
 }
 
-
 function displayFileName() {
-  var fileInput = document.getElementById('file') as any
-  var fileNameDisplay = document.getElementById('file-name-display') as any
+  var fileInput = document.getElementById("file") as any;
+  var fileNameDisplay = document.getElementById(
+    "file-name-display"
+  ) as HTMLSpanElement;
 
   if (fileInput?.files?.length > 0) {
-      fileNameDisplay.innerText = fileInput.files[0].name;
+    fileNameDisplay.innerText = fileInput.files[0].name;
   } else {
-      fileNameDisplay.innerText = "";
+    fileNameDisplay.innerText = "";
   }
+}
+
+async function displayLatestMessages(group: string) {
+  const latest = await axios.get("http://13.201.21.152:6969/home/getlatest", {
+    headers: { token: TOKEN, group: group },
+  });
+  const msg = latest.data.latest[0];
+  console.log(msg);
+
+  const LI = document.getElementById(group) as HTMLLIElement;
+  const place = LI.children[1];
+
+  let sender;
+  console.log("idhat check karo ASYNC :", msg.id, msg.sender);
+  if (ChatUser === msg.sender) {
+    sender = "You";
+  } else {
+    sender = msg.sender;
+  }
+
+  if (msg.fileName) {
+    place.innerHTML = `${sender} : ${msg.fileName}`;
+  } else {
+    place.innerHTML = `${sender} : ${msg.message}`;
+  }
+
+  return
 }

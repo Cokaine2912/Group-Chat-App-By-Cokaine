@@ -13,6 +13,7 @@ const grpmsg_1 = require("../models/grpmsg");
 const sequelize_1 = require("sequelize");
 const group_1 = require("../models/group");
 const membership_1 = require("../models/membership");
+const AWS = require("aws-sdk");
 exports.postGrpMessage = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const userOBJ = req.headers.userOBJ;
     const userId = userOBJ.userId;
@@ -158,4 +159,44 @@ exports.postMakeAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function
         console.log(error);
         res.json({ success: false, msg: "Internal Server Error !" });
     }
+});
+function uploadToS3(data, filename) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const BUCKET_NAME = "cokaineexpensetracker";
+        const IAM_USER_KEY = process.env.IAM_USER_KEY;
+        const IAM_USER_SECRET = process.env.IAM_USER_SECRET;
+        let s3bucket = new AWS.S3({
+            accessKeyId: IAM_USER_KEY,
+            secretAccessKey: IAM_USER_SECRET,
+            Bucket: BUCKET_NAME,
+        });
+        var params = {
+            Bucket: BUCKET_NAME,
+            Key: filename,
+            Body: data,
+            ACL: "public-read",
+        };
+        return new Promise((resolve, reject) => {
+            s3bucket.upload(params, (err, res) => {
+                if (err) {
+                    console.log("Something went wrong !", err);
+                    reject(err);
+                }
+                else {
+                    console.log("Success", res);
+                    resolve(res.Location);
+                }
+            });
+        });
+    });
+}
+exports.postPostUploadFile = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log(req.body);
+    const fileData = req.file.buffer;
+    const filename = req.body.filename;
+    console.log(fileData, filename);
+    const op = yield uploadToS3(fileData, filename);
+    console.log(op);
+    console.log("FILE Uploaded From the Backend !!");
+    return res.json({ URL: op });
 });

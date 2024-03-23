@@ -32,7 +32,6 @@ const grpRoutes = require("./routes/grpmsg");
 const homeRoutes = require("./routes/home");
 const app = (0, express_1.default)();
 app.use((0, cors_1.default)());
-// const server = createServer();
 const server = http_1.default.createServer(app);
 const io = new socket_io_1.Server(server);
 io.on("connection", (socket) => {
@@ -63,18 +62,7 @@ io.on("connection", (socket) => {
         console.log("user disconnected");
     });
 });
-// app.use(cors(
-//   { origin: "http://127.0.0.1:3000", methods: ["GET", "POST"] }
-// ));
 app.use(body_parser_1.default.json());
-// app.get("/socket.io/socket.io.js", (req: any, res: any) => {
-//   // const file = req.params.file;
-//   const fp = path.join(
-//     __dirname,
-//     `../node_modules/socket.io/client-dist/socket.io.js`
-//   );
-//   res.sendFile(fp);
-// });
 app.use(userRoutes);
 app.use("/grpmsg", grpRoutes);
 app.use("/home", homeRoutes);
@@ -102,12 +90,12 @@ app.get("/favicon.ico", (req, res) => {
     const fp = path_1.default.join(__dirname, "./favicon.ico");
     res.sendFile(fp);
 });
-app.get("/creds/getConfig", (req, res) => {
-    return res.json({
-        IAM_USER_KEY: process.env.IAM_USER_KEY,
-        IAM_USER_SECRET: process.env.IAM_USER_SECRET,
-    });
-});
+// app.get("/creds/getConfig", (req: any, res: any) => {
+//   return res.json({
+//     IAM_USER_KEY: process.env.IAM_USER_KEY,
+//     IAM_USER_SECRET: process.env.IAM_USER_SECRET,
+//   });
+// });
 console.log("Start at : ", new Date().toLocaleTimeString());
 user_1.User.hasMany(grpmsg_1.GroupMessage);
 grpmsg_1.GroupMessage.belongsTo(user_1.User);
@@ -153,7 +141,7 @@ true, // start
 );
 // job.start() is optional here because of the fourth parameter set to true.
 database_1.default
-    .sync()
+    .sync({ force: true })
     .then(() => {
     server.listen(6969);
 })
