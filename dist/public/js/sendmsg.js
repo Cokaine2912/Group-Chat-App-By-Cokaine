@@ -37,7 +37,7 @@ function ONLOAD() {
             AllMessages = JSON.parse(History);
         }
         else {
-            const all = yield axios.get("http://13.201.21.152:6969/grpmsg/allmsg", {
+            const all = yield axios.get("http://localhost:6969/grpmsg/allmsg", {
                 headers: { token: token, grouptoshow: currentGroup },
             });
             AllMessages = all.data.AllMessages;
@@ -61,7 +61,7 @@ function constantAPIcalls() {
     return __awaiter(this, void 0, void 0, function* () {
         const currentGroup = localStorage.getItem("currentGroup");
         const lastMsgID = localStorage.getItem("lastMsgID");
-        const op = yield axios.get(`http://13.201.21.152:6969/grpmsg/getlatest/${lastMsgID}`, { headers: { token: token, grouptoshow: currentGroup } });
+        const op = yield axios.get(`http://localhost:6969/grpmsg/getlatest/${lastMsgID}`, { headers: { token: token, grouptoshow: currentGroup } });
         const status = op.data.status;
         const LatestMessages = op.data.LatestMessages;
         if (LatestMessages.length > 0) {
@@ -150,7 +150,7 @@ function SENDMSG(event) {
                 const FORMDATA = new FormData();
                 FORMDATA.append("file", file);
                 FORMDATA.append("filename", filename);
-                const NEW = yield axios.post("http://13.201.21.152:6969/grpmsg/uploadfile", FORMDATA, {
+                const NEW = yield axios.post("http://localhost:6969/grpmsg/uploadfile", FORMDATA, {
                     headers: {
                         "Content-Type": "multipart/form-data",
                         token: token,
@@ -161,7 +161,7 @@ function SENDMSG(event) {
                 obj.fileUrl = uploadUrl;
                 obj.fileName = fileNameToShow;
             }
-            const op = yield axios.post("http://13.201.21.152:6969/grpmsg/postmsg", obj, {
+            const op = yield axios.post("http://localhost:6969/grpmsg/postmsg", obj, {
                 headers: { token: token },
             });
             const History = localStorage.getItem("chatHistory");
@@ -199,7 +199,7 @@ function REMOVEMEMBER(event) {
         toRemoveId = toRemoveId[0];
         const obj = { toRemoveId: toRemoveId };
         try {
-            const op = yield axios.post("http://13.201.21.152:6969/grpmsg/removemember", obj, {
+            const op = yield axios.post("http://localhost:6969/grpmsg/removemember", obj, {
                 headers: { token: token, grouptoshow: currentGroup },
             });
             const liToRemove = document.getElementById(`${toRemoveId}-list-item`);
@@ -218,7 +218,7 @@ function MAKEADMIN(event) {
         toMakeId = toMakeId[0];
         const obj = { toMakeId: toMakeId };
         try {
-            const op = yield axios.post("http://13.201.21.152:6969/grpmsg/makeadmin", obj, {
+            const op = yield axios.post("http://localhost:6969/grpmsg/makeadmin", obj, {
                 headers: { token: token, grouptoshow: currentGroup },
             });
             if (op.data.success) {
@@ -288,7 +288,7 @@ function uploadToS3(data, filename) {
     return __awaiter(this, void 0, void 0, function* () {
         console.log(data);
         const BUCKET_NAME = "cokaineexpensetracker";
-        const AWScreds = (yield axios.get("http://13.201.21.152:6969/creds/getConfig"));
+        const AWScreds = (yield axios.get("http://localhost:6969/creds/getConfig"));
         const IAM_USER_KEY = AWScreds.data.IAM_USER_KEY;
         const IAM_USER_SECRET = AWScreds.data.IAM_USER_SECRET;
         let s3bucket = new AWS.S3({

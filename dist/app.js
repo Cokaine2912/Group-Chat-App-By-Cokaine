@@ -141,7 +141,7 @@ true, // start
 );
 // job.start() is optional here because of the fourth parameter set to true.
 database_1.default
-    .sync({ force: true })
+    .sync()
     .then(() => {
     server.listen(6969);
 })
