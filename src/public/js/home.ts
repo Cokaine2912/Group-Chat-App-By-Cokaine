@@ -65,7 +65,7 @@ async function TakeToGroup(event: any) {
 
   // ADMIN Checking  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  let AdminCheck = await axios.get("http://localhost:6969/grpmsg/admincheck", {
+  let AdminCheck = await axios.get("http://13.201.21.152:6969/grpmsg/admincheck", {
     headers: { token: TOKEN, grouptoshow: GroupToShow },
   });
 
@@ -133,13 +133,10 @@ async function TakeToGroup(event: any) {
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  // const all = await axios.get(`http://localhost:6969/grpmsg/${GroupToShow}`, {
-  //   headers: { token: TOKEN, GroupToShow: GroupToShow },
-  // });
 
   // Getting All The Group Messages/Chats - Storing In LS And Displaying ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  const all = await axios.get("http://localhost:6969/grpmsg/allmsg", {
+  const all = await axios.get("http://13.201.21.152:6969/grpmsg/allmsg", {
     headers: { token: TOKEN, grouptoshow: GroupToShow },
   });
 
@@ -171,7 +168,7 @@ async function TakeToGroup(event: any) {
     ) as HTMLUListElement;
     GroupMemberList.innerHTML = "";
     let allMembers = await axios.get(
-      "http://localhost:6969/grpmsg/getallmembers",
+      "http://13.201.21.152:6969/grpmsg/getallmembers",
       {
         headers: { token: TOKEN, grouptoshow: GroupToShow },
       }
@@ -237,30 +234,16 @@ function DISPLAYGROUP(obj: DISPLAYGROUPOBJ) {
   <img src="../../images/group_default.png" alt="Group DP" class="group-dp">
   <div class="group-name">${obj.groupName}</div>
 </div>
-<div class="latest-msg-preview">Latest message preview</div>
+<div class="latest-msg-preview"></div>
   </li>`;
 
   ul.appendChild(newli);
 
-  // document.addEventListener("click", (event: any) => {
-  //   // event.stopPropagation();
-  //   const target = event.target;
-  //   console.log("YE wala !", target);
-  //   // if (
-  //   //   target.matches(".group-dp") ||
-  //   //   target.matches(".latest-msg-preview") ||
-  //   //   target.matches(".group-name") ||
-  //   //   target.matches(".group-info")
-  //   // ) {
-  //   //   // Handle click on the <li>, <img>, or <div> element
-  //   //   TakeToGroup(event);
-  //   // }
-  // });
 }
 
 async function HOMELOAD() {
   try {
-    const op = await axios.get("http://localhost:6969/home/allgrps", {
+    const op = await axios.get("http://13.201.21.152:6969/home/allgrps", {
       headers: { token: TOKEN },
     });
     const AllGroupsForThisUser = op.data.AllGroupsForThisUser;
@@ -284,7 +267,6 @@ async function HOMELOAD() {
   }
 }
 HOMELOAD();
-// setInterval(HOMELOAD, 2000);
 
 async function CREATEGROUP(event: any) {
   event.preventDefault();
@@ -293,7 +275,7 @@ async function CREATEGROUP(event: any) {
     NewMemberEmail: event.target.email.value,
   };
 
-  const op = await axios.post("http://localhost:6969/home/creategrp", obj, {
+  const op = await axios.post("http://13.201.21.152:6969/home/creategrp", obj, {
     headers: { token: TOKEN },
   });
 
@@ -311,7 +293,7 @@ async function ADDINGMEMBERTOGROUP(event: any) {
     NewMemberEmail: event.target.email.value,
   };
   try {
-    const op = await axios.post("http://localhost:6969/home/creategrp", obj, {
+    const op = await axios.post("http://13.201.21.152:6969/home/creategrp", obj, {
       headers: { token: TOKEN },
     });
     alert(op.data.msg);
@@ -364,7 +346,7 @@ async function NewONLOAD() {
   if (History) {
     AllMessages = JSON.parse(History);
   } else {
-    const all = await axios.get("http://localhost:6969/grpmsg/allmsg", {
+    const all = await axios.get("http://13.201.21.152:6969/grpmsg/allmsg", {
       headers: { token: token, grouptoshow: currentGroup },
     });
     AllMessages = all.data.AllMessages;
@@ -402,7 +384,7 @@ function displayFileName() {
 }
 
 async function displayLatestMessages(group: string) {
-  const latest = await axios.get("http://localhost:6969/home/getlatest", {
+  const latest = await axios.get("http://13.201.21.152:6969/home/getlatest", {
     headers: { token: TOKEN, group: group },
   });
   const msg = latest.data.latest[0];

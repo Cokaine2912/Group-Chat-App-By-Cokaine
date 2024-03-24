@@ -62,7 +62,7 @@ function TakeToGroup(event) {
 </div>`;
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // ADMIN Checking  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        let AdminCheck = yield axios.get("http://localhost:6969/grpmsg/admincheck", {
+        let AdminCheck = yield axios.get("http://13.201.21.152:6969/grpmsg/admincheck", {
             headers: { token: TOKEN, grouptoshow: GroupToShow },
         });
         AdminCheck = AdminCheck.data;
@@ -121,11 +121,8 @@ function TakeToGroup(event) {
         const chatHeader = document.getElementById("chat-header");
         chatHeader.innerHTML = `<h3 id="main-heading-h3">${GroupToShow}</h3>${AddButtonForAdmin}`;
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // const all = await axios.get(`http://localhost:6969/grpmsg/${GroupToShow}`, {
-        //   headers: { token: TOKEN, GroupToShow: GroupToShow },
-        // });
         // Getting All The Group Messages/Chats - Storing In LS And Displaying ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        const all = yield axios.get("http://localhost:6969/grpmsg/allmsg", {
+        const all = yield axios.get("http://13.201.21.152:6969/grpmsg/allmsg", {
             headers: { token: TOKEN, grouptoshow: GroupToShow },
         });
         const currentGroup = all.data.currentGroup;
@@ -141,7 +138,7 @@ function TakeToGroup(event) {
             PopupFormHeading.innerHTML = `${currentGroup}`;
             const GroupMemberList = document.getElementById("group-members-list");
             GroupMemberList.innerHTML = "";
-            let allMembers = yield axios.get("http://localhost:6969/grpmsg/getallmembers", {
+            let allMembers = yield axios.get("http://13.201.21.152:6969/grpmsg/getallmembers", {
                 headers: { token: TOKEN, grouptoshow: GroupToShow },
             });
             allMembers = allMembers.data.AllGroupMembers;
@@ -190,28 +187,14 @@ function DISPLAYGROUP(obj) {
   <img src="../../images/group_default.png" alt="Group DP" class="group-dp">
   <div class="group-name">${obj.groupName}</div>
 </div>
-<div class="latest-msg-preview">Latest message preview</div>
+<div class="latest-msg-preview"></div>
   </li>`;
     ul.appendChild(newli);
-    // document.addEventListener("click", (event: any) => {
-    //   // event.stopPropagation();
-    //   const target = event.target;
-    //   console.log("YE wala !", target);
-    //   // if (
-    //   //   target.matches(".group-dp") ||
-    //   //   target.matches(".latest-msg-preview") ||
-    //   //   target.matches(".group-name") ||
-    //   //   target.matches(".group-info")
-    //   // ) {
-    //   //   // Handle click on the <li>, <img>, or <div> element
-    //   //   TakeToGroup(event);
-    //   // }
-    // });
 }
 function HOMELOAD() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const op = yield axios.get("http://localhost:6969/home/allgrps", {
+            const op = yield axios.get("http://13.201.21.152:6969/home/allgrps", {
                 headers: { token: TOKEN },
             });
             const AllGroupsForThisUser = op.data.AllGroupsForThisUser;
@@ -235,7 +218,6 @@ function HOMELOAD() {
     });
 }
 HOMELOAD();
-// setInterval(HOMELOAD, 2000);
 function CREATEGROUP(event) {
     return __awaiter(this, void 0, void 0, function* () {
         event.preventDefault();
@@ -243,7 +225,7 @@ function CREATEGROUP(event) {
             GroupName: event.target.name.value,
             NewMemberEmail: event.target.email.value,
         };
-        const op = yield axios.post("http://localhost:6969/home/creategrp", obj, {
+        const op = yield axios.post("http://13.201.21.152:6969/home/creategrp", obj, {
             headers: { token: TOKEN },
         });
         socket.emit("new group creation", { groupName: obj.GroupName });
@@ -260,7 +242,7 @@ function ADDINGMEMBERTOGROUP(event) {
             NewMemberEmail: event.target.email.value,
         };
         try {
-            const op = yield axios.post("http://localhost:6969/home/creategrp", obj, {
+            const op = yield axios.post("http://13.201.21.152:6969/home/creategrp", obj, {
                 headers: { token: TOKEN },
             });
             alert(op.data.msg);
@@ -305,7 +287,7 @@ function NewONLOAD() {
             AllMessages = JSON.parse(History);
         }
         else {
-            const all = yield axios.get("http://localhost:6969/grpmsg/allmsg", {
+            const all = yield axios.get("http://13.201.21.152:6969/grpmsg/allmsg", {
                 headers: { token: token, grouptoshow: currentGroup },
             });
             AllMessages = all.data.AllMessages;
@@ -338,7 +320,7 @@ function displayFileName() {
 }
 function displayLatestMessages(group) {
     return __awaiter(this, void 0, void 0, function* () {
-        const latest = yield axios.get("http://localhost:6969/home/getlatest", {
+        const latest = yield axios.get("http://13.201.21.152:6969/home/getlatest", {
             headers: { token: TOKEN, group: group },
         });
         const msg = latest.data.latest[0];

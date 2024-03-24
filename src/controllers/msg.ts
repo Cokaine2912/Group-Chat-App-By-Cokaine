@@ -8,6 +8,8 @@ import { Group } from "../models/group";
 
 import { Membership } from "../models/membership";
 
+import sequelize from "../util/database";
+
 const AWS = require("aws-sdk");
 
 exports.postGrpMessage = async (req: any, res: any) => {
@@ -19,20 +21,31 @@ exports.postGrpMessage = async (req: any, res: any) => {
   const fileUrl = req.body.fileUrl;
   const fileName = req.body.fileName;
 
+  let transaction;
+
   try {
+    transaction = await sequelize.transaction();
+
     const ForGroupId: any = await Group.findOne({
       where: { groupName: toGroup },
+      transaction,
     });
 
-    const op = (await GroupMessage.create({
-      userId: userId,
-      sender: username,
-      message: msg,
-      fileUrl: fileUrl,
-      fileName: fileName,
-      toGroup: toGroup,
-      groupId: ForGroupId.id,
-    })) as any;
+    const op = (await GroupMessage.create(
+      {
+        userId: userId,
+        sender: username,
+        message: msg,
+        fileUrl: fileUrl,
+        fileName: fileName,
+        toGroup: toGroup,
+        groupId: ForGroupId.id,
+      },
+      { transaction }
+    )) as any;
+
+    await transaction.commit();
+
     return res.json({
       id: op.id,
       sender: username,
@@ -42,6 +55,7 @@ exports.postGrpMessage = async (req: any, res: any) => {
     });
   } catch (error) {
     console.log(error);
+    await transaction?.rollback();
     res.json({ success: false, msg: "Internal Server Error !" });
   }
 };
@@ -67,7 +81,6 @@ exports.getAllMessages = async (req: any, res: any) => {
 exports.getLatestMessages = async (req: any, res: any) => {
   const lastMsgID = req.params.lastMsgID;
   const currentGroup = req.headers.grouptoshow;
-  console.log("!!!!!  ### GETTING FOR :", currentGroup);
   try {
     const allMsgs = await GroupMessage.findAll({
       where: {
@@ -167,7 +180,7 @@ exports.postMakeAdmin = async (req: any, res: any) => {
     return res.json({ success: true, msg: `${toMakeEmail} is an Admin now !` });
   } catch (error) {
     console.log(error);
-    res.json({ success: false, msg: "Internal Server Error !" });
+    res.status(500).json({ success: false, msg: "Internal Server Error !" });
   }
 };
 
@@ -202,12 +215,14 @@ async function uploadToS3(data: any, filename: any) {
 }
 
 exports.postPostUploadFile = async (req: any, res: any) => {
-  console.log(req.body);
-  const fileData = req.file.buffer;
-  const filename = req.body.filename;
-  console.log(fileData, filename);
-  const op = await uploadToS3(fileData, filename);
-  console.log(op);
-  console.log("FILE Uploaded From the Backend !!");
-  return res.json({ URL: op });
+  try {
+    const fileData = req.file.buffer;
+    const filename = req.body.filename;
+    const op = await uploadToS3(fileData, filename);
+    return res.status(200).json({ success: true, URL: op });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ success: false, msg: "Something went wrong !" });
+  }
 };

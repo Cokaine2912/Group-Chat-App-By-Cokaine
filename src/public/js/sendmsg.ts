@@ -58,7 +58,7 @@ async function ONLOAD() {
   if (History) {
     AllMessages = JSON.parse(History);
   } else {
-    const all = await axios.get("http://localhost:6969/grpmsg/allmsg", {
+    const all = await axios.get("http://13.201.21.152:6969/grpmsg/allmsg", {
       headers: { token: token, grouptoshow: currentGroup },
     });
     AllMessages = all.data.AllMessages;
@@ -86,7 +86,7 @@ async function constantAPIcalls() {
   const currentGroup = localStorage.getItem("currentGroup");
   const lastMsgID = localStorage.getItem("lastMsgID");
   const op = await axios.get(
-    `http://localhost:6969/grpmsg/getlatest/${lastMsgID}`,
+    `http://13.201.21.152:6969/grpmsg/getlatest/${lastMsgID}`,
     { headers: { token: token, grouptoshow: currentGroup } }
   );
   const status = op.data.status;
@@ -203,7 +203,7 @@ async function SENDMSG(event: any) {
       FORMDATA.append("filename", filename);
 
       const NEW = await axios.post(
-        "http://localhost:6969/grpmsg/uploadfile",
+        "http://13.201.21.152:6969/grpmsg/uploadfile",
         FORMDATA,
         {
           headers: {
@@ -220,7 +220,7 @@ async function SENDMSG(event: any) {
       obj.fileName = fileNameToShow;
     }
 
-    const op = await axios.post("http://localhost:6969/grpmsg/postmsg", obj, {
+    const op = await axios.post("http://13.201.21.152:6969/grpmsg/postmsg", obj, {
       headers: { token: token },
     });
 
@@ -263,7 +263,7 @@ async function REMOVEMEMBER(event: any) {
 
   try {
     const op = await axios.post(
-      "http://localhost:6969/grpmsg/removemember",
+      "http://13.201.21.152:6969/grpmsg/removemember",
       obj,
       {
         headers: { token: token, grouptoshow: currentGroup },
@@ -288,7 +288,7 @@ async function MAKEADMIN(event: any) {
   const obj = { toMakeId: toMakeId };
 
   try {
-    const op = await axios.post("http://localhost:6969/grpmsg/makeadmin", obj, {
+    const op = await axios.post("http://13.201.21.152:6969/grpmsg/makeadmin", obj, {
       headers: { token: token, grouptoshow: currentGroup },
     });
     if (op.data.success) {
@@ -365,7 +365,7 @@ async function uploadToS3(data: any, filename: any) {
   const BUCKET_NAME = "cokaineexpensetracker";
 
   const AWScreds = (await axios.get(
-    "http://localhost:6969/creds/getConfig"
+    "http://13.201.21.152:6969/creds/getConfig"
   )) as any;
 
   const IAM_USER_KEY = AWScreds.data.IAM_USER_KEY;

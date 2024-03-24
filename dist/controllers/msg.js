@@ -8,11 +8,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const grpmsg_1 = require("../models/grpmsg");
 const sequelize_1 = require("sequelize");
 const group_1 = require("../models/group");
 const membership_1 = require("../models/membership");
+const database_1 = __importDefault(require("../util/database"));
 const AWS = require("aws-sdk");
 exports.postGrpMessage = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const userOBJ = req.headers.userOBJ;
@@ -22,9 +26,12 @@ exports.postGrpMessage = (req, res) => __awaiter(void 0, void 0, void 0, functio
     const toGroup = req.body.toGroup;
     const fileUrl = req.body.fileUrl;
     const fileName = req.body.fileName;
+    let transaction;
     try {
+        transaction = yield database_1.default.transaction();
         const ForGroupId = yield group_1.Group.findOne({
             where: { groupName: toGroup },
+            transaction,
         });
         const op = (yield grpmsg_1.GroupMessage.create({
             userId: userId,
@@ -34,7 +41,8 @@ exports.postGrpMessage = (req, res) => __awaiter(void 0, void 0, void 0, functio
             fileName: fileName,
             toGroup: toGroup,
             groupId: ForGroupId.id,
-        }));
+        }, { transaction }));
+        yield transaction.commit();
         return res.json({
             id: op.id,
             sender: username,
@@ -45,6 +53,7 @@ exports.postGrpMessage = (req, res) => __awaiter(void 0, void 0, void 0, functio
     }
     catch (error) {
         console.log(error);
+        yield (transaction === null || transaction === void 0 ? void 0 : transaction.rollback());
         res.json({ success: false, msg: "Internal Server Error !" });
     }
 });
@@ -68,7 +77,6 @@ exports.getAllMessages = (req, res) => __awaiter(void 0, void 0, void 0, functio
 exports.getLatestMessages = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const lastMsgID = req.params.lastMsgID;
     const currentGroup = req.headers.grouptoshow;
-    console.log("!!!!!  ### GETTING FOR :", currentGroup);
     try {
         const allMsgs = yield grpmsg_1.GroupMessage.findAll({
             where: {
@@ -157,7 +165,7 @@ exports.postMakeAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function
     }
     catch (error) {
         console.log(error);
-        res.json({ success: false, msg: "Internal Server Error !" });
+        res.status(500).json({ success: false, msg: "Internal Server Error !" });
     }
 });
 function uploadToS3(data, filename) {
@@ -191,12 +199,15 @@ function uploadToS3(data, filename) {
     });
 }
 exports.postPostUploadFile = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log(req.body);
-    const fileData = req.file.buffer;
-    const filename = req.body.filename;
-    console.log(fileData, filename);
-    const op = yield uploadToS3(fileData, filename);
-    console.log(op);
-    console.log("FILE Uploaded From the Backend !!");
-    return res.json({ URL: op });
+    try {
+        const fileData = req.file.buffer;
+        const filename = req.body.filename;
+        const op = yield uploadToS3(fileData, filename);
+        return res.status(200).json({ success: true, URL: op });
+    }
+    catch (error) {
+        return res
+            .status(500)
+            .json({ success: false, msg: "Something went wrong !" });
+    }
 });

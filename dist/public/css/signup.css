@@ -77,3 +77,18 @@ html {
 #signup-heading {
     text-decoration: underline;
 }
+
+
+#features-ul{
+    list-style:square ;
+    font-size: 1.8rem;
+}
+.feature-item{
+    margin:5px;
+}
+
+#feature-heading{
+    font-size:4rem;
+    text-decoration: underline;
+    margin-bottom: 3.5rem;
+}
