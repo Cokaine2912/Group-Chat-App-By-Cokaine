@@ -9,19 +9,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 const token = localStorage.getItem("token");
-const AWS = WINDOW.AWS;
-AWS.config.update({ region: "ap-south-1" });
-// const currentGroup = localStorage.getItem("currentGroup");
-const pageTitle = document.getElementById("pageTitle");
-// const GroupNameHeading = document.getElementById(
-//   "chat-header"
-// ) as HTMLDivElement;
-// GroupNameHeading.innerHTML = `<h3 id="main-heading-h3">${currentGroup}</h3>`;
-const capacity = 30;
-let currentGroup = localStorage.getItem("currentGroup");
 if (!token) {
     window.location.href = "./login.html";
 }
+const AWS = WINDOW.AWS;
+AWS.config.update({ region: "ap-south-1" });
+const pageTitle = document.getElementById("pageTitle");
+const capacity = 30;
+let currentGroup = localStorage.getItem("currentGroup");
 let lastMsgID = 0;
 function ONLOAD() {
     return __awaiter(this, void 0, void 0, function* () {
@@ -136,6 +131,9 @@ function SENDMSG(event) {
             fileNameToShow = file.name;
         }
         const msg = event.target.chatmsg.value;
+        if (!msg && !file) {
+            return;
+        }
         const token = localStorage.getItem("token");
         // let obj = { msg: msg, toGroup: currentGroup };
         const obj = {
@@ -234,11 +232,9 @@ function MAKEADMIN(event) {
     });
 }
 socket.on("chat message", (obj) => {
-    // console.log(obj);
     const msg = obj.msg;
     const sender = obj.sender;
     const groupName = obj.to;
-    console.log(`${sender} ===> ${groupName} : ${msg}`);
     let currentGroup = localStorage.getItem("currentGroup");
     if (currentGroup === groupName) {
         constantAPIcalls();
@@ -246,17 +242,34 @@ socket.on("chat message", (obj) => {
     upadteLatestMsg(obj);
 });
 socket.on("update own", (obj) => {
-    // console.log(obj.toUpdate);
     constantAPIcalls();
-    // upadteLatestMsg(obj);
 });
 socket.on("update home", (dummy) => {
-    console.log("Updating Home !");
     HOMELOAD();
 });
 socket.on("HOMELOAD", (dummy) => {
     HOMELOAD();
 });
+socket.on("join alert", (joinOBJ) => {
+    console.log(`${joinOBJ.chatUser} joined ${joinOBJ.room} with ${joinOBJ.socketId}`);
+});
+socket.on("online info", (obj) => {
+    const currentGroup = localStorage.getItem("currentGroup");
+    if (obj.room === currentGroup) {
+        join(obj.user);
+    }
+});
+function join(member) {
+    const UL = document.getElementById("all-chats-list");
+    if (!UL) {
+        return;
+    }
+    const joinli = document.createElement("li");
+    joinli.className = "joinleft-li";
+    joinli.innerHTML = `${member} joined`;
+    UL.appendChild(joinli);
+    ScrollDown();
+}
 function upadteLatestMsg(obj) {
     const msg = obj.msg;
     const sender = obj.sender;
@@ -286,7 +299,6 @@ function readFileAsArrayBuffer(file) {
 }
 function uploadToS3(data, filename) {
     return __awaiter(this, void 0, void 0, function* () {
-        console.log(data);
         const BUCKET_NAME = "cokaineexpensetracker";
         const AWScreds = (yield axios.get("http://13.201.21.152:6969/creds/getConfig"));
         const IAM_USER_KEY = AWScreds.data.IAM_USER_KEY;

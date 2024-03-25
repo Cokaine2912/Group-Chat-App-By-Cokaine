@@ -17,7 +17,6 @@ UsernameDrop.innerHTML = `${ChatUser}`;
 function TakeToGroup(event) {
     return __awaiter(this, void 0, void 0, function* () {
         event.preventDefault();
-        console.log(event.target);
         const target = event.target;
         let GroupToShow = null;
         if (target.matches(".group-dp") ||
@@ -160,7 +159,6 @@ function TakeToGroup(event) {
             }
             const FixedGroupName = document.getElementById("add-member-group-name");
             AddMemBtn.addEventListener("click", function () {
-                console.log("Button clicked !!!");
                 if (FixedGroupName) {
                     FixedGroupName.setAttribute("type", `hidden`);
                     FixedGroupName.setAttribute("value", `${currentGroup}`);
@@ -174,6 +172,10 @@ function TakeToGroup(event) {
                 HOMELOAD();
             });
         }
+        socket.emit("online alert", {
+            chatUser: ChatUser,
+            room: localStorage.getItem("currentGroup"),
+        });
         NewONLOAD();
     });
 }
@@ -229,8 +231,6 @@ function CREATEGROUP(event) {
             headers: { token: TOKEN },
         });
         socket.emit("new group creation", { groupName: obj.GroupName });
-        console.log(op.data);
-        console.log(event.target.id);
         alert(op.data.msg);
     });
 }
@@ -247,7 +247,6 @@ function ADDINGMEMBERTOGROUP(event) {
             });
             alert(op.data.msg);
             const TheUl = document.getElementById("group-members-list");
-            console.log(TheUl);
             const newli = document.createElement("li");
             const memberOBJ = op.data.NewMship;
             socket.emit("new member addition", {
@@ -330,7 +329,6 @@ function displayLatestMessages(group) {
         const LI = document.getElementById(group);
         const place = LI.children[1];
         let sender;
-        console.log("idhat check karo ASYNC :", msg.id, msg.sender);
         if (ChatUser === msg.sender) {
             sender = "You";
         }

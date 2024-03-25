@@ -1,29 +1,17 @@
 const token = localStorage.getItem("token");
 
+if (!token) {
+  window.location.href = "./login.html";
+}
+
 const AWS = WINDOW.AWS as any;
 AWS.config.update({ region: "ap-south-1" });
 
-// const currentGroup = localStorage.getItem("currentGroup");
-
 const pageTitle = document.getElementById("pageTitle");
-
-// const GroupNameHeading = document.getElementById(
-//   "chat-header"
-// ) as HTMLDivElement;
-
-// GroupNameHeading.innerHTML = `<h3 id="main-heading-h3">${currentGroup}</h3>`;
 
 const capacity = 30;
 
 let currentGroup = localStorage.getItem("currentGroup");
-
-if (!token) {
-  window.location.href = "./login.html";
-}
-// else if (currentGroup){
-//   // setTimeout(ONLOAD, 0);
-//   // setInterval(constantAPIcalls, 5000);
-// }
 
 interface DISPLAYOBJ {
   message: string;
@@ -90,7 +78,7 @@ async function constantAPIcalls() {
     { headers: { token: token, grouptoshow: currentGroup } }
   );
   const status = op.data.status;
- 
+
   const LatestMessages = op.data.LatestMessages;
 
   if (LatestMessages.length > 0) {
@@ -101,7 +89,7 @@ async function constantAPIcalls() {
       chatDisplay(LatestMessages[i]);
       ScrollDown();
     }
-    
+
     localStorage.setItem(
       "lastMsgID",
       `${LatestMessages[LatestMessages.length - 1].id}`
@@ -178,6 +166,10 @@ async function SENDMSG(event: any) {
   }
   const msg: string = event.target.chatmsg.value;
 
+  if (!msg && !file) {
+    return;
+  }
+
   const token = localStorage.getItem("token");
   // let obj = { msg: msg, toGroup: currentGroup };
   const obj: {
@@ -220,9 +212,13 @@ async function SENDMSG(event: any) {
       obj.fileName = fileNameToShow;
     }
 
-    const op = await axios.post("http://13.201.21.152:6969/grpmsg/postmsg", obj, {
-      headers: { token: token },
-    });
+    const op = await axios.post(
+      "http://13.201.21.152:6969/grpmsg/postmsg",
+      obj,
+      {
+        headers: { token: token },
+      }
+    );
 
     const History = localStorage.getItem("chatHistory");
     if (History) {
@@ -288,9 +284,13 @@ async function MAKEADMIN(event: any) {
   const obj = { toMakeId: toMakeId };
 
   try {
-    const op = await axios.post("http://13.201.21.152:6969/grpmsg/makeadmin", obj, {
-      headers: { token: token, grouptoshow: currentGroup },
-    });
+    const op = await axios.post(
+      "http://13.201.21.152:6969/grpmsg/makeadmin",
+      obj,
+      {
+        headers: { token: token, grouptoshow: currentGroup },
+      }
+    );
     if (op.data.success) {
       const statusDiv = document.getElementById(
         `${toMakeId}-member-status`
@@ -305,11 +305,9 @@ async function MAKEADMIN(event: any) {
 }
 
 socket.on("chat message", (obj: any) => {
-  // console.log(obj);
   const msg = obj.msg;
   const sender = obj.sender;
   const groupName = obj.to;
-  console.log(`${sender} ===> ${groupName} : ${msg}`);
 
   let currentGroup = localStorage.getItem("currentGroup");
   if (currentGroup === groupName) {
@@ -319,19 +317,42 @@ socket.on("chat message", (obj: any) => {
 });
 
 socket.on("update own", (obj: any) => {
-  // console.log(obj.toUpdate);
   constantAPIcalls();
-  // upadteLatestMsg(obj);
 });
 
 socket.on("update home", (dummy: any) => {
-  console.log("Updating Home !");
   HOMELOAD();
 });
 
 socket.on("HOMELOAD", (dummy: any) => {
   HOMELOAD();
 });
+
+socket.on("join alert", (joinOBJ: any) => {
+  console.log(
+    `${joinOBJ.chatUser} joined ${joinOBJ.room} with ${joinOBJ.socketId}`
+  );
+});
+
+socket.on("online info", (obj: any) => {
+  const currentGroup = localStorage.getItem("currentGroup");
+  if (obj.room === currentGroup) {
+    join(obj.user);
+  }
+});
+
+function join(member: string) {
+  const UL = document.getElementById("all-chats-list") as HTMLUListElement;
+  if (!UL) {
+    return;
+  }
+  const joinli = document.createElement("li");
+  joinli.className = "joinleft-li";
+  joinli.innerHTML = `${member} joined`;
+  UL.appendChild(joinli);
+
+  ScrollDown();
+}
 
 function upadteLatestMsg(obj: any) {
   const msg = obj.msg;
@@ -360,8 +381,6 @@ async function readFileAsArrayBuffer(file: File): Promise<ArrayBuffer> {
 }
 
 async function uploadToS3(data: any, filename: any) {
-  console.log(data);
-
   const BUCKET_NAME = "cokaineexpensetracker";
 
   const AWScreds = (await axios.get(

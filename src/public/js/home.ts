@@ -11,7 +11,7 @@ UsernameDrop.innerHTML = `${ChatUser}`;
 
 async function TakeToGroup(event: any) {
   event.preventDefault();
-  console.log(event.target);
+
   const target = event.target;
   let GroupToShow = null;
 
@@ -65,9 +65,12 @@ async function TakeToGroup(event: any) {
 
   // ADMIN Checking  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  let AdminCheck = await axios.get("http://13.201.21.152:6969/grpmsg/admincheck", {
-    headers: { token: TOKEN, grouptoshow: GroupToShow },
-  });
+  let AdminCheck = await axios.get(
+    "http://13.201.21.152:6969/grpmsg/admincheck",
+    {
+      headers: { token: TOKEN, grouptoshow: GroupToShow },
+    }
+  );
 
   AdminCheck = AdminCheck.data;
 
@@ -133,7 +136,6 @@ async function TakeToGroup(event: any) {
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
   // Getting All The Group Messages/Chats - Storing In LS And Displaying ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   const all = await axios.get("http://13.201.21.152:6969/grpmsg/allmsg", {
@@ -196,7 +198,6 @@ async function TakeToGroup(event: any) {
       "add-member-group-name"
     ) as HTMLInputElement;
     AddMemBtn.addEventListener("click", function () {
-      console.log("Button clicked !!!");
       if (FixedGroupName) {
         FixedGroupName.setAttribute("type", `hidden`);
         FixedGroupName.setAttribute("value", `${currentGroup}`);
@@ -214,6 +215,11 @@ async function TakeToGroup(event: any) {
       HOMELOAD();
     });
   }
+
+  socket.emit("online alert", {
+    chatUser: ChatUser,
+    room: localStorage.getItem("currentGroup"),
+  });
 
   NewONLOAD();
 }
@@ -238,7 +244,6 @@ function DISPLAYGROUP(obj: DISPLAYGROUPOBJ) {
   </li>`;
 
   ul.appendChild(newli);
-
 }
 
 async function HOMELOAD() {
@@ -281,8 +286,6 @@ async function CREATEGROUP(event: any) {
 
   socket.emit("new group creation", { groupName: obj.GroupName });
 
-  console.log(op.data);
-  console.log(event.target.id);
   alert(op.data.msg);
 }
 
@@ -293,15 +296,19 @@ async function ADDINGMEMBERTOGROUP(event: any) {
     NewMemberEmail: event.target.email.value,
   };
   try {
-    const op = await axios.post("http://13.201.21.152:6969/home/creategrp", obj, {
-      headers: { token: TOKEN },
-    });
+    const op = await axios.post(
+      "http://13.201.21.152:6969/home/creategrp",
+      obj,
+      {
+        headers: { token: TOKEN },
+      }
+    );
     alert(op.data.msg);
 
     const TheUl = document.getElementById(
       "group-members-list"
     ) as HTMLUListElement;
-    console.log(TheUl);
+
     const newli = document.createElement("li");
 
     const memberOBJ = op.data.NewMship;
@@ -388,15 +395,15 @@ async function displayLatestMessages(group: string) {
     headers: { token: TOKEN, group: group },
   });
   const msg = latest.data.latest[0];
-  if (!msg){
-    return
+  if (!msg) {
+    return;
   }
 
   const LI = document.getElementById(group) as HTMLLIElement;
   const place = LI.children[1];
 
   let sender;
-  console.log("idhat check karo ASYNC :", msg.id, msg.sender);
+
   if (ChatUser === msg.sender) {
     sender = "You";
   } else {
@@ -409,5 +416,5 @@ async function displayLatestMessages(group: string) {
     place.innerHTML = `${sender} : ${msg.message}`;
   }
 
-  return
+  return;
 }

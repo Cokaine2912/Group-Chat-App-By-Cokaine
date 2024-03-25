@@ -33,13 +33,25 @@ const homeRoutes = require("./routes/home");
 const app = (0, express_1.default)();
 app.use((0, cors_1.default)());
 const server = http_1.default.createServer(app);
-const io = new socket_io_1.Server(server);
+const io = new socket_io_1.Server(server, {
+    cors: {
+        origin: "*", // Allow access from any origin
+        methods: ["GET", "POST"], // Allow only GET and POST requests
+        allowedHeaders: ["my-custom-header"],
+        credentials: true, // Allow sending cookies
+    },
+});
 io.on("connection", (socket) => {
     console.log("A USER CONNECTED :", socket.id, "!!!!");
     socket.on("joinRoom", (obj) => {
-        // Join the specified room
         socket.join(obj.room);
         console.log(`Socket ${socket.id} - ${obj.chatUser} joined room ${obj.room}`);
+        const joinOBJ = {
+            room: obj.room,
+            socketId: socket.id,
+            chatUser: obj.chatUser,
+        };
+        socket.broadcast.to(obj.room).emit("join alert", joinOBJ);
     });
     socket.on("chat message", (obj) => {
         const msg = obj.msg;
@@ -57,6 +69,12 @@ io.on("connection", (socket) => {
     });
     socket.on("new group creation", (obj) => {
         io.emit("HOMELOAD", { msg: "dummy" });
+    });
+    socket.on("online alert", (obj) => {
+        socket.emit("online info", { user: "You", room: obj.room });
+        socket.broadcast
+            .to(obj.room)
+            .emit("online info", { user: obj.chatUser, room: obj.room });
     });
     socket.on("disconnect", () => {
         console.log("user disconnected");
@@ -90,12 +108,6 @@ app.get("/favicon.ico", (req, res) => {
     const fp = path_1.default.join(__dirname, "./favicon.ico");
     res.sendFile(fp);
 });
-// app.get("/creds/getConfig", (req: any, res: any) => {
-//   return res.json({
-//     IAM_USER_KEY: process.env.IAM_USER_KEY,
-//     IAM_USER_SECRET: process.env.IAM_USER_SECRET,
-//   });
-// });
 console.log("Start at : ", new Date().toLocaleTimeString());
 user_1.User.hasMany(grpmsg_1.GroupMessage);
 grpmsg_1.GroupMessage.belongsTo(user_1.User);

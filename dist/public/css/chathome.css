@@ -27,8 +27,6 @@ html {
   background-color: black;
 }
 
-
-
 #company-name {
   font-size: 20px;
   font-weight: 600;
@@ -41,7 +39,7 @@ html {
   margin-right: 10px;
 }
 
-#username-span{
+#username-span {
   font-weight: 600;
   font-size: larger;
   background-image: linear-gradient(to bottom left, gold, #a71d01);
@@ -52,9 +50,7 @@ html {
 
 #username-span:hover {
   cursor: default;
-  
 }
-
 
 .content {
   display: flex;
@@ -199,7 +195,7 @@ html {
   font-family: candara;
   color: wheat;
   font-weight: 700;
-  padding : 2px 7px;
+  padding: 2px 7px;
   background: linear-gradient(
     to right bottom,
     rgba(85, 238, 230, 0.772),
@@ -307,7 +303,6 @@ html {
   background-color: rgba(0, 0, 0, 0); /* color of the track */
 }
 
-
 .group-list-item {
   display: inline-block;
   align-items: center;
@@ -343,21 +338,18 @@ html {
   color: gray;
 }
 
-
-.fileUrl-link{
+.fileUrl-link {
   text-decoration: none;
   color: aqua;
 }
 
-.file-showing-div{
+.file-showing-div {
   margin-top: 7px;
   background-color: rgba(255, 255, 255, 0.167);
-  padding : 7px;
+  padding: 7px;
   border-radius: 7px;
-  margin-right : 7px
+  margin-right: 7px;
 }
-
-
 
 .custom-file-upload {
   display: inline-block;
@@ -368,7 +360,7 @@ html {
   border: 1px solid #007bff;
   border-radius: 5px;
   transition: background-color 0.3s;
-  margin-left : 0;
+  margin-left: 0;
 }
 
 .custom-file-upload:hover {
@@ -379,13 +371,24 @@ html {
   display: none;
 }
 
-#file-name-display{
-  border : 0px solid black;
+#file-name-display {
+  border: 0px solid black;
   width: 100px;
   font-size: 15px;
-  height : 100%
+  height: 100%;
 }
 
-.latest-msg-preview{
+.latest-msg-preview {
   font-size: 12px;
+}
+
+.joinleft-li {
+  margin: auto;
+  text-align: center;
+  width: max-content;
+  background-color: white;
+  padding: 4px;
+  border-radius: 10px;
+  margin-top: 1/5%;
+  margin-bottom: 1.5%;
 }

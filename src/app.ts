@@ -29,19 +29,21 @@ const app = express();
 
 app.use(cors());
 
-
 const server = http.createServer(app);
 const io = new Server(server);
 io.on("connection", (socket) => {
   console.log("A USER CONNECTED :", socket.id, "!!!!");
   socket.on("joinRoom", (obj) => {
-    // Join the specified room
-
     socket.join(obj.room);
-
     console.log(
       `Socket ${socket.id} - ${obj.chatUser} joined room ${obj.room}`
     );
+    const joinOBJ = {
+      room: obj.room,
+      socketId: socket.id,
+      chatUser: obj.chatUser,
+    };
+    socket.broadcast.to(obj.room).emit("join alert", joinOBJ);
   });
   socket.on("chat message", (obj) => {
     const msg = obj.msg;
@@ -63,14 +65,19 @@ io.on("connection", (socket) => {
     io.emit("HOMELOAD", { msg: "dummy" });
   });
 
+  socket.on("online alert", (obj: any) => {
+    socket.emit("online info", { user: "You", room: obj.room });
+    socket.broadcast
+      .to(obj.room)
+      .emit("online info", { user: obj.chatUser, room: obj.room });
+  });
+
   socket.on("disconnect", () => {
     console.log("user disconnected");
   });
 });
 
-
 app.use(bodyParser.json());
-
 
 app.use(userRoutes);
 app.use("/grpmsg", grpRoutes);
@@ -103,13 +110,6 @@ app.get("/favicon.ico", (req: any, res: any) => {
   const fp = path.join(__dirname, "./favicon.ico");
   res.sendFile(fp);
 });
-
-// app.get("/creds/getConfig", (req: any, res: any) => {
-//   return res.json({
-//     IAM_USER_KEY: process.env.IAM_USER_KEY,
-//     IAM_USER_SECRET: process.env.IAM_USER_SECRET,
-//   });
-// });
 
 console.log("Start at : ", new Date().toLocaleTimeString());
 
