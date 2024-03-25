@@ -16,9 +16,10 @@ const cors_1 = __importDefault(require("cors"));
 const express_1 = __importDefault(require("express"));
 const body_parser_1 = __importDefault(require("body-parser"));
 const path_1 = __importDefault(require("path"));
+const fs_1 = __importDefault(require("fs"));
 const http_1 = __importDefault(require("http"));
 const cron_1 = require("cron");
-// import { createServer } from "http";
+const morgan_1 = __importDefault(require("morgan"));
 const socket_io_1 = require("socket.io");
 const database_1 = __importDefault(require("./util/database"));
 const user_1 = require("./models/user");
@@ -32,15 +33,10 @@ const grpRoutes = require("./routes/grpmsg");
 const homeRoutes = require("./routes/home");
 const app = (0, express_1.default)();
 app.use((0, cors_1.default)());
+const accessLogStream = fs_1.default.createWriteStream(path_1.default.join(__dirname, "access.log"), { flags: "a" });
+app.use((0, morgan_1.default)("combined", { stream: accessLogStream }));
 const server = http_1.default.createServer(app);
-const io = new socket_io_1.Server(server, {
-    cors: {
-        origin: "*", // Allow access from any origin
-        methods: ["GET", "POST"], // Allow only GET and POST requests
-        allowedHeaders: ["my-custom-header"],
-        credentials: true, // Allow sending cookies
-    },
-});
+const io = new socket_io_1.Server(server);
 io.on("connection", (socket) => {
     console.log("A USER CONNECTED :", socket.id, "!!!!");
     socket.on("joinRoom", (obj) => {
@@ -145,13 +141,8 @@ function DAILYARCHIVE() {
         }
     });
 }
-const job = new cron_1.CronJob("0 0 0 */1 * *", // cronTime
-DAILYARCHIVE, // onTick
-null, // onComplete
-true, // start
-"Asia/Kolkata" // timeZone
-);
-// job.start() is optional here because of the fourth parameter set to true.
+const job = new cron_1.CronJob("0 0 0 */1 * *", DAILYARCHIVE, null, true, "Asia/Kolkata");
+// job.start()
 database_1.default
     .sync()
     .then(() => {

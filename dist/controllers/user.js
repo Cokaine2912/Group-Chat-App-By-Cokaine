@@ -48,8 +48,6 @@ function generateAccessToken(id, name) {
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 exports.postNewUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        console.log("this route handler");
-        console.log(req.body);
         const Exist = (yield user_1.User.count({
             where: { email: req.body.email },
         }));
@@ -67,7 +65,7 @@ exports.postNewUser = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     }
     catch (err) {
         console.log(err);
-        res.status(500).json({ error: err });
+        res.status(400).json({ error: err });
     }
 });
 exports.getUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {

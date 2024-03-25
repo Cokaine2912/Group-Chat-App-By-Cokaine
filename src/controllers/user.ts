@@ -53,9 +53,6 @@ function generateAccessToken(id: number, name: string) {
 
 exports.postNewUser = async (req: any, res: any) => {
   try {
-    console.log("this route handler");
-    console.log(req.body);
-
     const Exist = (await User.count({
       where: { email: req.body.email },
     })) as number;
@@ -73,7 +70,7 @@ exports.postNewUser = async (req: any, res: any) => {
       .json({ success: true, msg: "You can proceed to Login now" });
   } catch (err) {
     console.log(err);
-    res.status(500).json({ error: err });
+    res.status(400).json({ error: err });
   }
 };
 
@@ -119,4 +116,4 @@ exports.getCreds = async (req: any, res: any) => {
     IAM_USER_KEY: process.env.IAM_USER_KEY,
     IAM_USER_SECRET: process.env.IAM_USER_SECRET,
   });
-}
+};

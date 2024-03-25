@@ -81,14 +81,14 @@ html {
 
 #features-ul{
     list-style:square ;
-    font-size: 1.8rem;
+    font-size: 1.3rem;
 }
 .feature-item{
     margin:5px;
 }
 
 #feature-heading{
-    font-size:4rem;
+    font-size:3rem;
     text-decoration: underline;
     margin-bottom: 3.5rem;
 }

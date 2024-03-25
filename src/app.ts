@@ -2,9 +2,11 @@ import cors from "cors";
 import express from "express";
 import bodyParser from "body-parser";
 import path from "path";
+import fs from "fs";
 import http from "http";
 import { CronJob } from "cron";
-// import { createServer } from "http";
+import morgan from "morgan";
+
 import { Server } from "socket.io";
 
 import sequelize from "./util/database";
@@ -28,6 +30,14 @@ const homeRoutes = require("./routes/home");
 const app = express();
 
 app.use(cors());
+
+const accessLogStream = fs.createWriteStream(
+  path.join(__dirname, "access.log"),
+  { flags: "a" }
+);
+
+app.use(morgan("combined", { stream: accessLogStream }));
+
 
 const server = http.createServer(app);
 const io = new Server(server);
@@ -157,13 +167,13 @@ async function DAILYARCHIVE() {
 }
 
 const job = new CronJob(
-  "0 0 0 */1 * *", // cronTime
-  DAILYARCHIVE, // onTick
-  null, // onComplete
-  true, // start
-  "Asia/Kolkata" // timeZone
+  "0 0 0 */1 * *",
+  DAILYARCHIVE,
+  null,
+  true,
+  "Asia/Kolkata"
 );
-// job.start() is optional here because of the fourth parameter set to true.
+// job.start()
 
 sequelize
   .sync()
