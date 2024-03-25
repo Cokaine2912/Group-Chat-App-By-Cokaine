@@ -291,13 +291,14 @@ async function MAKEADMIN(event: any) {
         headers: { token: token, grouptoshow: currentGroup },
       }
     );
-    if (op.data.success) {
+    if (op.data.success === true) {
       const statusDiv = document.getElementById(
         `${toMakeId}-member-status`
       ) as HTMLDivElement;
       statusDiv.innerHTML = "Admin";
+      event.target.remove();
     }
-    event.target.remove();
+    
   } catch (error) {
     console.log(error);
     alert("Something Went Wrong !");

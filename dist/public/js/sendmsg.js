@@ -219,11 +219,11 @@ function MAKEADMIN(event) {
             const op = yield axios.post("http://13.201.21.152:6969/grpmsg/makeadmin", obj, {
                 headers: { token: token, grouptoshow: currentGroup },
             });
-            if (op.data.success) {
+            if (op.data.success === true) {
                 const statusDiv = document.getElementById(`${toMakeId}-member-status`);
                 statusDiv.innerHTML = "Admin";
+                event.target.remove();
             }
-            event.target.remove();
         }
         catch (error) {
             console.log(error);

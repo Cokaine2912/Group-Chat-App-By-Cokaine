@@ -166,20 +166,27 @@ exports.postRemoveMember = async (req: any, res: any) => {
 };
 
 exports.postMakeAdmin = async (req: any, res: any) => {
+  console.log("Making Admin");
   const currentGroup = req.headers.grouptoshow;
 
   const toMakeEmail = req.body.toMakeId;
 
+  let transaction;
+
   try {
-    const op = (await Membership.findOne({
+    transaction = await sequelize.transaction();
+    const op = await Membership.findOne({
       where: { groupName: currentGroup, memberEmail: toMakeEmail },
-    })) as any;
-
-    const Updateop = await op.update({ isAdmin: 1 });
-
+      transaction,
+    });
+    if (op) {
+      const Updateop = await op.update({ isAdmin: 1 }, { transaction });
+    }
+    await transaction.commit();
     return res.json({ success: true, msg: `${toMakeEmail} is an Admin now !` });
   } catch (error) {
     console.log(error);
+    await transaction?.rollback();
     res.status(500).json({ success: false, msg: "Internal Server Error !" });
   }
 };

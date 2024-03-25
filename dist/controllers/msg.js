@@ -154,17 +154,25 @@ exports.postRemoveMember = (req, res) => __awaiter(void 0, void 0, void 0, funct
     }
 });
 exports.postMakeAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log("Making Admin");
     const currentGroup = req.headers.grouptoshow;
     const toMakeEmail = req.body.toMakeId;
+    let transaction;
     try {
-        const op = (yield membership_1.Membership.findOne({
+        transaction = yield database_1.default.transaction();
+        const op = yield membership_1.Membership.findOne({
             where: { groupName: currentGroup, memberEmail: toMakeEmail },
-        }));
-        const Updateop = yield op.update({ isAdmin: 1 });
+            transaction,
+        });
+        if (op) {
+            const Updateop = yield op.update({ isAdmin: 1 }, { transaction });
+        }
+        yield transaction.commit();
         return res.json({ success: true, msg: `${toMakeEmail} is an Admin now !` });
     }
     catch (error) {
         console.log(error);
+        yield (transaction === null || transaction === void 0 ? void 0 : transaction.rollback());
         res.status(500).json({ success: false, msg: "Internal Server Error !" });
     }
 });
